@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace LinkApp\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
