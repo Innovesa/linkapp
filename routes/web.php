@@ -21,7 +21,7 @@ Auth::routes(['verify' => true]);
 
 Route::get('/home', function () {
     return view('temes.inspinia.test.test');
-});
+})->middleware('verified');
 
 //Auth::routes();
 
