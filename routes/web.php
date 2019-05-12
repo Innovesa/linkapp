@@ -20,4 +20,12 @@ Auth::routes(['verify' => true]);
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 Route::get('/home', function () {
     return view('temes.inspinia.test.test');
+<<<<<<< HEAD
 });
+=======
+})->middleware('verified');
+
+//Auth::routes();
+
+
+>>>>>>> 18816f2782f14654e4eaceb718c1f9e80735e05d
