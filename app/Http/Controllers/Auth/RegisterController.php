@@ -40,6 +40,13 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    /** override funtion for change view redirect */
+
+    public function showRegistrationForm()
+    {
+        return view('temes.inspinia.auth.register');
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
