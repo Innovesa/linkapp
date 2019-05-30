@@ -9,15 +9,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @include('temes.inspinia.css')
 </head>
 <body>
     <div id="app">
@@ -25,5 +17,7 @@
             @yield('content')
         </main>
     </div>
+
+    @include('temes.inspinia.js')
 </body>
 </html>
