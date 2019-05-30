@@ -1,7 +1,7 @@
-@extends('temes.inspinia.auth.layouts.app')
+@extends('temes.inspinia.auth.layouts.appLogin')
 
 @section('content')
-<div class="container">
+<!--<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -69,5 +69,66 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
+<body class="gray-bg">
+
+    <div class="loginColumns animated fadeInDown">
+        <div class="row">
+
+            <div class="col-md-6">
+                <h2 class="font-bold">{{ __('auth.Welcome to') }}</h2>
+                <div class="col-md-9">
+                    <img src="{{ asset('img/innove/logo.png') }}" class="logo-Login" alt="logo"> 
+               </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ibox-content">
+                    <form method="POST" class="m-t" role="form" action="{{ route('login') }}">
+                        @csrf
+
+                        <div class="form-group">
+                            <input id="user" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" placeholder="{{ __('auth.E-MailAddress/Username') }}" value="{{ old('email') }}" required autofocus>
+
+                            @if ($errors->has('email'))
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('email') }}</strong>
+                            </span>
+                             @endif
+
+                        </div>
+                        <div class="form-group">
+                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('auth.Password') }}" name="password" required>
+
+                                @if ($errors->has('password'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+                        <button type="submit" class="btn btn-primary block full-width m-b">{{ __('auth.Login') }}</button>
+
+                        @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}">
+                           <small> {{ __('auth.Forgot Your Password') }}</small>
+                        </a>
+                       @endif
+
+                    
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright Innové S.A.
+            </div>
+            <div class="col-md-6 text-right">
+               <small>© 2019</small>
+            </div>
+        </div>
+    </div>
+
+</body>
 @endsection
