@@ -76,9 +76,11 @@
         <div class="row">
 
             <div class="col-md-6">
-                <h2 class="font-bold">{{ __('auth.Welcome to') }}</h2>
-                <div class="col-md-9">
-                    <img src="{{ asset('img/innove/logo.png') }}" class="logo-Login" alt="logo"> 
+                <div class="descLogin">
+                    <h2 class="font-bold">{{ __('auth.Welcome to') }}</h2>
+                    <div class="col-md-9">
+                        <img src="{{ asset('img/innove/logo.png') }}" class="logo-Login" alt="logo"> 
+                    </div>
                </div>
             </div>
             <div class="col-md-6">
