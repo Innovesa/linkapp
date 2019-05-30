@@ -17,10 +17,6 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true]);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 1798476cb12c7add1b4cc7bf6406b5a918e9e377
 Route::get('/home', function () {
     return view('temes.inspinia.test.test');
 })->middleware('verified');
