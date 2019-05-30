@@ -39,6 +39,11 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function showLoginForm()
+    {
+        return view('temes.inspinia.auth.login');
+    }
+
     protected function credentials(Request $request)
     {
         $field = $this->field($request);

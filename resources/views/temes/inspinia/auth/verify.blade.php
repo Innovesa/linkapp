@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('temes.inspinia.auth.layouts.app')
 
 @section('content')
 <div class="container">

@@ -4,7 +4,7 @@ namespace LinkApp\Http\Controllers\Auth;
 
 use LinkApp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\VerifiesEmails;
-
+use Illuminate\Http\Request;
 class VerificationController extends Controller
 {
     /*
@@ -37,5 +37,12 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+
+    public function show(Request $request)
+    {
+        return $request->user()->hasVerifiedEmail()
+                        ? redirect($this->redirectPath())
+                        : view('temes.inspinia.auth.verify');
     }
 }
