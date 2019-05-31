@@ -8572,4 +8572,17 @@ body.md-skin {
   }
   
 }
+.invalid-feedback{
+  width:100%;margin-top:.25rem;font-size:80%;color:#e3342f
+ }
+ 
+ 
+ .is-invalid{
+   border-color: #e3342f;
+ }
+ 
+ .is-invalid:focus{
+   border-color: #e3342f;
+ }
+ 
 
