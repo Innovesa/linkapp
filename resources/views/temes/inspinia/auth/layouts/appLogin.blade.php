@@ -10,6 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     @include('temes.inspinia.css')
+
 </head>
 <body>
     <div id="app">
@@ -19,5 +20,6 @@
     </div>
 
     @include('temes.inspinia.js')
+
 </body>
 </html>
