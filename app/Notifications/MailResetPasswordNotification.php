@@ -19,12 +19,14 @@ class MailResetPasswordNotification extends Notification
      */
 
     public $token;
+  
 
     public static $toMailCallback;
 
     public function __construct($token)
     {
         $this->token = $token;
+    
     }
 
     /**
@@ -49,11 +51,12 @@ class MailResetPasswordNotification extends Notification
         if (static::$toMailCallback) {
             return call_user_func(static::$toMailCallback, $notifiable, $this->token);
         }
+        $user = $notifiable;
 
         return (new MailMessage)
             ->subject(Lang::getFromJson(__('auth.Reset Password Notification')))
             ->line(Lang::getFromJson(_('auth.You are receiving this email because we received a password reset request for your account')))
-            ->action(Lang::getFromJson('auth.Reset Password'), url(config('app.url').route('password.reset', ['token' => $this->token], false)))
+            ->action(Lang::getFromJson('auth.Reset Password'), url(config('app.url').route('password.reset', ['token' => $this->token, 'idUser' => $user->id], false)))
             ->line(Lang::getFromJson(_('auth.This password reset link will expire in :count minutes'), ['count' => config('auth.passwords.users.expire')]))
             ->line(Lang::getFromJson(_('auth.If you did not request a password reset, no further action is required')));
     }

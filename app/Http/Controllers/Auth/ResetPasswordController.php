@@ -38,10 +38,21 @@ class ResetPasswordController extends Controller
         $this->middleware('guest');
     }
 
-    public function showResetForm(Request $request, $token = null)
+    public function showResetForm(Request $request, $token = null, $idUser = null)
     {
+
         return view('temes.inspinia.auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
+            ['token' => $token, 'email' => $request->email, 'idUser' => $idUser]
         );
+    }
+
+
+    protected function rules()
+    {
+        return [
+            'token' => 'required',
+            'email' => 'required',
+            'password' => 'required|confirmed|min:8',
+        ];
     }
 }
