@@ -8584,5 +8584,39 @@ body.md-skin {
  .is-invalid:focus{
    border-color: #e3342f;
  }
- 
 
+ /* Agregados */
+ .verifyBox {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 100px 20px 20px 20px;
+}
+
+.verifyBox p,a{
+  font-size: 16px;
+}
+
+.alert{
+  font-size: 14px;
+}
+
+.verifyLogo {
+  margin-top: 5px;
+  width: 150px;
+  margin-left: 30px;
+}
+
+.verify #page-wrapper {
+  position: inherit;
+  margin: 0px;
+  min-height: 1200px;
+}
+
+@media (max-width: 500px) {
+  .verifyLogo {
+    margin-top: 15px;
+    width: 100px;
+    margin-left: 15px;
+}
+  
+}

@@ -1,37 +1,48 @@
-@extends('temes.inspinia.auth.layouts.app')
+@extends('temes.inspinia.auth.layouts.VerifyRestart')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('auth.Verify Your Email Address') }}</div>
 
-                <div class="card-body">
-                    @if (session('resent'))
-                        <div class="alert alert-success" role="alert">
-                            {{ __('auth.A fresh verification link has been sent to your email address') }}
+<div class="verifyBox animated fadeInDown">
+
+        @if (session('resent'))
+            <div class="alert alert-success" role="alert">
+                {{ __('auth.A fresh verification link has been sent to your email address') }}
+            </div>
+        @endif
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox-content">
+
+                    <h2 class="font-bold">{{ __('auth.VerifyYourEmailAddress') }}</h2><hr>
+
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <p>{{ __('auth.Before proceeding, please check your email for a verification link') }}</p>
+                            <p>{{ __('auth.If you did not receive the email') }},
+
+                                <a href="{{ route('verification.resend') }}"
+
+                                onclick="event.preventDefault();
+                                document.getElementById('resend').submit();">
+        
+                                {{ __('auth.ClickHere') }}
+        
+                                </a>
+                            </p>
+
+                            <form id="resend" action="{{ route('verification.resend') }}" method="POST" style="display: none;">
+                                    @csrf
+                            </form>
                         </div>
-                    @endif
-
-                    {{ __('auth.Before proceeding, please check your email for a verification link') }}
-                    {{ __('auth.If you did not receive the email') }},
-
-                    <a href="{{ route('verification.resend') }}"
-
-                        onclick="event.preventDefault();
-                        document.getElementById('resend').submit();">
-
-                         {{ __('auth.click here') }}
-
-                    </a>
-
-                    <form id="resend" action="{{ route('verification.resend') }}" method="POST" style="display: none;">
-                            @csrf
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
+        <hr/>
+
+        @include('temes.inspinia.includes.copyright')
+
     </div>
-</div>
 @endsection
