@@ -15,7 +15,20 @@
                     @endif
 
                     {{ __('auth.Before proceeding, please check your email for a verification link') }}
-                    {{ __('auth.If you did not receive the email') }}, <a href="{{ route('verification.resend') }}">{{ __('auth.click here') }}</a>.
+                    {{ __('auth.If you did not receive the email') }},
+
+                    <a href="{{ route('verification.resend') }}"
+
+                        onclick="event.preventDefault();
+                        document.getElementById('resend').submit();">
+
+                         {{ __('auth.click here') }}
+
+                    </a>
+
+                    <form id="resend" action="{{ route('verification.resend') }}" method="POST" style="display: none;">
+                            @csrf
+                    </form>
                 </div>
             </div>
         </div>
