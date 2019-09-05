@@ -12,14 +12,12 @@
     @include('temes.inspinia.css')
 
 </head>
-<body>
-    <div id="app">
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
+<body class="gray-bg">
 
-    @include('temes.inspinia.js')
+   @yield('content')
+
+
+   @include('temes.inspinia.js')
 
 </body>
 </html>

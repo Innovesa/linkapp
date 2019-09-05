@@ -43,9 +43,9 @@ class MailAccountVerification extends Notification
 
         return (new MailMessage)
             ->greeting(Lang::get(__('auth.Greeting')))
-            ->subject(Lang::get(_('auth.Verify Email Address')))
+            ->subject(Lang::get(_('auth.VerifyEmailAddress')))
             ->line(Lang::get(_('auth.Please click the button below to verify your email address')))
-            ->action(Lang::get(_('auth.Verify Email Address')), $verificationUrl)
+            ->action(Lang::get(_('auth.VerifyEmailAddress')), $verificationUrl)
             ->line(Lang::get(_('auth.If you did not create an account, no further action is required')));
     }
 
