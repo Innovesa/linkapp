@@ -35,18 +35,18 @@ class MailAccountVerification extends Notification
      */
     public function toMail($notifiable)
     {
+        $verificationUrl = $this->verificationUrl($notifiable);
+
         if (static::$toMailCallback) {
-            return call_user_func(static::$toMailCallback, $notifiable);
+            return call_user_func(static::$toMailCallback, $notifiable, $verificationUrl);
         }
 
         return (new MailMessage)
-            ->subject(Lang::getFromJson(_('auth.Verify Email Address')))
-            ->line(Lang::getFromJson(_('auth.Please click the button below to verify your email address')))
-            ->action(
-                Lang::getFromJson(_('auth.Verify Email Address')),
-                $this->verificationUrl($notifiable)
-            )
-            ->line(Lang::getFromJson(_('auth.If you did not create an account, no further action is required')));
+            ->greeting(Lang::get(__('auth.Greeting')))
+            ->subject(Lang::get(_('auth.Verify Email Address')))
+            ->line(Lang::get(_('auth.Please click the button below to verify your email address')))
+            ->action(Lang::get(_('auth.Verify Email Address')), $verificationUrl)
+            ->line(Lang::get(_('auth.If you did not create an account, no further action is required')));
     }
 
     /**
@@ -60,7 +60,10 @@ class MailAccountVerification extends Notification
         return URL::temporarySignedRoute(
             'verification.verify',
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            ['id' => $notifiable->getKey()]
+            [
+                'id' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]
         );
     }
 

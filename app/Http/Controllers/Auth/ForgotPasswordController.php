@@ -4,6 +4,7 @@ namespace LinkApp\Http\Controllers\Auth;
 
 use LinkApp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use LinkApp\Notifications\MailResetPasswordNotification as MailResetPasswordNotification;
 
 class ForgotPasswordController extends Controller
 {
@@ -34,5 +35,7 @@ class ForgotPasswordController extends Controller
     {
         return view('temes.inspinia.auth.passwords.email');
     }
+
+
 
 }

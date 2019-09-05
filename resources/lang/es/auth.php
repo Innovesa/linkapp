@@ -45,5 +45,6 @@ return [
       'Verify Email Address' => 'Verificar cuenta',
       'Please click the button below to verify your email address' => 'Por favor, haga clic en el botón de abajo para verificar su dirección de correo electrónico.',
       'If you did not create an account, no further action is required' => 'Si no creó una cuenta, no es necesario realizar la verificación.',
-      'Welcome to' => 'Bienvenido a '.config('app.name', 'Laravel')
+      'Welcome to' => 'Bienvenido a '.config('app.name', 'Laravel'),
+      'Greeting' => 'Hola!'
     ];
