@@ -12,6 +12,8 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
+    protected $table = 'erp_usuario';
+
     /**
      * The attributes that are mass assignable.
      *
