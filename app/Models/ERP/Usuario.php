@@ -1,6 +1,6 @@
 <?php
 
-namespace LinkApp;
+namespace LinkApp\Models\ERP;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -8,19 +8,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use LinkApp\Notifications\MailResetPasswordNotification as MailResetPasswordNotification;
 use LinkApp\Notifications\MailAccountVerification as MailAccountVerification;
 
-class User extends Authenticatable implements MustVerifyEmail
+class Usuario extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
     protected $table = 'erp_usuario';
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password',
+        'username', 'email', 'password','idPersona','idEstado'
         
     ];
 
@@ -42,6 +41,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    //many to one 
+    public function persona(){
+        return $this->belongsTo('LinkApp\Models\ERP\Persona','id'); 
+    }
 
     public function sendPasswordResetNotification($token)
     {

@@ -27,7 +27,7 @@
 
                                 @if($idUser)
         
-                                    <?php $user = \User::where('id',$idUser)->first();?>
+                                    <?php $user = \Usuario::where('id',$idUser)->first();?>
         
                                      <input type="hidden" id="email" name="email" value="{{$user->email}}">
         
