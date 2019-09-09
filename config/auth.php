@@ -69,6 +69,7 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => LinkApp\Models\ERP\Usuario::class,
+        
         ],
 
         // 'users' => [

@@ -15,7 +15,7 @@ class CreateErpPersonaTable extends Migration
     {
         Schema::create('erp_persona', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('cedula',15);
+            $table->string('cedula',15)->unique();
             $table->string('nombre',200);
             $table->integer('idTipoPersona');
             $table->integer('idEstado');
