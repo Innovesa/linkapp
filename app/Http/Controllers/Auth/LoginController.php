@@ -69,7 +69,7 @@ class LoginController extends Controller
         $messages = ["{$this->username()}.exists" => 'The account you are trying to login is not registered or it has been disabled.'];
 
         $this->validate($request, [
-            $this->username() => "required|exists:users,{$field}",
+            $this->username() => "required|exists:erp_usuario,{$field}",
             'password' => 'required',
         ], $messages);
     }

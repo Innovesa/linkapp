@@ -2,7 +2,8 @@
 
 namespace LinkApp\Http\Controllers\Auth;
 
-use LinkApp\User;
+use LinkApp\Models\ERP\Usuario;
+use LinkApp\Models\ERP\Persona;
 use LinkApp\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -57,7 +58,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'username' => ['required', 'string', 'max:30'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:erp_usuario'],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
         ]);
     }
@@ -70,10 +71,22 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $persona = new Persona();
+
+        $persona->cedula =  $data['cedula'];
+        $persona->nombre =  $data['nombre'];
+        $persona->idTipoPersona = '1';
+        $persona->idEstado = '1';
+        $persona->save();
+
+        $idPersona = Persona::Where('cedula',$data['cedula'])->first();
+
+        return Usuario::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'idPersona' => $idPersona->id,
+            'idEstado' => '1',
         ]);
     }
 }
