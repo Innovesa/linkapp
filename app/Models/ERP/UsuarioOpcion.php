@@ -6,5 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsuarioOpcion extends Model
 {
-    //
+    protected $table = 'erp_usuario_opcion';
+
+    //many to one
+    public function opcion(){
+        return $this->belongsTo('LinkApp\Models\ERP\Opcion','idOpcion'); 
+               
+    }
+
+    //many to one
+    public function usuario(){
+        return $this->belongsTo('LinkApp\Models\ERP\Usuario','idUsuario'); 
+               
+    }
 }

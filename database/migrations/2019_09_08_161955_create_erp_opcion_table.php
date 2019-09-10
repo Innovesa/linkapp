@@ -20,8 +20,10 @@ class CreateErpOpcionTable extends Migration
             $table->string('icono',45);
             $table->string('accion',45);
             $table->integer('idEstructura');
+            $table->integer('idEstado');
             $table->timestamps();
-
+            
+            $table->foreign('idEstado')->references('id')->on('erp_estado');
             $table->foreign('idEstructura')->references('id')->on('erp_estructura');
         });
     }

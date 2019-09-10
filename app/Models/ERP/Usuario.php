@@ -41,11 +41,21 @@ class Usuario extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    //Relaciones
+
     //many to one 
     public function persona(){
-        return $this->belongsTo('LinkApp\Models\ERP\Persona','id'); 
+        return $this->belongsTo('LinkApp\Models\ERP\Persona','idPersona'); 
     }
 
+        //many to one
+    public function estado(){
+         return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado'); 
+           
+    }
+ /////////////////////////////////////////////////////
+
+ //Override para los correos de verificacion y cambio de password
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MailResetPasswordNotification($token));
