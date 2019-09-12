@@ -7,7 +7,7 @@
 	    
 	    <title>LinkApp | @yield('title', 'ERP') </title>
 
-	    @include('temes.inspinia.css')
+	    @include('temes.inspinia.includes.css')
  
 	</head>
     <body class="verify">
@@ -75,6 +75,6 @@
             
 		</div>
 
-		@include('temes.inspinia.js')
+		@include('temes.inspinia.includes.js')
     </body>
 </html>

@@ -17,7 +17,7 @@ class CreateErpOpcionTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre',45);
             $table->string('descripcion',200);
-            $table->string('icono',45);
+            $table->string('icono',45)->nullable();
             $table->string('accion',45);
             $table->integer('idEstructura');
             $table->integer('idEstado');

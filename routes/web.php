@@ -17,9 +17,8 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', function () {
-    return view('temes.inspinia.test.test');
-})->middleware('verified');
+Route::get('/home','ERP\MenuController@index')->middleware('verified');
+Route::get('/Prueba','ERP\MenuController@prueba')->name('prueba');
 
 //Auth::routes();
 

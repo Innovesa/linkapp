@@ -165,7 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        LinkApp\Providers\TraerMenusServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -227,7 +227,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Usuario' => LinkApp\Models\ERP\Usuario::class
+        'Usuario' => LinkApp\Models\ERP\Usuario::class,
+        'TraerMenus' => LinkApp\Helpers\TraerMenus::class,
     ],
 
 ];
