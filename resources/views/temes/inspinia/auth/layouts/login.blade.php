@@ -9,7 +9,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    @include('temes.inspinia.css')
+    @include('temes.inspinia.includes.css')
 
 </head>
 <body class="gray-bg">
@@ -17,7 +17,7 @@
    @yield('content')
 
 
-   @include('temes.inspinia.js')
+   @include('temes.inspinia.includes.js')
 
 </body>
 </html>

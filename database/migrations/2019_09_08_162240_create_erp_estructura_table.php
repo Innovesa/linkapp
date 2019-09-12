@@ -18,12 +18,12 @@ class CreateErpEstructuraTable extends Migration
             $table->string('nombre',45);
             $table->string('descripcion',200);
             $table->string('icono',45);
-            $table->integer('superior');
+            $table->integer('superior')->nullable();
             $table->integer('idEstado');
             $table->timestamps();
 
-            $table->foreign('superior')->references('id')->on('erp_estructura');
             $table->foreign('idEstado')->references('id')->on('erp_estado');
+            $table->foreign('superior')->references('id')->on('erp_estructura');
         });
     }
 

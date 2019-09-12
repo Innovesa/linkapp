@@ -13,14 +13,14 @@ class Estructura extends Model
         return $this->hasMany('LinkApp\Models\ERP\Opcion');
     }
 
-    /*one to many
-    public function estructura(){
+    //one to many
+    public function estructuraOne(){
         return $this->hasMany('LinkApp\Models\ERP\Estructura');
-    } */
+    } 
 
      //many to one
     public function estructura(){
-        return $this->belongsTo('LinkApp\Models\ERP\Estructura','idEstructura'); 
+        return $this->belongsTo('LinkApp\Models\ERP\Estructura','superior'); 
            
     }   
     //many to one
