@@ -17,6 +17,7 @@ class CreateErpPersonaTable extends Migration
             $table->bigIncrements('id');
             $table->string('cedula',15)->unique();
             $table->string('nombre',200);
+            $table->string('img',250);
             $table->integer('idTipoPersona');
             $table->integer('idEstado');
             $table->timestamps();

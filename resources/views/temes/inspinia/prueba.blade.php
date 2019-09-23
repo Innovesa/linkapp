@@ -1,6 +1,6 @@
 @component('temes.inspinia.layouts.principal')
 
-@slot('nombreAplicacion','CRM')
+@slot('nombreAplicacion',$nombreAplicacion)
 
 @slot('nombreEmpresa','Innove S.A')
 

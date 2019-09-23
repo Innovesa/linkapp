@@ -12,15 +12,20 @@ use LinkApp\Models\ERP\Opcion;
 
 class MenuController extends Controller
 {
-
-    public function index()
-    {
-        return view('temes.inspinia.home');
+    public function __construct(){
+        $this->middleware('auth'); //Para solo acceder si estas loguiado
     }
 
-    public function prueba()
+    public function index($aplicacion)
     {
-        return view('temes.inspinia.prueba');
+        \TraerMenus::traerTodo();
+        return view('temes.inspinia.home',['nombreAplicacion' => $aplicacion]);
+    }
+
+    public function prueba($aplicacion)
+    {
+        \TraerMenus::traerTodo($aplicacion);
+        return view('temes.inspinia.prueba',['nombreAplicacion' => $aplicacion]);
     }
 
     

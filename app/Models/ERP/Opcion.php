@@ -34,4 +34,10 @@ class Opcion extends Model
     public function usuarioOpcion(){
         return $this->hasMany('LinkApp\Models\ERP\UsuarioOpcion');
     }
+
+
+    /*many to many 
+    public function perfil(){
+         return $this->belongsToMany('LinkApp\Models\ERP\Perfil', 'erp_perfil_opcion','idPerfil', 'idOpcion');        
+    }*/
 }

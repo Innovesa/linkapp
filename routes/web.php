@@ -11,14 +11,16 @@
 |
 */
 
+use LinkApp\Models\ERP\Routes;
+
 Route::get('/', function () {
     return view('temes.inspinia.auth.login');
 });
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home','ERP\MenuController@index')->middleware('verified');
-Route::get('/Prueba','ERP\MenuController@prueba')->name('prueba');
+Routes::ERP();
+
 
 //Auth::routes();
 

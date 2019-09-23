@@ -23,5 +23,9 @@ class Perfil extends Model
         return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado');        
     }
 
+    /*many to many 
+    public function opcion(){
+        return $this->belongsToMany('LinkApp\Models\ERP\Opcion', 'erp_perfil_opcion','idOpcion', 'idPerfil');        
+    }*/
     
 }

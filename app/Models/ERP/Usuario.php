@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use LinkApp\Notifications\MailResetPasswordNotification as MailResetPasswordNotification;
 use LinkApp\Notifications\MailAccountVerification as MailAccountVerification;
 
+
 class Usuario extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -65,4 +66,5 @@ class Usuario extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new MailAccountVerification);
     }
+
 }
