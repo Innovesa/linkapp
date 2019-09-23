@@ -139,13 +139,20 @@ h5 {
   width: 310px;
   min-width: 0;
 }
+
+.navbar-top-links .dropdown-apps {
+  width: 205px;
+  min-width: 0;
+}
+
 .navbar-top-links .dropdown-messages {
   margin-left: 5px;
 }
 .navbar-top-links .dropdown-tasks {
   margin-left: -59px;
 }
-.navbar-top-links .dropdown-alerts {
+.navbar-top-links .dropdown-alerts,
+.navbar-top-links .dropdown-apps {
   margin-left: -123px;
 }
 .navbar-top-links .dropdown-user {
@@ -153,9 +160,16 @@ h5 {
   left: auto;
 }
 .dropdown-messages,
-.dropdown-alerts {
+.dropdown-alerts,
+.dropdown-apps
+ {
   padding: 10px 10px 10px 10px;
 }
+
+.dropdown-apps h3{
+	width:33px;
+}
+
 .dropdown-messages li a,
 .dropdown-alerts li a {
   font-size: 12px;
@@ -651,9 +665,9 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
   color: #fff;
 }
 .btn-primary {
-  background-color: #3490dc;
-  border-color: #3490dc;
-  color: #fff;
+  background-color: #1ab394;
+  border-color: #1ab394;
+  color: #FFFFFF;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -691,6 +705,55 @@ fieldset[disabled] .btn-primary.active {
   background-color: #1dc5a3;
   border-color: #1dc5a3;
 }
+
+.btn-la{
+  background-color: #18a689;
+  border-color: #18a689;
+  color: #FFFFFF;
+}
+
+.btn-la:hover{
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.btn-erp{
+  background-color: #2E9AFE;
+  border-color: #2E9AFE;
+}
+.btn-crm{
+  background-color: #FA5858;
+  border-color: #FA5858;
+}
+.btn-srm{
+  background-color: #31B404;
+  border-color: #31B404;
+}
+.btn-wms{
+  background-color: #f8ac59;
+  border-color: #f8ac59;
+}
+.btn-mrp{
+  background-color: #8904B1;
+  border-color: #8904B1;
+}
+.btn-frm{
+  background-color: #1dc5a3;
+  border-color: #1dc5a3;
+}
+.btn-pry{
+  background-color: #FA8258;
+  border-color: #FA8258;
+}
+.btn-bis{
+  background-color: #FE2E64;
+  border-color: #FE2E64;
+}
+.btn-api{
+  background-color: #D8D8D8;
+  border-color: #D8D8D8;
+}
+
 .btn-success {
   background-color: #1c84c6;
   border-color: #1c84c6;
@@ -1675,6 +1738,7 @@ div.dt-button-info {
 /* CIRCLE */
 .img-circle {
   border-radius: 50%;
+  height: 50px;
 }
 .btn-circle {
   width: 30px;
@@ -8552,6 +8616,9 @@ body.md-skin {
   }
 }
 
+
+
+/*Agregados*/
 .logo-Login {
   margin-top: 20px;
   width: 200px;

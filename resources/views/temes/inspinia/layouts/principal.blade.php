@@ -1,4 +1,3 @@
-@php  \TraerMenus::traerTodo();   @endphp
 
 <!DOCTYPE html>
 <html>
@@ -24,14 +23,14 @@
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
                         <div class="dropdown profile-element">
-                    <img alt="image" class="img-circle" src="img/perfil.png">
+                                <img alt="image" class="img-circle" src="{{ route('usuario.avatar',['filename' => \Auth::User()->persona->img ]) }}">
                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Oscar Acuña Williams</strong>
+                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{\Auth::User()->persona->nombre}}</strong>
                                  </span> <span class="text-muted text-xs block">Perfil <b class="caret"></b></span> </span> </a>
                                 <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                     <li><a href="#">Cambiar compañía</a></li>
                                     <li><a href="#">Editar</a></li>
-                    <li class="divider"></li>
+                                    <li class="divider"></li>
                                     <li><a href="#">Salir</a></li>
                                 </ul>
                         </div>
@@ -39,32 +38,31 @@
                             LA
                         </div>
                     </li>
-                    @isset($_SESSION['menusHijos'])
-                        @for ($j = 0; $j < count($_SESSION['menusPadres']); $j++)
-                            @if($_SESSION['menusPadres'][$j]['nombre'] == $nombreAplicacion)
-                                @for ($i = 0; $i < count($_SESSION['menusHijos']); $i++)
-                                    @if($_SESSION['menusPadres'][$j]['id'] == $_SESSION['menusHijos'][$i]['superior'])
+                    
+                    @if (isset($_SESSION['menu']['contextual']))
 
-                                        <li>
-
-                                            <a href="#"><i class="{{$_SESSION['menusHijos'][$i]['icono']}}"></i> <span class="nav-label">{{$_SESSION['menusHijos'][$i]['nombre']}}</span></a>
-                                        
-                                            <ul class="nav nav-second-level collapse" aria-expanded="true">
-
-                                                @for ($y = 0; $y < count($_SESSION['opciones']); $y++)
-                                                    @if($_SESSION['opciones'][$y]['idEstructura'] == $_SESSION['menusHijos'][$i]['id'])
-                                                         <li><a href="{{route('prueba')}}">{{$_SESSION['opciones'][$y]['nombre']}}</a></li>
-                                                     @endif
-                                                @endfor
-
-                                            </ul>
-
-                                        </li>
-                                    @endif
-                                @endfor
-                            @endif
+                        @for ($i = 0; $i < count($_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['id']); $i++)
+                            @php
+                               $id = $_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['id'][$i];
+                            @endphp
+                            <li>
+                                <a href="#"><i class="{{$_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['icono'][$i]}}"></i> <span class="nav-label">{{$_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['nombre'][$i]}}</span></a>
+                               
+                                <ul class="nav nav-second-level collapse" aria-expanded="true">
+                                    @for ($j = 0; $j <  count($_SESSION['menu']['contextual'][$nombreAplicacion]['opcion']['id']); $j++)
+                                        @if ($id == $_SESSION['menu']['contextual'][$nombreAplicacion]['opcion']['idEstructura'][ $j])
+                                            
+                                            <li><a href="erp-aplicaciones.html">{{$_SESSION['menu']['contextual'][$nombreAplicacion]['opcion']['nombre'][$j]}}</a></li>
+                                         
+                                        @endif
+                                    @endfor
+                                </ul>
+ 
+                            </li>
                         @endfor
-                    @endisset
+                    
+                    @endif
+                
                 </ul>
     
             </div>
@@ -85,55 +83,39 @@
                                     <i class="fa fa-th"></i>
                                 </a>
                             <div class="dropdown-menu dropdown-apps float-e-margins">
-                                <button type="button" class="btn btn-primary" onClick="window.open('erp.html','self');">
-                                <i class="fa fa-cloud"></i>
-                                <h3>ERP</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-users"></i>
-                                <h3>CRM</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-truck-moving"></i>
-                                <h3>SRM</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-box"></i>
-                                <h3>WMS</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-box-open"></i>
-                                <h3>MRP</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-money-bill-alt"></i>
-                                <h3>FRM</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-tasks"></i>
-                                <h3>PRY</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-database"></i>
-                                <h3>BI</h3>
-                                </button>
-                                <button type="button" class="btn btn-link">
-                                <i class="fa fa-globe"></i>
-                                <h3>API</h3>
-                                </button>
+                                @if (isset($_SESSION['menu']['aplicaciones']['id']))
+
+                                    @for ($i = 0; $i < count($_SESSION['menu']['aplicaciones']['id']); $i++)
+                                        <button type="button" class="btn btn-link">
+                                            <i class="{{$_SESSION['menu']['aplicaciones']['icono'][$i]}}"></i>
+                                            <h3>{{$_SESSION['menu']['aplicaciones']['nombre'][$i]}}</h3>
+                                        </button>
+                                    @endfor
+
+                                @endif
                             </div>
                         </li>
-    
+                        @if (isset($_SESSION['menu']['principal']['id']))
+
+                            @for ($i = 0; $i < count($_SESSION['menu']['principal']['id']); $i++)
+                                <li class="">
+                                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        <i class="{{$_SESSION['menu']['principal']['icono'][$i]}}"></i>  <span class="label label-info"></span>
+                                    </a>
+                                </li>
+                            @endfor
+
+                        @endif
                         <li class="">
                                 <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                    <i class="fa fa-envelope"></i>  <span class="label label-info">16</span>
+                                    <i class="fa fa-envelope"></i>  <span class="label label-info"></span>
                                 </a>
-                                </li>
+                        </li>
                         <li class="">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                <i class="fa fa-bell"></i>  <span class="label label-info">8</span>
+                                <i class="fa fa-bell"></i>  <span class="label label-info"></span>
                             </a>
-                                </li>
+                        </li>
                         <li class="">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
                                 <i class="fa fa-life-ring"></i>
