@@ -20,6 +20,9 @@ class TraerMenus{
             $menus->menuAplicaciones();
             $menus->menuGeneral($perfil->id);
         }
+
+        var_dump($_SESSION['menu']['contextual']['ERP']);
+        die;
     }
 
 
@@ -30,10 +33,15 @@ class TraerMenus{
         $estructura = Estructura::all();
         $idSuperior = null;
 
+        
+
         foreach ($menu as $menus) {
             
             foreach($perfilOpcion as $opcionPerfil){
-            
+
+                var_dump($opcionPerfil->opcion->estrutura);
+                die;
+
                 if ($menus->idOpcion == $opcionPerfil->opcion->id) {
 
                     foreach ($estructura as $estructuras) {

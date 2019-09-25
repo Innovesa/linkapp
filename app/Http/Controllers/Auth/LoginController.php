@@ -88,42 +88,54 @@ class LoginController extends Controller
     {
         $user = \Auth::User();
         $perfil = PerfilUsuario::where('idUsuario',$user->id)->first();
-        $perfilOpcion = PerfilOpcion::where('idPerfil',$perfil->id)->get();
-        $estructura = Estructura::all();
-        $estructuraSuperior = Estructura::where('superior',null)->get();
         
-        
-        $valor = array();
-        $aplicacionNombre = null;
+        if($perfil == null){
 
-        foreach ($estructura as $superior){
-            
-            foreach ($perfilOpcion  as $OpcionPerfil) {
+            return route('usuario.verificacion.perfil');
+
+        }else{
+            $perfilOpcion = PerfilOpcion::where('idPerfil',$perfil->id)->get();
+            if($perfilOpcion != null){
                 
+                $estructura = Estructura::all();
+                $estructuraSuperior = Estructura::where('superior',null)->get();
+                
+                
+                $valor = array();
+                $aplicacionNombre = null;
 
-                    if($OpcionPerfil->opcion->idEstructura == $superior->id){
+                foreach ($estructura as $superior){
+                    
+                    foreach ($perfilOpcion  as $OpcionPerfil) {
+                        
 
-                        foreach ($estructuraSuperior as $aplicacion) {
+                            if($OpcionPerfil->opcion->idEstructura == $superior->id){
 
-                            if ($superior->superior == $aplicacion->id) {
+                                foreach ($estructuraSuperior as $aplicacion) {
 
-                                if($aplicacionNombre <> $aplicacion->nombre){
-                                    $valor['Opciones']['id'][] = $aplicacion->id;
-                                    $valor['Opciones']['nombre'][] = $aplicacion->nombre;
+                                    if ($superior->superior == $aplicacion->id) {
 
-                                    $aplicacionNombre = $aplicacion->nombre;
+                                        if($aplicacionNombre <> $aplicacion->nombre){
+                                            $valor['Opciones']['id'][] = $aplicacion->id;
+                                            $valor['Opciones']['nombre'][] = $aplicacion->nombre;
+
+                                            $aplicacionNombre = $aplicacion->nombre;
+                                        }
+
+                                    }
+                                
                                 }
-
+                            
                             }
-                           
-                        }
-                       
+                    
                     }
-               
-            }
-        }
+                }
 
-     return '/'.$valor['Opciones']['nombre'][0].'/home';
+            return '/'.$valor['Opciones']['nombre'][0].'/home';
+        }else{
+            return route('usuario.verificacion.perfil');
+        }
+    }
     }
     
     public function redirectPath()

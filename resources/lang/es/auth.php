@@ -16,7 +16,7 @@ return [
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'Login' => 'Iniciar sesión',
-    'Logout' =>'Cerrar sesión',
+    'Logout' =>'Salir',
     'Register' => 'Registrate',
     'E-MailAddress/Username'=> 'Correo electrónico o Usuario',
     'Username' => 'Nombre de usuario',

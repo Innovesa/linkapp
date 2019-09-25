@@ -30,7 +30,7 @@
                                     </li>
                                 @else
                                     <li>
-                                        <span class="m-r-sm text-muted welcome-message">{{\Auth::User()->username}}</span>
+                                        <span class="m-r-sm text-muted welcome-message">{{\Auth::User()->persona->nombre}}</span>
                                     </li>
                                     <li class="dropdown">
                                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

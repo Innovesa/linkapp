@@ -19,4 +19,10 @@ class UsuarioController extends Controller
         $file = Storage::disk('usuarios')->get($filename);
         return new Response($file, 200); //Para devolver la imagen. Se ocupa Illuminate\Http\Response;
     }
+
+    //Verificacion de perfil
+    public function verificacionPerfil(){
+
+        return view('temes.inspinia.bloqueada');
+    }
 }

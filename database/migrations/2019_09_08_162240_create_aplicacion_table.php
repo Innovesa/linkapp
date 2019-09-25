@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpEstructuraTable extends Migration
+class CreateAplicacionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,18 @@ class CreateErpEstructuraTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_estructura', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('aplicacion', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('nombre',45);
             $table->string('descripcion',200);
             $table->string('icono',45);
-            $table->integer('superior')->nullable();
-            $table->integer('idEstado');
+            $table->string('accion',200);
+            $table->integer('superior')->nullable()->unsigned();
+            $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
-            $table->foreign('idEstado')->references('id')->on('erp_estado');
-            $table->foreign('superior')->references('id')->on('erp_estructura');
+            $table->foreign('idEstado')->references('id')->on('estado');
+            $table->foreign('superior')->references('id')->on('aplicacion');
         });
     }
 
@@ -34,6 +35,6 @@ class CreateErpEstructuraTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_estructura');
+        Schema::dropIfExists('aplicacion');
     }
 }

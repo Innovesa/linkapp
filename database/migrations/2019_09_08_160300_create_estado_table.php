@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpPerfilTable extends Migration
+class CreateEstadoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateErpPerfilTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_perfil', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('estado', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('nombre',45);
-            $table->integer('idEstado');
             $table->timestamps();
-            
-            $table->foreign('idEstado')->references('id')->on('erp_estado');
-
         });
     }
 
@@ -31,6 +27,6 @@ class CreateErpPerfilTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_perfil');
+        Schema::dropIfExists('estado');
     }
 }
