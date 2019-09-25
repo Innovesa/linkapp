@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpUsuarioTable extends Migration
+class CreateUsuarioTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,19 @@ class CreateErpUsuarioTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_usuario', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('usuario', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->integer('idPersona');
-            $table->integer('idEstado');
+            $table->integer('idPersona')->unsigned();;
+            $table->integer('idEstado')->unsigned();;
             $table->timestamps();
 
-            $table->foreign('idPersona')->references('id')->on('erp_persona');
-            $table->foreign('idEstado')->references('id')->on('erp_estado');
+            $table->foreign('idPersona')->references('id')->on('persona');
+            $table->foreign('idEstado')->references('id')->on('estado');
         });
     }
 
@@ -36,6 +36,6 @@ class CreateErpUsuarioTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_usuario');
+        Schema::dropIfExists('usuario');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpPersonaTable extends Migration
+class CreatePersonaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateErpPersonaTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_persona', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('persona', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('cedula',15)->unique();
             $table->string('nombre',200);
             $table->string('img',250);
-            $table->integer('idTipoPersona');
-            $table->integer('idEstado');
+            $table->integer('idTipoPersona')->unsigned();
+            $table->integer('idEstado')->unsigned();
             $table->timestamps();
             
-            $table->foreign('idTipoPersona')->references('id')->on('erp_tipo_persona');
-            $table->foreign('idEstado')->references('id')->on('erp_estado');
+            $table->foreign('idTipoPersona')->references('id')->on('tipo_persona');
+            $table->foreign('idEstado')->references('id')->on('estado');
         });
     }
 
@@ -34,6 +34,6 @@ class CreateErpPersonaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_persona');
+        Schema::dropIfExists('persona');
     }
 }

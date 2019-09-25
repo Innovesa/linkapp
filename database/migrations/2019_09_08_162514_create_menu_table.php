@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpTipoPersonaTable extends Migration
+class CreateMenuTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateErpTipoPersonaTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_tipo_persona', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('menu', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('nombre',45);
-            $table->integer('idEstado');
+            $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
-            $table->foreign('idEstado')->references('id')->on('erp_estado');
+            $table->foreign('idEstado')->references('id')->on('estado');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateErpTipoPersonaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_tipo_persona');
+        Schema::dropIfExists('menu');
     }
 }

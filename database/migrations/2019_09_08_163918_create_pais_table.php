@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpPaisTable extends Migration
+class CreatePaisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,20 @@ class CreateErpPaisTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_pais', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('pais', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('nombre',100);
             $table->string('iso_alfa2',2);
             $table->string('iso_alfa3',3);
             $table->string('iso_num',4);
-            $table->integer('idMoneda');
-            $table->integer('idIdioma');
-            $table->integer('idEstado');
+            $table->integer('idMoneda')->unsigned();
+            $table->integer('idIdioma')->unsigned();
+            $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
-            $table->foreign('idMoneda')->references('id')->on('erp_moneda');
-            $table->foreign('idIdioma')->references('id')->on('erp_idioma');
-            $table->foreign('idEstado')->references('id')->on('erp_estado');
+            $table->foreign('idMoneda')->references('id')->on('moneda');
+            $table->foreign('idIdioma')->references('id')->on('idioma');
+            $table->foreign('idEstado')->references('id')->on('estado');
         });
     }
 
@@ -37,6 +37,6 @@ class CreateErpPaisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_pais');
+        Schema::dropIfExists('pais');
     }
 }

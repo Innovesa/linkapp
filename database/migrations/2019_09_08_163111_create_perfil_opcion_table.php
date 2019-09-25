@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpPerfilOpcionTable extends Migration
+class CreatePerfilOpcionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateErpPerfilOpcionTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_perfil_opcion', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('idPerfil');
-            $table->integer('idOpcion');
+        Schema::create('perfil_opcion', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('idPerfil')->unsigned();
+            $table->integer('idOpcion')->unsigned();
             $table->integer('rolModificar');
             $table->integer('rolEliminar');
             $table->integer('rolInsertar');
@@ -24,8 +24,8 @@ class CreateErpPerfilOpcionTable extends Migration
             $table->integer('rolSuper');
             $table->timestamps();
 
-            $table->foreign('idPerfil')->references('id')->on('erp_perfil');
-            $table->foreign('idOpcion')->references('id')->on('erp_opcion');
+            $table->foreign('idPerfil')->references('id')->on('perfil');
+            $table->foreign('idOpcion')->references('id')->on('aplicacion');
         });
     }
 
@@ -36,6 +36,6 @@ class CreateErpPerfilOpcionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_perfil_opcion');
+        Schema::dropIfExists('perfil_opcion');
     }
 }

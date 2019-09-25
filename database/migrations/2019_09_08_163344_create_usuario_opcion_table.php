@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateErpUsuarioOpcionTable extends Migration
+class CreateUsuarioOpcionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateErpUsuarioOpcionTable extends Migration
      */
     public function up()
     {
-        Schema::create('erp_usuario_opcion', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('idUsuario');
-            $table->integer('idOpcion');
+        Schema::create('usuario_opcion', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('idUsuario')->unsigned();
+            $table->integer('idOpcion')->unsigned();
             $table->integer('rolModificar');
             $table->integer('rolEliminar');
             $table->integer('rolInsertar');
@@ -24,8 +24,8 @@ class CreateErpUsuarioOpcionTable extends Migration
             $table->integer('rolSuper');
             $table->timestamps();
 
-            $table->foreign('idUsuario')->references('id')->on('erp_usuario');
-            $table->foreign('idOpcion')->references('id')->on('erp_opcion');
+            $table->foreign('idUsuario')->references('id')->on('usuario');
+            $table->foreign('idOpcion')->references('id')->on('aplicacion');
         });
     }
 
@@ -36,6 +36,6 @@ class CreateErpUsuarioOpcionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('erp_usuario_opcion');
+        Schema::dropIfExists('usuario_opcion');
     }
 }
