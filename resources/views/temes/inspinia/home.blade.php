@@ -1,12 +1,5 @@
 
-@component('temes.inspinia.layouts.principal')
-
-    @slot('nombreAplicacion',$nombreAplicacion)
-
-    @slot('nombreEmpresa','Innove S.A')
-
-
-
+@extends('temes.inspinia.layouts.principal')
 
     @section('content')
         <div class="row">
@@ -24,4 +17,3 @@
     @endsection
     
 
-@endcomponent

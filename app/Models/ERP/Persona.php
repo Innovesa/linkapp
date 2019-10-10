@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model
 {
-    protected $table = 'erp_persona';
+    protected $table = 'persona';
 
     //one to many
     public function usuario(){

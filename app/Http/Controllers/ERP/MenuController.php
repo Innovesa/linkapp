@@ -16,16 +16,24 @@ class MenuController extends Controller
         $this->middleware('auth'); //Para solo acceder si estas loguiado
     }
 
-    public function index($aplicacion)
+    public function index()
     {
         \TraerMenus::traerTodo();
-        return view('temes.inspinia.home',['nombreAplicacion' => $aplicacion]);
+        $_SESSION['aplicacion'] = 1;
+        return view('temes.inspinia.home');
     }
 
-    public function prueba($aplicacion)
+    public function indexCRM()
     {
-        \TraerMenus::traerTodo($aplicacion);
-        return view('temes.inspinia.prueba',['nombreAplicacion' => $aplicacion]);
+        \TraerMenus::traerTodo();
+        $_SESSION['aplicacion'] = 4;
+        return view('temes.inspinia.homeCRM');
+    }
+
+    public function prueba()
+    {
+        \TraerMenus::traerTodo();
+        return view('temes.inspinia.prueba');
     }
 
     

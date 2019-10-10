@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    protected $table = 'erp_menu';
+    protected $table = 'menu';
 
     //many to one
     public function estado(){

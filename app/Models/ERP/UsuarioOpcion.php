@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsuarioOpcion extends Model
 {
-    protected $table = 'erp_usuario_opcion';
+    protected $table = 'usuario_opcion';
 
     //many to one
     public function opcion(){
-        return $this->belongsTo('LinkApp\Models\ERP\Opcion','idOpcion'); 
+        return $this->belongsTo('LinkApp\Models\ERP\Aplicacion','idOpcion'); 
                
     }
 

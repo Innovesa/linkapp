@@ -1,3 +1,19 @@
+@php
+    $nombreAplicacion = null;
+
+    if(isset($_SESSION['Estructura']['menus']['aplicaciones'])){
+
+        for($i = 0; $i < count($_SESSION['Estructura']['menus']['aplicaciones']); $i++){
+
+            if ($_SESSION['Estructura']['menus']['aplicaciones'][$i]['id'] == $_SESSION['aplicacion'] ) {
+                $nombreAplicacion = $_SESSION['Estructura']['menus']['aplicaciones'][$i]['nombre'];
+            }
+
+        }
+
+    }
+
+@endphp
 
 <!DOCTYPE html>
 <html>
@@ -8,7 +24,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>LinkApp | {{$nombreAplicacion}} </title>
+    <title>LinkApp | {{ $nombreAplicacion}} </title>
 
     @include('temes.inspinia.includes.css')
 
@@ -28,8 +44,19 @@
                                 <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{\Auth::User()->persona->nombre}}</strong>
                                  </span> <span class="text-muted text-xs block">Perfil <b class="caret"></b></span> </span> </a>
                                 <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                    <li><a href="#">Cambiar compañía</a></li>
-                                    <li><a href="#">Editar</a></li>
+
+                                    @if (isset($_SESSION['Estructura']['menus']['perfil']))
+
+                                        @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['perfil']); $p++)
+                                            @for ($j = 0; $j < count($_SESSION['Estructura']['menus']['perfil'][$p]['items']); $j++)
+                                                @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['perfil'][$p]['items'][$j]['items']); $i++)
+                                                    <li><a href="#">{{$_SESSION['Estructura']['menus']['perfil'][$p]['items'][$j]['items'][$i]['nombre']}}</a></li>
+                                                @endfor
+                                            @endfor
+                                        @endfor
+
+                                    @endif
+
                                     <li class="divider"></li>
                                     <li><a href="#">Salir</a></li>
                                 </ul>
@@ -39,26 +66,27 @@
                         </div>
                     </li>
                     
-                    @if (isset($_SESSION['menu']['contextual']))
+                    @if (isset($_SESSION['Estructura']['menus']['contextual']))
 
-                        @for ($i = 0; $i < count($_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['id']); $i++)
-                            @php
-                               $id = $_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['id'][$i];
-                            @endphp
-                            <li>
-                                <a href="#"><i class="{{$_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['icono'][$i]}}"></i> <span class="nav-label">{{$_SESSION['menu']['contextual'][$nombreAplicacion]['superior']['nombre'][$i]}}</span></a>
-                               
-                                <ul class="nav nav-second-level collapse" aria-expanded="true">
-                                    @for ($j = 0; $j <  count($_SESSION['menu']['contextual'][$nombreAplicacion]['opcion']['id']); $j++)
-                                        @if ($id == $_SESSION['menu']['contextual'][$nombreAplicacion]['opcion']['idEstructura'][ $j])
+                        @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['contextual']); $p++)
+                            
+                            @if($_SESSION['Estructura']['menus']['contextual'][$p]['id'] == $_SESSION['aplicacion'])
+                                @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['contextual'][$p]['items']); $i++)
+                                    <li>
+                                        <a href="{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['accion']}}"><i class="{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['icono']}}"></i> <span class="nav-label">{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['nombre']}}</span></a>
+                                    
+                                        <ul class="nav nav-second-level collapse" aria-expanded="true">
+                                            @for ($j = 0; $j <  count($_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['items']); $j++)
+
+                                                <li><a href="{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['items'][$j]['accion']}}">{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['items'][$j]['nombre']}}</a></li>
                                             
-                                            <li><a href="erp-aplicaciones.html">{{$_SESSION['menu']['contextual'][$nombreAplicacion]['opcion']['nombre'][$j]}}</a></li>
-                                         
-                                        @endif
-                                    @endfor
-                                </ul>
- 
-                            </li>
+                                            @endfor
+                                        </ul>
+        
+                                    </li>
+                                @endfor
+                            @endif
+
                         @endfor
                     
                     @endif
@@ -76,51 +104,59 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message"><i class="fa fa-cloud"></i>{{$nombreAplicacion}} | {{$nombreEmpresa}}</span>
+                            <span class="m-r-sm text-muted welcome-message"><i class="fa fa-cloud"></i>{{$nombreAplicacion}} | Pruebas</span>
                         </li>
                         <li class="dropdown">
                                 <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
                                     <i class="fa fa-th"></i>
                                 </a>
                             <div class="dropdown-menu dropdown-apps float-e-margins">
-                                @if (isset($_SESSION['menu']['aplicaciones']['id']))
+                                @if (isset($_SESSION['Estructura']['menus']['aplicaciones']))
 
-                                    @for ($i = 0; $i < count($_SESSION['menu']['aplicaciones']['id']); $i++)
-                                        <button type="button" class="btn btn-link">
-                                            <i class="{{$_SESSION['menu']['aplicaciones']['icono'][$i]}}"></i>
-                                            <h3>{{$_SESSION['menu']['aplicaciones']['nombre'][$i]}}</h3>
-                                        </button>
+                                    @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['aplicaciones']); $i++)
+                                        <a href="{{url($_SESSION['Estructura']['menus']['aplicaciones'][$i]['accion'])}}" type="button" class="btn btn-link">
+                                            <i class="{{$_SESSION['Estructura']['menus']['aplicaciones'][$i]['icono']}}"></i>
+                                            <h3>{{$_SESSION['Estructura']['menus']['aplicaciones'][$i]['nombre']}}</h3>
+                                        </a>
                                     @endfor
 
                                 @endif
                             </div>
                         </li>
-                        @if (isset($_SESSION['menu']['principal']['id']))
+                        @if (isset($_SESSION['Estructura']['menus']['principal']))
 
-                            @for ($i = 0; $i < count($_SESSION['menu']['principal']['id']); $i++)
-                                <li class="">
-                                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                        <i class="{{$_SESSION['menu']['principal']['icono'][$i]}}"></i>  <span class="label label-info"></span>
-                                    </a>
-                                </li>
+                            @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['principal']); $p++)
+                                @for ($j = 0; $j < count($_SESSION['Estructura']['menus']['principal'][$p]['items']); $j++)
+                                    @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['principal'][$p]['items'][$j]['items']); $i++)
+                                        <li class="">
+
+                                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                <i class="{{$_SESSION['Estructura']['menus']['principal'][$p]['items'][$j]['items'][$i]['icono']}}"></i> <span class="label label-info"></span>
+                                            </a>
+
+                                        </li>
+                                    @endfor
+                                @endfor
                             @endfor
 
                         @endif
-                        <li class="">
-                                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                    <i class="fa fa-envelope"></i>  <span class="label label-info"></span>
-                                </a>
-                        </li>
-                        <li class="">
-                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                <i class="fa fa-bell"></i>  <span class="label label-info"></span>
-                            </a>
-                        </li>
-                        <li class="">
-                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                <i class="fa fa-life-ring"></i>
-                            </a>
-                        </li>
+                        @if (isset($_SESSION['Estructura']['menus']['principalPredeterminadas']))
+
+                            @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['principalPredeterminadas']); $p++)
+                                @for ($j = 0; $j < count($_SESSION['Estructura']['menus']['principalPredeterminadas'][$p]['items']); $j++)
+                                    @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['principalPredeterminadas'][$p]['items'][$j]['items']); $i++)
+                                        <li class="">
+
+                                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                 <i class="{{$_SESSION['Estructura']['menus']['principalPredeterminadas'][$p]['items'][$j]['items'][$i]['icono']}}"></i> <span class="label label-info"></span>
+                                            </a>
+
+                                        </li>
+                                    @endfor
+                                @endfor
+                            @endfor
+
+                        @endif
                         <li>
     
                             <a href="{{ route('logout') }}"

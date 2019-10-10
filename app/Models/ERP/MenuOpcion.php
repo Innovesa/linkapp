@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MenuOpcion extends Model
 {
-    protected $table = 'erp_menu_opcion';
+    protected $table = 'menu_opcion';
 
     //many to one
     public function menu(){
@@ -16,7 +16,7 @@ class MenuOpcion extends Model
 
     //many to one
     public function opcion(){
-        return $this->belongsTo('LinkApp\Models\ERP\Opcion','idOpcion'); 
+        return $this->belongsTo('LinkApp\Models\ERP\Aplicacion','idOpcion'); 
            
     }
 }
