@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PerfilUsuario extends Model
 {
-    protected $table = 'erp_perfil_usuario';
+    protected $table = 'perfil_usuario';
 
      //many to one
      public function perfil(){

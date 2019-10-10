@@ -78,7 +78,7 @@ class LoginController extends Controller
         $messages = ["{$this->username()}.exists" => 'The account you are trying to login is not registered or it has been disabled.'];
 
         $this->validate($request, [
-            $this->username() => "required|exists:erp_usuario,{$field}",
+            $this->username() => "required|exists:usuario,{$field}",
             'password' => 'required',
         ], $messages);
     }
@@ -94,48 +94,16 @@ class LoginController extends Controller
             return route('usuario.verificacion.perfil');
 
         }else{
-            $perfilOpcion = PerfilOpcion::where('idPerfil',$perfil->id)->get();
+            
+            $perfilOpcion = PerfilOpcion::where('idPerfil',$perfil->idPerfil)->get();
             if($perfilOpcion != null){
                 
-                $estructura = Estructura::all();
-                $estructuraSuperior = Estructura::where('superior',null)->get();
-                
-                
-                $valor = array();
-                $aplicacionNombre = null;
-
-                foreach ($estructura as $superior){
-                    
-                    foreach ($perfilOpcion  as $OpcionPerfil) {
-                        
-
-                            if($OpcionPerfil->opcion->idEstructura == $superior->id){
-
-                                foreach ($estructuraSuperior as $aplicacion) {
-
-                                    if ($superior->superior == $aplicacion->id) {
-
-                                        if($aplicacionNombre <> $aplicacion->nombre){
-                                            $valor['Opciones']['id'][] = $aplicacion->id;
-                                            $valor['Opciones']['nombre'][] = $aplicacion->nombre;
-
-                                            $aplicacionNombre = $aplicacion->nombre;
-                                        }
-
-                                    }
-                                
-                                }
-                            
-                            }
-                    
-                    }
-                }
-
-            return '/'.$valor['Opciones']['nombre'][0].'/home';
-        }else{
-            return route('usuario.verificacion.perfil');
+                 return '/home';
+                 
+            }else{
+                return route('usuario.verificacion.perfil');
+            }
         }
-    }
     }
     
     public function redirectPath()

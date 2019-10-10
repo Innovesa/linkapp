@@ -27,7 +27,7 @@ class Opcion extends Model
 
     //one to many
     public function perfilOpcion(){
-        return $this->hasMany('LinkApp\Models\ERP\PerfilOpcion');
+        return $this->hasMany('LinkApp\Models\ERP\PerfilOpcion','idOpcion');
     }
 
     //one to many
