@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEstadoTable extends Migration
+class CreateParametroUsuarioTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,17 @@ class CreateEstadoTable extends Migration
      */
     public function up()
     {
-        Schema::create('estado', function (Blueprint $table) {
+        Schema::create('parametro_usuario', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('nombreParametro',200);
+            $table->integer('idUsuario')->unsigned();
             $table->string('codigo',100);
-            $table->string('nombre',45);
+            $table->integer('valor');
+            $table->string('dominio',100);
+            $table->integer('visible');
             $table->timestamps();
+
+            $table->unique(['codigo', 'dominio','idUsuario']);
         });
     }
 
@@ -28,6 +34,6 @@ class CreateEstadoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('estado');
+        Schema::dropIfExists('parametro_usuario');
     }
 }

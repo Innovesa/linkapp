@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerfilUsuarioTable extends Migration
+class CreatePersonaRolTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreatePerfilUsuarioTable extends Migration
      */
     public function up()
     {
-        Schema::create('perfil_usuario', function (Blueprint $table) {
+        Schema::create('persona_rol', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('idUsuario')->unsigned();
-            $table->integer('idPerfil')->unsigned();
+            $table->integer('idPersona')->unsigned();
+            $table->integer('idRol')->unsigned();
             $table->integer('idCompania')->unsigned();
             $table->timestamps();
 
+            $table->foreign('idPersona')->references('id')->on('persona');
+            $table->foreign('idRol')->references('id')->on('rol');
             $table->foreign('idCompania')->references('id')->on('persona');
-            $table->foreign('idUsuario')->references('id')->on('usuario');
-            $table->foreign('idPerfil')->references('id')->on('perfil');
         });
     }
 
@@ -33,6 +33,6 @@ class CreatePerfilUsuarioTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('perfil_usuario');
+        Schema::dropIfExists('persona_rol');
     }
 }

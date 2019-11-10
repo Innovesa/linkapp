@@ -75,7 +75,8 @@ class RegisterController extends Controller
 
         $persona->cedula =  $data['cedula'];
         $persona->nombre =  $data['nombre'];
-        $persona->img = 'despues';
+        $persona->img = '';
+        $persona->alias = '';
         $persona->idTipoPersona = '1';
         $persona->idEstado = '1';
         $persona->save();

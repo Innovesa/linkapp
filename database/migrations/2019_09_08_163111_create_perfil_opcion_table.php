@@ -25,7 +25,7 @@ class CreatePerfilOpcionTable extends Migration
             $table->timestamps();
 
             $table->foreign('idPerfil')->references('id')->on('perfil');
-            $table->foreign('idOpcion')->references('id')->on('aplicacion');
+            $table->foreign('idOpcion')->references('id')->on('opcion');
         });
     }
 

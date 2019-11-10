@@ -17,4 +17,10 @@ class PerfilUsuario extends Model
      public function usuario(){
         return $this->belongsTo('LinkApp\Models\ERP\Usuario','idUsuario');        
     } 
+
+    //many to one a persona
+    public function compania(){
+        return $this->belongsTo('LinkApp\Models\ERP\Persona','idCompania'); 
+       
+    }
 }

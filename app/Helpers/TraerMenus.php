@@ -20,10 +20,12 @@ class TraerMenus{
         if($perfil){
 
             $_SESSION['Estructura'] = $menus->menuGeneral($perfil); 
+            
             /*var_dump($_SESSION['Estructura']['menus']['contextual'][0]); 
             die;*/
             $_SESSION['aplicacion'] = 1;
         }
+
 
 
 
@@ -337,8 +339,9 @@ class TraerMenus{
 
         $aplicacion['menus']['aplicaciones'] = $this->unique_multidim_array($aplicacion['menus']['aplicaciones'],'id');
 
-
-       return $aplicacion;
+        echo json_encode($aplicacion);
+        die;
+        //return $aplicacion;
     }
 
 

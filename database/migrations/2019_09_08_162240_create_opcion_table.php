@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAplicacionTable extends Migration
+class CreateOpcionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAplicacionTable extends Migration
      */
     public function up()
     {
-        Schema::create('aplicacion', function (Blueprint $table) {
+        Schema::create('opcion', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre',45);
             $table->string('descripcion',200);
@@ -24,7 +24,7 @@ class CreateAplicacionTable extends Migration
             $table->timestamps();
 
             $table->foreign('idEstado')->references('id')->on('estado');
-            $table->foreign('superior')->references('id')->on('aplicacion');
+            $table->foreign('superior')->references('id')->on('opcion');
         });
     }
 
@@ -35,6 +35,6 @@ class CreateAplicacionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aplicacion');
+        Schema::dropIfExists('opcion');
     }
 }

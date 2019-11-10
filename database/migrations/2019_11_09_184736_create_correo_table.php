@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePersonaTable extends Migration
+class CreateCorreoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CreatePersonaTable extends Migration
      */
     public function up()
     {
-        Schema::create('persona', function (Blueprint $table) {
+        Schema::create('correo', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('cedula',15)->unique();
-            $table->string('nombre',200);
-            $table->string('alias',200);
-            $table->string('img',250);
-            $table->integer('idTipoPersona')->unsigned();
+            $table->string('descripcion',200);
+            $table->string('numero',200);
+            $table->integer('idPersona')->unsigned();
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
-            
-            $table->foreign('idTipoPersona')->references('id')->on('tipo_persona');
+
+            $table->foreign('idPersona')->references('id')->on('persona');
             $table->foreign('idEstado')->references('id')->on('estado');
         });
     }
@@ -35,6 +33,6 @@ class CreatePersonaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('persona');
+        Schema::dropIfExists('correo');
     }
 }
