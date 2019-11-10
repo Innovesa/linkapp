@@ -17,10 +17,11 @@ class CreateMenuOpcionTable extends Migration
             $table->increments('id');
             $table->integer('idMenu')->unsigned();
             $table->integer('idOpcion')->unsigned();
+            $table->integer('orden');
             $table->timestamps();
 
             $table->foreign('idMenu')->references('id')->on('menu');
-            $table->foreign('idOpcion')->references('id')->on('aplicacion');
+            $table->foreign('idOpcion')->references('id')->on('opcion');
         });
     }
 

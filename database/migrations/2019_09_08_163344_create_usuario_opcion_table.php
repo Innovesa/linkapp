@@ -25,7 +25,7 @@ class CreateUsuarioOpcionTable extends Migration
             $table->timestamps();
 
             $table->foreign('idUsuario')->references('id')->on('usuario');
-            $table->foreign('idOpcion')->references('id')->on('aplicacion');
+            $table->foreign('idOpcion')->references('id')->on('opcion');
         });
     }
 

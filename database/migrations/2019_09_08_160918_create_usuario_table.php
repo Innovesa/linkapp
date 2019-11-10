@@ -20,8 +20,8 @@ class CreateUsuarioTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->integer('idPersona')->unsigned();;
-            $table->integer('idEstado')->unsigned();;
+            $table->integer('idPersona')->unsigned();
+            $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
             $table->foreign('idPersona')->references('id')->on('persona');

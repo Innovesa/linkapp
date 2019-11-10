@@ -15,6 +15,7 @@ class CreateMenuTable extends Migration
     {
         Schema::create('menu', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('codigo',100);
             $table->string('nombre',45);
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
