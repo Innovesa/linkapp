@@ -4,7 +4,7 @@ namespace LinkApp\Models\ERP;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Aplicacion extends Model
+class Opcion extends Model
 {
     protected $table = 'opcion';
 

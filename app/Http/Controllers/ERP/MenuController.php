@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use LinkApp\Http\Controllers\Controller;
 use LinkApp\Models\ERP\Estructura;
 use LinkApp\Models\ERP\PerfilUsuario;
-use LinkApp\Models\ERP\PerfilOpcion;
+use LinkApp\Models\ERP\Persona;
 use LinkApp\Models\ERP\Opcion;
 
 
@@ -18,22 +18,34 @@ class MenuController extends Controller
 
     public function index()
     {
-        \TraerMenus::traerTodo();
-        $_SESSION['aplicacion'] = 1;
+        
         return view('temes.inspinia.home');
     }
 
-    public function indexCRM()
+    public function cambiarCompania($idCompania)
     {
-        \TraerMenus::traerTodo();
-        $_SESSION['aplicacion'] = 4;
-        return view('temes.inspinia.homeCRM');
+        $compania = Persona::Where('id',$idCompania)->first();
+        
+        if ($compania) {
+
+            session(['aplicacion' => $idCompania]);
+
+        }
+
+        return redirect()->back();
     }
 
-    public function prueba()
+    public function cambiarAplicacion($idAplicacion)
     {
-        \TraerMenus::traerTodo();
-        return view('temes.inspinia.prueba');
+        $aplicacion = Opcion::Where('id',$idAplicacion)->first();
+        
+        if ($aplicacion) {
+
+            session(['aplicacion' => $aplicacion]);
+
+        }
+
+        return redirect()->back();
     }
 
     

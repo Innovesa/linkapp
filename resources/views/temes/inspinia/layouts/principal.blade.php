@@ -45,150 +45,207 @@
                                  </span> <span class="text-muted text-xs block">Perfil <b class="caret"></b></span> </span> </a>
                                 <ul class="dropdown-menu animated fadeInRight m-t-xs">
 
-                                    @if (isset($_SESSION['Estructura']['menus']['perfil']))
+                                    @if (session('estructura') !== null)
+                                        @for ($i = 0; $i < count(session('estructura')); $i++)
+                                            @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
+            
+                                                 @if (isset(session('estructura')[$i]['menus']['MENU_PERFIL']))
+                                                    @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_PERFIL']); $j++)
+                                                        
+                                                            @for ($h = 0; $h < count(session('estructura')[$i]['menus']['MENU_PERFIL'][$j]['opciones']); $h++)
 
-                                        @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['perfil']); $p++)
-                                            @for ($j = 0; $j < count($_SESSION['Estructura']['menus']['perfil'][$p]['items']); $j++)
-                                                @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['perfil'][$p]['items'][$j]['items']); $i++)
-                                                    <li><a href="#">{{$_SESSION['Estructura']['menus']['perfil'][$p]['items'][$j]['items'][$i]['nombre']}}</a></li>
-                                                @endfor
-                                            @endfor
+                                                                @for ($g = 0; $g < count(session('estructura')[$i]['menus']['MENU_PERFIL'][$j]['opciones'][$h]['opciones']); $g++)
+                                                                    <li><a href="#">{{session('estructura')[$i]['menus']['MENU_PERFIL'][$j]['opciones'][$h]['opciones'][$g]['nombre']}}</a></li>
+                                                                @endfor
+                                                                
+                                                            @endfor
+                    
+                                                    @endfor
+                                                    <li class="divider"></li>
+                                                 @endif
+            
+                                            @endif
                                         @endfor
-
                                     @endif
 
-                                    <li class="divider"></li>
-                                    <li><a href="#">Salir</a></li>
-                                </ul>
+                                        <li>
+                                            <a href="{{ route('logout') }}"
+                                            onclick="event.preventDefault();
+                                                        document.getElementById('logout-form').submit();">
+                                                <i class="fa fa-sign-out-alt"></i>  {{ __('auth.Logout') }}
+                                            </a>
+                    
+                                        </li>
+
+                                    </ul>
                         </div>
                         <div class="logo-element">
-                            LA
+                                LA
                         </div>
                     </li>
-                    
-                    @if (isset($_SESSION['Estructura']['menus']['contextual']))
+                        <!-- menu contextual--> 
+                        @if (session('estructura') !== null)
+                            @for ($i = 0; $i < count(session('estructura')); $i++)
+                                @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
 
-                        @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['contextual']); $p++)
-                            
-                            @if($_SESSION['Estructura']['menus']['contextual'][$p]['id'] == $_SESSION['aplicacion'])
-                                @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['contextual'][$p]['items']); $i++)
-                                    <li>
-                                        <a href="{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['accion']}}"><i class="{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['icono']}}"></i> <span class="nav-label">{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['nombre']}}</span></a>
-                                    
-                                        <ul class="nav nav-second-level collapse" aria-expanded="true">
-                                            @for ($j = 0; $j <  count($_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['items']); $j++)
-
-                                                <li><a href="{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['items'][$j]['accion']}}">{{$_SESSION['Estructura']['menus']['contextual'][$p]['items'][$i]['items'][$j]['nombre']}}</a></li>
-                                            
-                                            @endfor
-                                        </ul>
+                                     @if (isset(session('estructura')[$i]['menus']['MENU_CONTEXTUAL']))
+                                        @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_CONTEXTUAL']); $j++)
         
-                                    </li>
-                                @endfor
-                            @endif
+                                            @if (session('estructura')[$i]['menus']['MENU_CONTEXTUAL'][$j]['id'] == session('aplicacion')->id )
+                                                @for ($h = 0; $h < count(session('estructura')[$i]['menus']['MENU_CONTEXTUAL'][$j]['opciones']); $h++)
+                                                    <li>
+                                                        <a href="#"><i class="{{session('estructura')[$i]['menus']['MENU_CONTEXTUAL'][$j]['opciones'][$h]['icono']}}"></i>
+                                                             <span class="nav-label">{{session('estructura')[$i]['menus']['MENU_CONTEXTUAL'][$j]['opciones'][$h]['nombre']}}</span>
+                                                        </a>
+                                                        <ul class="nav nav-second-level collapse" aria-expanded="true">
 
-                        @endfor
-                    
-                    @endif
-                
-                </ul>
-    
-            </div>
-        </nav>
-    
-        <div id="page-wrapper" class="gray-bg">
-            <div class="row border-bottom">
-                <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-                    <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                    </div>
-                    <ul class="nav navbar-top-links navbar-right">
-                        <li>
-                            <span class="m-r-sm text-muted welcome-message"><i class="fa fa-cloud"></i>{{$nombreAplicacion}} | Pruebas</span>
-                        </li>
-                        <li class="dropdown">
-                                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                    <i class="fa fa-th"></i>
-                                </a>
-                            <div class="dropdown-menu dropdown-apps float-e-margins">
-                                @if (isset($_SESSION['Estructura']['menus']['aplicaciones']))
+                                                            @for ($g = 0; $g < count(session('estructura')[$i]['menus']['MENU_CONTEXTUAL'][$j]['opciones'][$h]['opciones']); $g++)
+                                                                <li><a href="#">{{session('estructura')[$i]['menus']['MENU_CONTEXTUAL'][$j]['opciones'][$h]['opciones'][$g]['nombre']}}</a></li>
+                                                            @endfor
 
-                                    @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['aplicaciones']); $i++)
-                                        <a href="{{url($_SESSION['Estructura']['menus']['aplicaciones'][$i]['accion'])}}" type="button" class="btn btn-link">
-                                            <i class="{{$_SESSION['Estructura']['menus']['aplicaciones'][$i]['icono']}}"></i>
-                                            <h3>{{$_SESSION['Estructura']['menus']['aplicaciones'][$i]['nombre']}}</h3>
-                                        </a>
-                                    @endfor
+                                                        </ul>
+                                                    </li>
+                                                @endfor
+                                            @endif
+                                        @endfor
+                                     @endif
 
                                 @endif
-                            </div>
+                            @endfor
+                        @endif
+                <!-- end menu contextual-->     
+ 
+                    </ul>
+        
+                </div>
+            </nav>
+        
+            <div id="page-wrapper" class="gray-bg">
+                <div class="row border-bottom">
+                    <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                        <div class="navbar-header">
+                            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                        </div>
+                        <ul class="nav navbar-top-links navbar-right">
+                         <li>
+                            <span class="m-r-sm text-muted welcome-message"><i class="fa fa-cloud"></i> {{session('aplicacion')->nombre}} | {{session('compania')->nombre}}</span>
                         </li>
-                        @if (isset($_SESSION['Estructura']['menus']['principal']))
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+                            <i class="fa fa-th"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-apps float-e-margins">
 
-                            @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['principal']); $p++)
-                                @for ($j = 0; $j < count($_SESSION['Estructura']['menus']['principal'][$p]['items']); $j++)
-                                    @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['principal'][$p]['items'][$j]['items']); $i++)
-                                        <li class="">
+                            <!-- menu de aplicaciones -->
+                            @if (session('estructura') !== null)
+                                @for ($i = 0; $i < count(session('estructura')); $i++)
+                                    @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
 
-                                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                                <i class="{{$_SESSION['Estructura']['menus']['principal'][$p]['items'][$j]['items'][$i]['icono']}}"></i> <span class="label label-info"></span>
-                                            </a>
+                                        @if (isset(session('estructura')[$i]['menus']['MENU_APLICACIONES']))
+                                            @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_APLICACIONES']); $j++)
+                                                <button type="button" class="@if(session('estructura')[$i]['menus']['MENU_APLICACIONES'][$j]['id'] == session('aplicacion')->id)btn btn-primary @else btn btn-link @endif "
 
-                                        </li>
-                                    @endfor
+                                                 onClick="location.href='{{session('estructura')[$i]['menus']['MENU_APLICACIONES'][$j]['accion'].session('estructura')[$i]['menus']['MENU_APLICACIONES'][$j]['id']}}';">
+
+                                                <i class="{{session('estructura')[$i]['menus']['MENU_APLICACIONES'][$j]['icono']}}"></i>
+                                                <h3>{{session('estructura')[$i]['menus']['MENU_APLICACIONES'][$j]['nombre']}}</h3>
+
+                                                </button>
+                                            @endfor
+                                        @endif
+
+                                    @endif
                                 @endfor
-                            @endfor
+                            @endif
+                            <!-- end  menu de aplicaciones -->
+                        </div>
+                    </li>
+
+                    <!-- menu pricipal--> 
+                 @if (session('estructura') !== null)
+                    @for ($i = 0; $i < count(session('estructura')); $i++)
+                        @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
+
+                             @if (isset(session('estructura')[$i]['menus']['MENU_PRINCIPAL']))
+                                @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_PRINCIPAL']); $j++)
+                                   
+                                        @for ($h = 0; $h < count(session('estructura')[$i]['menus']['MENU_PRINCIPAL'][$j]['opciones']); $h++)
+
+                                                @for ($g = 0; $g < count(session('estructura')[$i]['menus']['MENU_PRINCIPAL'][$j]['opciones'][$h]['opciones']); $g++)
+                                                    <li class="">
+                                                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+                                                            <i class="{{session('estructura')[$i]['menus']['MENU_PRINCIPAL'][$j]['opciones'][$h]['opciones'][$g]['icono']}}"></i>
+                                                        </a>
+                                                    </li>
+                                                @endfor
+
+                                            </li>
+                                        @endfor
+                                   
+                                @endfor
+                             @endif
 
                         @endif
-                        @if (isset($_SESSION['Estructura']['menus']['principalPredeterminadas']))
+                    @endfor
+                @endif
 
-                            @for ($p = 0; $p < count($_SESSION['Estructura']['menus']['principalPredeterminadas']); $p++)
-                                @for ($j = 0; $j < count($_SESSION['Estructura']['menus']['principalPredeterminadas'][$p]['items']); $j++)
-                                    @for ($i = 0; $i < count($_SESSION['Estructura']['menus']['principalPredeterminadas'][$p]['items'][$j]['items']); $i++)
-                                        <li class="">
-
-                                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
-                                                 <i class="{{$_SESSION['Estructura']['menus']['principalPredeterminadas'][$p]['items'][$j]['items'][$i]['icono']}}"></i> <span class="label label-info"></span>
-                                            </a>
-
-                                        </li>
-                                    @endfor
-                                @endfor
-                            @endfor
-
-                        @endif
                         <li>
     
-                            <a href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
-                                          document.getElementById('logout-form').submit();">
-                             <i class="fa fa-sign-out-alt"></i>  {{ __('auth.Logout') }}
-                            </a>
-    
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                            </form>
-                        </li>
-                    </ul>
-    
-                </nav>
-            </div>
-            <div class="wrapper wrapper-content animated fadeInRight">
+                                <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                              document.getElementById('logout-form').submit();">
+                                 <i class="fa fa-sign-out-alt"></i>  {{ __('auth.Logout') }}
+                                </a>
+        
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                </form>
 
-                @yield('content')
-            </div>
-            <div class="footer">
-                <div class="pull-right">
-                    <strong>Copyright</strong> Innove, S.A. &copy; 2019
+                        </li>
+                <!--end menu pricipal--> 
+                    </ul>
+        
+                    </nav>
                 </div>
+
             </div>
-    
+                <div class="footer">
+                    <div class="pull-right">
+                        <strong>Copyright</strong> Innove, S.A. &copy; 2019
+                    </div>
+                </div>
+        
+            </div>
         </div>
-    </div>
 
 
 
 
     @include('temes.inspinia.includes.js')
+
+    <div class="modal inmodal fade" id="modalMantenimiento" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title">Mantenimiento de compañías</h4>
+                        <small class="font-bold">Agregar o editar compañías.</small>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" name="frmMantenimiento" id="frmMantenimiento" action="http://www.innove.co.cr/linkapp/ERP/ENT/compania/agregar" enctype="multipart/form-data" method="POST">
+                            <input type="hidden" id="id" name="id" value="">
+                            <div class="form-group col-sm-12"><label>Nombre</label> <input type="text" id="nombre" name="nombre" placeholder="Nombre" class="form-control"></div>
+                            <div class="form-group col-sm-12"><label>Descripción</label> <input type="text" id="descripcion" name="descripcion" placeholder="Descripción" class="form-control"></div>
+                            <div class="form-group col-sm-12"><label>Imagen</label> <input type="file" id="imagen" name="imagen" placeholder="Imagen" class="form-control"></div>
+                        </form>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar cambios</button>
+                    </div>
+                </div>
+            </div>
+    </div>
 </body>
 </html>
