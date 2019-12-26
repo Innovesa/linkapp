@@ -54,9 +54,9 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
-        'usuarios' => [
+        'personas' => [
             'driver' => 'local',
-            'root' => storage_path('app/usuarios'),
+            'root' => storage_path('app/personas'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],

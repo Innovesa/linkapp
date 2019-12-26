@@ -16,7 +16,7 @@ class UsuarioController extends Controller
     
     //Traer Avatar 
     public function getImage($filename){
-        $file = Storage::disk('usuarios')->get($filename);
+        $file = Storage::disk('personas')->get($filename);
         return new Response($file, 200); //Para devolver la imagen. Se ocupa Illuminate\Http\Response;
     }
 

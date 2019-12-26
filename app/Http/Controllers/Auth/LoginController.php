@@ -122,31 +122,34 @@ class LoginController extends Controller
     {
         $parametroAplicacion = ParametroUsuario::where('codigo','USUARIO_APLICACION_PREDETERMINADA')->where('idUsuario',$user->id)->first();
         $parametroCompania = ParametroUsuario::where('codigo','USUARIO_COMPANIA_PREDETERMINADA')->where('idUsuario',$user->id)->first();
+		
+		\TraerMenus::traerTodo();
 
-        $aplicacion = Opcion::Where('id',$parametroAplicacion->valor)->first();
-        $compania = Persona::Where('id',$parametroCompania->valor)->first();
+        if($parametroAplicacion !== null || $parametroCompania !== null){
+
+            $aplicacion = Opcion::Where('id',$parametroAplicacion->valor)->first();
+            $compania = Persona::Where('id',$parametroCompania->valor)->first();
+
+            if ($aplicacion) {
+
+                session(['aplicacion' => $aplicacion]);
+    
+            }else{
+                session(['aplicacion' => 0]);
+            }
+    
+    
+            if ($compania) {
+    
+                session(['compania' => $compania]);
+    
+            }else{
+                session(['aplicacion' => 0]);
+            }
+        }
+
         
-        \TraerMenus::traerTodo();
 
-        if ($aplicacion) {
-
-            session(['aplicacion' => $aplicacion]);
-
-        }else{
-            session(['aplicacion' => 0]);
-        }
-
-
-        if ($compania) {
-
-            session(['compania' => $compania]);
-
-        }else{
-            session(['aplicacion' => 0]);
-        }
-
-       
-       
 
     }
 

@@ -8,7 +8,7 @@ use LinkApp\Models\ERP\Opcion;
 use LinkApp\Models\ERP\PerfilUsuario;
 use LinkApp\Models\ERP\PerfilOpcion;
 use LinkApp\Models\ERP\UsuarioOpcion;
-use PhpParser\Node\Stmt\Else_;
+
 
 class TraerMenus{
 
@@ -24,7 +24,7 @@ class TraerMenus{
         if($perfil || $userOpcion){
 
             session(['estructura' => $menus->menuGeneral($perfil,$user)]);
-
+        
         }
 
 

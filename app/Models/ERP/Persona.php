@@ -31,6 +31,11 @@ class Persona extends Model
         return $this->belongsTo('LinkApp\Models\ERP\TipoPersona','idTipoPersona');        
     }
 
+    //one to many
+    public function personaRol(){
+        return $this->hasMany('LinkApp\Models\ERP\PersonaRol','idRol');
+    }
+
     //many to one
     public function estado(){
         return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado'); 
