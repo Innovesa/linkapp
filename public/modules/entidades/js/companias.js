@@ -76,7 +76,7 @@ function frmMantenimientoCompanias(){
                 //console.log(response.errors);
             }else{
                 //console.log(response.success);
-                limpiarForm();
+                limpiarForm('todo');
                 getVerCuadros();
                 alertSuccess(response.success);
             }
@@ -86,7 +86,7 @@ function frmMantenimientoCompanias(){
 
     //limpiar al cerrar
     $("#btnCerrar").click(function() {
-        limpiarForm();
+        limpiarForm('todo');
     });
 };
 
@@ -104,26 +104,46 @@ function errores(errors){
     if(errors.nombre){
         $("#frmMantenimientoCompanias #nombreGroup input").removeClass("form-control").addClass("form-control is-invalid");
         $("#frmMantenimientoCompanias #nombreGroup").append(mensajeError(errors.nombre));
+    }else{
+        limpiarForm('nombre');
     }
+
     if(errors.cedula){
         $("#frmMantenimientoCompanias #cedulaGroup input").removeClass("form-control").addClass("form-control is-invalid");
         $("#frmMantenimientoCompanias #cedulaGroup").append(mensajeError(errors.cedula));
+    }else{
+        limpiarForm('cedula');
     }
+
     if(errors.alias){
         $("#frmMantenimientoCompanias #aliasGroup input").removeClass("form-control").addClass("form-control is-invalid");
         $("#frmMantenimientoCompanias #aliasGroup").append(mensajeError(errors.alias));
+    }else{
+        limpiarForm('alias');
     }
+
     if(errors.imagen){
         $("#frmMantenimientoCompanias #imagenGroup input").removeClass("form-control").addClass("form-control is-invalid");
         $("#frmMantenimientoCompanias #imagenGroup").append(mensajeError(errors.imagen));
+    }else{
+        limpiarForm('imagen');
     }
+
 }
 
-function limpiarForm(){
-    $("#frmMantenimientoCompanias").find('input:text,input:file').val('');
-    $("#frmMantenimientoCompanias").find('input:text,input:file').removeClass("form-control is-invalid").addClass("form-control");
-    $("#frmMantenimientoCompanias").find('.invalid-feedback').remove();
-    $('#modalMantenimiento').modal('toggle');
+function limpiarForm(indicador){
+
+    if(indicador == "todo"){
+        $("#frmMantenimientoCompanias").find('input:text,input:file').val('');
+        $("#frmMantenimientoCompanias").find('input:text,input:file').removeClass("form-control is-invalid").addClass("form-control");
+        $("#frmMantenimientoCompanias").find('.invalid-feedback').remove();
+        $('#modalMantenimiento').modal('toggle');  
+    }else{
+        grupo = "#"+indicador+"Group";
+        $("#frmMantenimientoCompanias "+grupo).find('input:text,input:file').removeClass("form-control is-invalid").addClass("form-control");
+        $("#frmMantenimientoCompanias "+grupo).find('.invalid-feedback').remove();
+    }
+
 }
 
 function alertSuccess(mensaje){
