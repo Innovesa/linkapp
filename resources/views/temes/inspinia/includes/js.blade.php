@@ -8,3 +8,4 @@
     <script src="{!! asset('js/inspinia.js') !!}"></script>
     <script src="{!! asset('js/plugins/pace/pace.min.js') !!}"></script>
     <script src="{!! asset('js/plugins/toastr/toastr.min.js') !!}"></script>
+    <script src="{!! asset('js/plugins/dataTables/datatables.min.js') !!}"></script>

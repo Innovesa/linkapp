@@ -2,7 +2,7 @@
 
 @section('content')
 
-<link itemprop="url" href="{{ Module::asset('Entidades:css/entidades.css') }}">
+<link  rel="stylesheet" type="text/css"   href="{{ Module::asset('Entidades:css/entidades.css') }}">
 
 <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
@@ -24,8 +24,8 @@
                 <div class="title-action">
                     <a data-toggle="modal" class="btn btn-primary" href="#modalMantenimiento"><i class="fa fa-plus"></i> Nuevo</a>
                     <div class="btn-group">
-                        <button class="btn btnView btn-primary" id="btn-widget" onclick="cargarDatos('widget')"><i class="fa fa-th-large"></i></button>
-                        <button class="btn btnView btn-primary btn-white" id="btn-table" onclick="cargarDatos('table')"><i class="fa fa-th-list"></i></button>
+                        <button class="btn btnView btn-primary" id="btn-cuadros" ><i class="fa fa-th-large"></i></button>
+                        <button class="btn btnView btn-primary btn-white" id="btn-table" ><i class="fa fa-th-list"></i></button>
                     </div>
                 </div>
         </div>
@@ -64,7 +64,9 @@
                     <div class="modal-body">
                         <form role="form" name="frmMantenimientoCompanias" id="frmMantenimientoCompanias" action="{{route('entidades.companias.create')}}" enctype="multipart/form-data" method="POST">
                             @csrf
+
                             <input type="hidden" id="id" name="id" value="">
+
                             <div class="form-group col-sm-12" id="cedulaGroup">
                                 <label>Cédula</label>
                                 <input type="text" id="cedula" name="cedula" placeholder="Cédula" class="form-control">
@@ -85,12 +87,13 @@
                                  <input type="file" id="imagen" name="imagen" placeholder="Imagen" class="form-control">
 
                             </div>
+
                         
                         <p>&nbsp;</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-white" id="btnCerrar">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar cambios</button>
+                        <button type="submit" class="btn btn-primary" >Guardar cambios</button>
                     </div>
                 </form>
                 </div>

@@ -16,5 +16,14 @@ Route::prefix('entidades')->group(function() {
     Route::get('/companias', 'CompaniaController@index')->name('entidades.companias');
 
     Route::get('/companias/cuadros', 'CompaniaController@verCuadros')->name('entidades.companias.cuadros');
-    Route::post('/companias/create', 'CompaniaController@create')->name('entidades.companias.create');
+
+    Route::get('/companias/updatedata/{id}', 'CompaniaController@getUpdateData')->name('entidades.companias.updateData');
+
+    Route::get('/companias/eliminar/{id}', 'CompaniaController@eliminar')->name('entidades.companias.eliminar');
+
+    Route::get('/companias/activar/{id}', 'CompaniaController@activar')->name('entidades.companias.activar');
+
+    Route::get('/companias/desactivar/{id}', 'CompaniaController@desactivar')->name('entidades.companias.desactivar');
+
+    Route::post('/companias/create', 'CompaniaController@createUpdate')->name('entidades.companias.create');
 });
