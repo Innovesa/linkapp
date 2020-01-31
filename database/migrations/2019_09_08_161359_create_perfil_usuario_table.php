@@ -23,6 +23,8 @@ class CreatePerfilUsuarioTable extends Migration
             $table->foreign('idCompania')->references('id')->on('persona');
             $table->foreign('idUsuario')->references('id')->on('usuario');
             $table->foreign('idPerfil')->references('id')->on('perfil');
+
+            $table->engine = 'InnoDB';
         });
     }
 

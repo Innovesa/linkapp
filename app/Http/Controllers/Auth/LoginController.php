@@ -10,6 +10,7 @@ use LinkApp\Models\ERP\PerfilOpcion;
 use LinkApp\Models\ERP\ParametroUsuario;
 use LinkApp\Models\ERP\Opcion;
 use LinkApp\Models\ERP\Persona;
+use LinkApp\Models\ERP\Usuario;
 
 
 class LoginController extends Controller
@@ -135,7 +136,7 @@ class LoginController extends Controller
                 session(['aplicacion' => $aplicacion]);
     
             }else{
-                session(['aplicacion' => 0]);
+                session(['aplicacion' => null]);
             }
     
     
@@ -144,8 +145,15 @@ class LoginController extends Controller
                 session(['compania' => $compania]);
     
             }else{
-                session(['aplicacion' => 0]);
+                session(['compania' => null]);
             }
+
+
+            $usuario = new Usuario();
+
+            session(['permisos' => $usuario->getPermisos($user,$compania)]);
+
+
         }
 
         

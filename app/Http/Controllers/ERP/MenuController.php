@@ -28,7 +28,7 @@ class MenuController extends Controller
         
         if ($compania) {
 
-            session(['aplicacion' => $idCompania]);
+            session(['compania' => $compania]);
 
         }
 

@@ -8692,3 +8692,17 @@ body.md-skin {
  width: 150px;
  height: 150px;
 }
+
+.cambioCompanias{
+  padding-top: 5px;
+  margin-left: 20px;
+}
+
+.cambioCompanias img{
+  margin-top: 10px;
+  width: 130px;
+  height: auto;
+}
+.carretCambioCompanias{
+  margin-top: 20px;
+}

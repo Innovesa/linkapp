@@ -22,6 +22,8 @@ class CreateMonedaTable extends Migration
             $table->timestamps();
 
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 

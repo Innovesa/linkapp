@@ -25,6 +25,8 @@ class CreateOpcionTable extends Migration
 
             $table->foreign('idEstado')->references('id')->on('estado');
             $table->foreign('superior')->references('id')->on('opcion');
+
+            $table->engine = 'InnoDB';
         });
     }
 

@@ -25,6 +25,8 @@ class CreatePersonaTable extends Migration
             
             $table->foreign('idTipoPersona')->references('id')->on('tipo_persona');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 

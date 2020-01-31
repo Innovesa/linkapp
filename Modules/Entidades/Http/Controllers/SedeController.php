@@ -8,15 +8,13 @@ use Illuminate\Http\Response;
 use LinkApp\Http\Controllers\Controller;
 use LinkApp\Models\ERP\Persona;
 use LinkApp\Models\ERP\PersonaRol;
-use LinkApp\Models\ERP\Permiso;
 use Illuminate\Support\Facades\Storage; //para los discos virtuales
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use LinkApp\Models\ERP\Parametro;
-use Illuminate\Support\Facades\Gate;
 use Validator;
 
-class CompaniaController extends Controller
+class SedeController extends Controller
 {
     public function __construct()
     {
@@ -25,73 +23,20 @@ class CompaniaController extends Controller
 
     public function index()
     {
-    
-        $permiso = new Permiso();
 
-        if ($permiso->ViewPermission()) {
-
-            session(['currentUrl' => url()->current()]);
-
-            return view('entidades::companias.index');
-
-        } else{
-            return redirect("/home");
-        }
-        
-
+        return view('entidades::sedes.index');
     }
 
-    //Trae los botones si tiene el permiso
-    public function getButtons($nombre,$objeto)
-    {
-        $permiso = new Permiso();
-
-        if ($nombre == 'modify' && $permiso->ModifyPermission()) {
-
-            return '<a id="editar"  data-route="'.route('entidades.companias.updateData',['id' => $objeto->id]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>';
-
-        }
-
-        if ($nombre == 'activate' && $permiso->DeletePermission()) {
-
-            return '<button id="estado" data-route="'.route('entidades.companias.activar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
-
-        }
-        
-        if ($nombre == 'deactivate' && $permiso->DeletePermission()) {
-
-            return '<button id="estado" data-route="'.route('entidades.companias.desactivar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
-
-        }
-
-        if ($nombre == 'delete' && $permiso->AdminPermission()) {
-
-            return '<button id="eliminar" data-route="'.route('entidades.companias.eliminar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>';
-
-        }
-
-
-    }
-
-    //crea o actualiza si tiene el id
     public function createUpdate(Request $resquest)
     {
-        $permiso = new Permiso();
 
        if (!$resquest->input('id')) {
 
-            if ($permiso->InsertPermission()) {
-
-                return $this->create($resquest);
-            }
+           return $this->create($resquest);
             
        }else{
 
-           if ($permiso->ModifyPermission()) {
-
-                return $this->update($resquest);
-
-           }
+           return $this->update($resquest);
 
        }
        
@@ -105,7 +50,6 @@ class CompaniaController extends Controller
     {
           //conseguir usuario identificado
 
-    
        $id = $resquest->input('id');
 
        $compania = Persona::find($id);
@@ -176,7 +120,7 @@ class CompaniaController extends Controller
         DB::commit();
         //transaction end
 
-        return response()->json(['success'=>@trans('entidades::entidades.compania.actualizada.exito')]);
+        return response()->json(['success'=>@trans('entidades::entidades.sede.actualizada.exito')]);
         
     }
 
@@ -273,133 +217,117 @@ class CompaniaController extends Controller
         DB::commit();
         //transaction end
 
-        return response()->json(['success'=>@trans('entidades::entidades.compania.creada.exito')]);
+        return response()->json(['success'=>@trans('entidades::entidades.sede.creada.exito')]);
         
     }
 
     //Eliminar compañia
     public function eliminar($id)
     {
-        $permiso = new Permiso();
 
-        if ($permiso->AdminPermission()) {
+        $compania = Persona::find($id);
 
-            $compania = Persona::find($id);
+        $personaRol = PersonaRol::where('idPersona',$compania->id)->first();
 
-            $personaRol = PersonaRol::where('idPersona',$compania->id)->first();
+        //transaction start
+        DB::beginTransaction();
 
-            //transaction start
-            DB::beginTransaction();
-
-            try {
+        try {
 
 
-                if($compania && $personaRol){
-                    $personaRol->delete();
-                    $compania->delete(); 
-                }
-
-
-            } catch (Exception $e) {
-
-                DB::rollback();
-
-                //return response()->json(['errors'=>$e->getMessage()]);
-                return response()->json(['errors'=> @trans('entidades::entidades.compania.eliminar.error')]);
+            if($compania && $personaRol){
+                $personaRol->delete();
+                $compania->delete(); 
             }
-            
-            DB::commit();
-            //transaction end
-        
-            return response()->json(['success'=> @trans('entidades::entidades.compania.eliminar.exito')]);
+
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            //return response()->json(['errors'=>$e->getMessage()]);
+            return response()->json(['errors'=> @trans('entidades::entidades.sede.eliminar.error')]);
         }
+        
+        DB::commit();
+        //transaction end
+    
+        return response()->json(['success'=> @trans('entidades::entidades.sede.eliminar.exito')]);
 
     }
 
     //Eliminar compañia
     public function desactivar($id)
     {
-        $permiso = new Permiso();
 
-        if ($permiso->DeletePermission()) {
+        $compania = Persona::find($id);
+        $compania->idEstado = 2;
+        //transaction start
+        DB::beginTransaction();
 
-            $compania = Persona::find($id);
-            $compania->idEstado = 2;
-            //transaction start
-            DB::beginTransaction();
-
-            try {
+        try {
 
 
-                if($compania){
-                    $compania->update();
-                }
-
-
-            } catch (Exception $e) {
-
-                DB::rollback();
-
-                return response()->json(['errors'=>$e->getMessage()]);
-            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
+            if($compania){
+                $compania->update();
             }
-            
-            DB::commit();
-            //transaction end
-        
-            return response()->json(['success'=>@trans('entidades::entidades.compania.activada.exito')]);
+
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            return response()->json(['errors'=>$e->getMessage()]);
+           // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
         }
+        
+        DB::commit();
+        //transaction end
+    
+        return response()->json(['success'=>@trans('entidades::entidades.sede.activada.exito')]);
 
     }
 
         //Eliminar compañia
     public function activar($id)
     {
-        $permiso = new Permiso();
 
-        if ($permiso->DeletePermission()) {
+        $compania = Persona::find($id);
+        $compania->idEstado = 1;
+        //transaction start
+        DB::beginTransaction();
 
-            $compania = Persona::find($id);
-            $compania->idEstado = 1;
-            //transaction start
-            DB::beginTransaction();
-
-            try {
+        try {
 
 
-                if($compania){
-                    $compania->update();
-                }
-
-
-            } catch (Exception $e) {
-
-                DB::rollback();
-
-                return response()->json(['errors'=>$e->getMessage()]);
-            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
+            if($compania){
+                $compania->update();
             }
-            
-            DB::commit();
-            //transaction end
-        
-            return response()->json(['success'=>@trans('entidades::entidades.compania.desactivada.exito')]);
+
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+
+            return response()->json(['errors'=>$e->getMessage()]);
+           // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
         }
+        
+        DB::commit();
+        //transaction end
+    
+        return response()->json(['success'=>@trans('entidades::entidades.sede.desactivada.exito')]);
 
     }
     
     /// traer datos de la compania mediante el id
     public function getUpdateData($id)
     {
-        $permiso = new Permiso();
-        
-        if ($permiso->ModifyPermission()) {
+        //$id = $resquest->id;
 
-            $persona = Persona::where('id',$id)->first();
+        $persona = Persona::where('id',$id)->first();
 
-            return $persona->toJson();
-
-        }
+        return $persona->toJson();
     }
 
 
@@ -446,10 +374,10 @@ class CompaniaController extends Controller
 
                 if ($pruebas->codigo == 'ESTADO_ACTIVO') {
                     $estado = '<span class="badge badge-success pull-center">'.$pruebas->NombreEstado.'</span>';
-                    $btnEstado = $this->getButtons('deactivate',$pruebas);
+                    $btnEstado = '<button id="estado" data-route="'.route('entidades.sedes.desactivar',['id' =>$pruebas->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
                 }else{
                     $estado = '<span class="badge badge-danger pull-center">'.$pruebas->NombreEstado.'</span>';
-                    $btnEstado = $this->getButtons('activate',$pruebas);
+                    $btnEstado = '<button id="estado" data-route="'.route('entidades.sedes.activar',['id' =>$pruebas->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
                 }
 
 
@@ -464,9 +392,9 @@ class CompaniaController extends Controller
                                 </td>
                                 <td>'.$estado.'</td>
                                 <td>
-                                    '.$this->getButtons('modify',$pruebas).'
+                                    <a id="editar"  data-route="'.route('entidades.sedes.updateData',['id' =>$pruebas->id]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>
                                     '.$btnEstado.'
-                                    '.$this->getButtons('delete',$pruebas).'
+                                    <button id="eliminar" data-route="'.route('entidades.sedes.eliminar',['id' =>$pruebas->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>
                                 </td>
                             </tr>';  
             }
@@ -484,10 +412,10 @@ class CompaniaController extends Controller
 
                     if ($pruebas->codigo == 'ESTADO_ACTIVO') {
                         $estado = '<span class="badge badge-success pull-right">'.$pruebas->NombreEstado.'</span>';
-                        $btnEstado = $this->getButtons('deactivate',$pruebas);;
+                        $btnEstado = '<button id="estado" data-route="'.route('entidades.sedes.desactivar',['id' =>$pruebas->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
                     }else{
                         $estado = '<span class="badge badge-danger pull-right">'.$pruebas->NombreEstado.'</span>';
-                        $btnEstado = $this->getButtons('activate',$pruebas);
+                        $btnEstado = '<button id="estado" data-route="'.route('entidades.sedes.activar',['id' =>$pruebas->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
                     }
 
                     $content .= '<div class="col-md-3 datos">
@@ -498,9 +426,9 @@ class CompaniaController extends Controller
                                     <p class="font-bold">'.$pruebas->cedula.'</p>
                                     <p class="font-bold">'.$pruebas->nombre.' | '.$pruebas->alias.'</p>
                                     <div class="text-center">
-                                        '.$this->getButtons('modify',$pruebas).'
+                                        <a id="editar"  data-route="'.route('entidades.sedes.updateData',['id' =>$pruebas->id]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>
                                         '.$btnEstado.'
-                                        '.$this->getButtons('delete',$pruebas).'
+                                        <button id="eliminar" data-route="'.route('entidades.sedes.eliminar',['id' =>$pruebas->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>
                                     </div>
                                 </div>
                             </div>';  
@@ -510,6 +438,4 @@ class CompaniaController extends Controller
 
         return $content;
     }
-
-
 }

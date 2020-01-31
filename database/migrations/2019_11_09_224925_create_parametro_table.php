@@ -23,6 +23,7 @@ class CreateParametroTable extends Migration
             $table->timestamps();
 
             $table->unique(['codigo', 'dominio']);
+            $table->engine = 'InnoDB';
         });
     }
 

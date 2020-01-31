@@ -28,6 +28,8 @@ class CreateUsuarioOpcionTable extends Migration
             $table->foreign('idUsuario')->references('id')->on('usuario');
             $table->foreign('idCompania')->references('id')->on('persona');
             $table->foreign('idOpcion')->references('id')->on('opcion');
+
+            $table->engine = 'InnoDB';
         });
     }
 

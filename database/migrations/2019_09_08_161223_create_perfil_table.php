@@ -21,6 +21,8 @@ class CreatePerfilTable extends Migration
             
             $table->foreign('idEstado')->references('id')->on('estado');
 
+            $table->engine = 'InnoDB';
+
         });
     }
 

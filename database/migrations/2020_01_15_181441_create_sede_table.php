@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMenuTable extends Migration
+class CreateSedeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,16 @@ class CreateMenuTable extends Migration
      */
     public function up()
     {
-        Schema::create('menu', function (Blueprint $table) {
+        Schema::create('sede', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('codigo',100);
-            $table->string('nombre',45);
+            $table->string('nombre',100);
+            $table->integer('idUbicacion')->unsigned();
+            $table->integer('idCompania')->unsigned();
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
+            $table->foreign('idUbicacion')->references('id')->on('pais');
+            $table->foreign('idCompania')->references('id')->on('persona');
             $table->foreign('idEstado')->references('id')->on('estado');
 
             $table->engine = 'InnoDB';
@@ -33,6 +36,6 @@ class CreateMenuTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menu');
+        Schema::dropIfExists('sede');
     }
 }

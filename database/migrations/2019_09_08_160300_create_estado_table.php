@@ -18,6 +18,8 @@ class CreateEstadoTable extends Migration
             $table->string('codigo',100);
             $table->string('nombre',45);
             $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
     }
 

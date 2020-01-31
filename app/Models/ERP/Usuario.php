@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use LinkApp\Notifications\MailResetPasswordNotification as MailResetPasswordNotification;
 use LinkApp\Notifications\MailAccountVerification as MailAccountVerification;
+use Illuminate\Support\Facades\DB;
 
 
 class Usuario extends Authenticatable implements MustVerifyEmail
@@ -66,5 +67,23 @@ class Usuario extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new MailAccountVerification);
     }
+
+ /////////////////////////////////////////////////////
+
+ public function getPermisos($user,$compania){
+
+    $permisos = DB::table('perfil_opcion')
+    ->distinct()
+    ->join('perfil', 'perfil.id', '=', 'perfil_opcion.idPerfil')
+    ->join('perfil_usuario', 'perfil_usuario.idPerfil', '=', 'perfil.id')
+    ->join('opcion', 'opcion.id', '=', 'perfil_opcion.idOpcion')
+    ->select('opcion.nombre','opcion.accion', 'perfil_opcion.*')
+    ->where('perfil_usuario.idUsuario','=',$user->id)
+    ->where('perfil_usuario.idCompania','=',$compania->id)
+    ->get();
+
+    return $permisos;
+      
+}
 
 }

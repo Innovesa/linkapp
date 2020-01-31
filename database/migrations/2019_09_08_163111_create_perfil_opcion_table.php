@@ -26,6 +26,8 @@ class CreatePerfilOpcionTable extends Migration
 
             $table->foreign('idPerfil')->references('id')->on('perfil');
             $table->foreign('idOpcion')->references('id')->on('opcion');
+
+            $table->engine = 'InnoDB';
         });
     }
 

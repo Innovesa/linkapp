@@ -55,7 +55,7 @@ class TraerMenus{
             ->join('perfil_usuario', 'perfil.id', '=', 'perfil_usuario.idPerfil')
             ->join('persona', 'persona.id', '=', 'perfil_usuario.idCompania')
             ->select(
-                'opcion.id','persona.nombre as nombreCompania', 'perfil_usuario.idCompania', 'menu.codigo','menu_opcion.orden','opcion.nombre',
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania', 'perfil_usuario.idCompania', 'menu.codigo','menu_opcion.orden','opcion.nombre',
                 'opcion.descripcion','opcion.icono','opcion.accion','opcion.superior',
                 'perfil_opcion.rolModificar','perfil_opcion.rolEliminar','perfil_opcion.rolInsertar',
                 'perfil_opcion.rolAdmin','perfil_opcion.rolSuper'
@@ -71,7 +71,7 @@ class TraerMenus{
             ->leftJoin('perfil_usuario', 'perfil.id', '=', 'perfil_usuario.idPerfil')
             ->leftJoin('persona', 'persona.id', '=', 'perfil_usuario.idCompania')
             ->select(
-                'opcion.id','persona.nombre as nombreCompania','perfil_usuario.idCompania','menu.codigo','menu_opcion.orden','opcion.nombre',
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania','perfil_usuario.idCompania','menu.codigo','menu_opcion.orden','opcion.nombre',
                 'descripcion','icono','accion','superior','perfil_opcion.rolModificar',
                 'perfil_opcion.rolEliminar','perfil_opcion.rolInsertar',
                 'perfil_opcion.rolAdmin','perfil_opcion.rolSuper'
@@ -88,7 +88,7 @@ class TraerMenus{
             ->join('usuario_opcion', 'opcion.id', '=', 'usuario_opcion.idOpcion')
             ->join('persona', 'persona.id', '=', 'usuario_opcion.idCompania')
             ->select(
-                'opcion.id','persona.nombre as nombreCompania', 'usuario_opcion.idCompania', 'menu.codigo','menu_opcion.orden','opcion.nombre',
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania', 'usuario_opcion.idCompania', 'menu.codigo','menu_opcion.orden','opcion.nombre',
                 'opcion.descripcion','opcion.icono','opcion.accion','opcion.superior',
                 'usuario_opcion.rolModificar','usuario_opcion.rolEliminar','usuario_opcion.rolInsertar',
                 'usuario_opcion.rolAdmin','usuario_opcion.rolSuper'
@@ -105,7 +105,7 @@ class TraerMenus{
             ->leftJoin('perfil_usuario', 'perfil.id', '=', 'perfil_usuario.idPerfil')
             ->leftJoin('persona', 'persona.id', '=', 'perfil_usuario.idCompania')
             ->select(
-                'opcion.id','persona.nombre as nombreCompania','perfil_usuario.idCompania','menu.codigo','menu_opcion.orden','opcion.nombre',
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania','perfil_usuario.idCompania','menu.codigo','menu_opcion.orden','opcion.nombre',
                 'descripcion','icono','accion','superior','perfil_opcion.rolModificar',
                 'perfil_opcion.rolEliminar','perfil_opcion.rolInsertar',
                 'perfil_opcion.rolAdmin','perfil_opcion.rolSuper'
@@ -288,6 +288,8 @@ class TraerMenus{
                                         }else{
                                             $rango = count($array);
                                             $array[$rango]['idCompania'] = $menus->idCompania;
+                                            $array[$rango]['imagenCompania'] = $menus->imagenCompania;
+                                            $array[$rango]['accion'] = '/compania/'.$menus->idCompania;
                                             $array[$rango]['nombre'] = $menus->nombreCompania;
                                             $array[$rango]['menus'][$menus->codigo] = $valor;
                                             
@@ -304,6 +306,8 @@ class TraerMenus{
                                     }else{
 
                                         $array[0]['idCompania'] = $menus->idCompania;
+                                        $array[0]['imagenCompania'] = $menus->imagenCompania;
+                                        $array[0]['accion'] = '/compania/'.$menus->idCompania;
                                         $array[0]['nombre'] = $menus->nombreCompania;
                                         $array[0]['menus'][$menus->codigo] = $valor;
 

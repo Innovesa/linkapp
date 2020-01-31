@@ -30,7 +30,7 @@
 
                                     @if (session('estructura') !== null)
                                         @for ($i = 0; $i < count(session('estructura')); $i++)
-                                            @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
+                                            @if (session('estructura')[$i]['idCompania'] == session('compania')->id)
             
                                                  @if (isset(session('estructura')[$i]['menus']['MENU_PERFIL']))
                                                     @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_PERFIL']); $j++)
@@ -66,10 +66,11 @@
                                 LA
                         </div>
                     </li>
+                    
                         <!-- menu contextual--> 
                         @if (session('estructura') !== null)
                             @for ($i = 0; $i < count(session('estructura')); $i++)
-                                @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
+                                @if (session('estructura')[$i]['idCompania'] == session('compania')->id)
 
                                      @if (isset(session('estructura')[$i]['menus']['MENU_CONTEXTUAL']))
                                         @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_CONTEXTUAL']); $j++)
@@ -113,6 +114,36 @@
                         <div class="navbar-header">
                             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                         </div>
+
+                        <div class="btn-group cambioCompanias">
+
+                            @if (session('estructura') !== null)
+                                @for ($i = 0; $i < count(session('estructura')); $i++)
+                                    @if (session('estructura')[$i]['idCompania'] == session('compania')->id)
+
+                                        <span data-toggle="dropdown" class="dropdown-toggle" aria-expanded="false">
+                                            <img src="{{ route('persona.image',['filename' => session('estructura')[$i]['imagenCompania']])}}" class="navbar-form-custom">
+                                            <span class="caret carretCambioCompanias"></span>
+                                        </span>
+
+                                    @endif
+
+                                    <ul class="dropdown-menu">
+                                        @if (session('estructura')[$i]['idCompania'] != session('compania')->id)
+
+                                            <li>
+                                                <div class="text-center block" onclick="window.location.href = '{{url('/').session('estructura')[$i]['accion']}}'">
+                                                    <img src="{{ route('persona.image',['filename' => session('estructura')[$i]['imagenCompania']])}}" class="navbar-form-custom">
+                                                </div>
+                                            </li>
+
+                                        @endif
+                                    </ul>
+                                @endfor
+                            @endif
+                           
+                        </div>
+
                         <ul class="nav navbar-top-links navbar-right">
                          <li>
                             <span class="m-r-sm text-muted welcome-message"><i class="fa fa-cloud"></i>  @if(session('aplicacion') !== null){{session('aplicacion')->nombre}} @endif  |  @if(session('compania') !== null){{session('compania')->nombre}} @endif</span>
@@ -126,7 +157,7 @@
                             <!-- menu de aplicaciones -->
                             @if (session('estructura') !== null)
                                 @for ($i = 0; $i < count(session('estructura')); $i++)
-                                    @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
+                                    @if (session('estructura')[$i]['idCompania'] == session('compania')->id)
 
                                         @if (isset(session('estructura')[$i]['menus']['MENU_APLICACIONES']))
                                             @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_APLICACIONES']); $j++)
@@ -151,7 +182,7 @@
                     <!-- menu pricipal--> 
                  @if (session('estructura') !== null)
                     @for ($i = 0; $i < count(session('estructura')); $i++)
-                        @if (session('estructura')[$i]['idCompania'] == session('compania')['id'])
+                        @if (session('estructura')[$i]['idCompania'] == session('compania')->id)
 
                              @if (isset(session('estructura')[$i]['menus']['MENU_PRINCIPAL']))
                                 @for ($j = 0; $j < count(session('estructura')[$i]['menus']['MENU_PRINCIPAL']); $j++)

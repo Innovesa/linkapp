@@ -23,6 +23,8 @@ class CreateCorreoTable extends Migration
 
             $table->foreign('idPersona')->references('id')->on('persona');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 

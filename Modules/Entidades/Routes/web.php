@@ -12,6 +12,8 @@
 */
 
 Route::prefix('entidades')->group(function() {
+
+    //Companias
     
     Route::get('/companias', 'CompaniaController@index')->name('entidades.companias');
 
@@ -26,4 +28,21 @@ Route::prefix('entidades')->group(function() {
     Route::get('/companias/desactivar/{id}', 'CompaniaController@desactivar')->name('entidades.companias.desactivar');
 
     Route::post('/companias/create', 'CompaniaController@createUpdate')->name('entidades.companias.create');
+
+
+    //Sedes
+    
+    Route::get('/sedes', 'SedeController@index')->name('entidades.sedes');
+
+    Route::get('/sedes/cuadros', 'SedeController@verCuadros')->name('entidades.sedes.cuadros');
+
+    Route::get('/sedes/updatedata/{id}', 'SedeController@getUpdateData')->name('entidades.sedes.updateData');
+
+    Route::get('/sedes/eliminar/{id}', 'SedeController@eliminar')->name('entidades.sedes.eliminar');
+
+    Route::get('/sedes/activar/{id}', 'SedeController@activar')->name('entidades.sedes.activar');
+
+    Route::get('/sedes/desactivar/{id}', 'SedeController@desactivar')->name('entidades.sedes.desactivar');
+
+    Route::post('/sedes/create', 'SedeController@createUpdate')->name('entidades.sedes.create');
 });

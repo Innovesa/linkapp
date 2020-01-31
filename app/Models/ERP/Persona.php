@@ -3,6 +3,7 @@
 namespace LinkApp\Models\ERP;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Persona extends Model
 {
@@ -40,5 +41,25 @@ class Persona extends Model
     public function estado(){
         return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado'); 
        
+    }
+
+    //trae personas mediante el rol
+    public function getPersonaPorRol($buscar,$idRol){
+
+        $result = DB::table($this->table)
+        ->distinct()
+        ->join('persona_rol', 'persona.id', '=', 'persona_rol.idPersona')
+        ->join('estado', 'persona.idEstado', '=', 'estado.id')
+        ->select('persona.*','estado.nombre as NombreEstado','estado.codigo')
+        ->where(function ($query) use ($buscar){ 
+            $query->where('persona.nombre','LIKE','%'.$buscar.'%')
+            ->orWhere('persona.alias','LIKE','%'.$buscar.'%')
+            ->orWhere('persona.cedula','LIKE','%'.$buscar.'%');
+        })
+        ->where('persona_rol.idRol', $idRol)
+        ->orderBy('persona.updated_at', 'DESC')
+        ->get();
+
+        return $result;
     }
 }
