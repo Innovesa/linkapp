@@ -34,15 +34,32 @@ class AuthServiceProvider extends ServiceProvider
 
             $permisos = $permisosUsuario;
 
-            foreach($permisos as $permiso){
+            if (isset($permisos) && !$permisos->isEmpty()) {
 
-                $accion = url('/').$permiso->accion;
+                foreach($permisos as $permiso){
 
-               if ($accion === $url) {
-
-                    return true;
-
+                    $accion = url('/').$permiso->accion;
+    
+                   if ($accion === $url) {
+    
+                        return true;
+    
+                    }
                 }
+            }
+
+           return false;
+
+        });
+
+        Gate::define('view-home', function ($user,$permisosUsuario) {
+
+            $permisos = $permisosUsuario;
+
+            if (isset($permisos) && !$permisos->isEmpty()) {
+
+                return true;
+
             }
 
            return false;
@@ -55,14 +72,17 @@ class AuthServiceProvider extends ServiceProvider
 
             $permisos = $permisosUsuario;
 
-            foreach($permisos as $permiso){
+            if (isset($permisos) && !$permisos->isEmpty()) {
 
-                $accion = url('/').$permiso->accion;
+                foreach($permisos as $permiso){
 
-               if ($accion === $url) {
+                    $accion = url('/').$permiso->accion;
 
-                    return $permiso->rolModificar === 1;
+                if ($accion === $url) {
 
+                        return $permiso->rolModificar === 1;
+
+                    }
                 }
             }
 
@@ -74,14 +94,17 @@ class AuthServiceProvider extends ServiceProvider
 
             $permisos = $permisosUsuario;
 
-            foreach($permisos as $permiso){
+            if (isset($permisos) && !$permisos->isEmpty()) {
 
-                $accion = url('/').$permiso->accion;
+                foreach($permisos as $permiso){
 
-               if ($accion === $url) {
+                    $accion = url('/').$permiso->accion;
 
-                    return $permiso->rolEliminar === 1;
+                if ($accion === $url) {
 
+                        return $permiso->rolEliminar === 1;
+
+                    }
                 }
             }
 
@@ -93,14 +116,17 @@ class AuthServiceProvider extends ServiceProvider
 
             $permisos = $permisosUsuario;
 
-            foreach($permisos as $permiso){
+            if (isset($permisos) && !$permisos->isEmpty()) {
 
-                $accion = url('/').$permiso->accion;
+                foreach($permisos as $permiso){
 
-               if ($accion === $url) {
+                    $accion = url('/').$permiso->accion;
 
-                    return $permiso->rolInsertar === 1;
+                if ($accion === $url) {
 
+                        return $permiso->rolInsertar === 1;
+
+                    }
                 }
             }
 
@@ -112,17 +138,20 @@ class AuthServiceProvider extends ServiceProvider
 
             $permisos = $permisosUsuario;
 
-            foreach($permisos as $permiso){
+            if (isset($permisos) && !$permisos->isEmpty()) {
 
-                $accion = url('/').$permiso->accion;
+                foreach($permisos as $permiso){
 
-               if ($accion === $url) {
+                    $accion = url('/').$permiso->accion;
 
-                    return $permiso->rolSuper === 1;
+                if ($accion === $url) {
 
+                        return $permiso->rolSuper === 1;
+
+                    }
                 }
             }
-
+            
         });
 
         Gate::define('admin', function ($user,$permisosUsuario,$url) {
@@ -131,14 +160,17 @@ class AuthServiceProvider extends ServiceProvider
 
             $permisos = $permisosUsuario;
 
-            foreach($permisos as $permiso){
+            if (isset($permisos) && !$permisos->isEmpty()) {
 
-                $accion = url('/').$permiso->accion;
+                foreach($permisos as $permiso){
 
-               if ($accion === $url) {
+                    $accion = url('/').$permiso->accion;
 
-                    return $permiso->rolAdmin === 1;
+                if ($accion === $url) {
 
+                        return $permiso->rolAdmin === 1;
+
+                    }
                 }
             }
 

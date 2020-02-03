@@ -12,6 +12,11 @@ class Permiso extends Model
         return Gate::allows('view',[session("permisos"),url()->current()]);
     }
 
+    public function ViewHomePermission()
+    {
+        return Gate::allows('view-home',[session("permisos")]);
+    }
+
     public function AdminPermission()
     {
         return Gate::allows('admin',[session("permisos"),session("currentUrl")]);

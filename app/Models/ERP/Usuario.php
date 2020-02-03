@@ -82,6 +82,7 @@ class Usuario extends Authenticatable implements MustVerifyEmail
     ->where('perfil_usuario.idCompania','=',$compania->id)
     ->get();
 
+
     return $permisos;
       
 }

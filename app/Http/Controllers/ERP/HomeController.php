@@ -4,13 +4,12 @@ namespace LinkApp\Http\Controllers\ERP;
 
 use Illuminate\Http\Request;
 use LinkApp\Http\Controllers\Controller;
-use LinkApp\Models\ERP\Estructura;
+use LinkApp\Models\ERP\Permiso;
 use LinkApp\Models\ERP\PerfilUsuario;
 use LinkApp\Models\ERP\Persona;
 use LinkApp\Models\ERP\Opcion;
 
-
-class MenuController extends Controller
+class HomeController extends Controller
 {
     public function __construct(){
         $this->middleware('auth'); //Para solo acceder si estas loguiado
@@ -18,8 +17,18 @@ class MenuController extends Controller
 
     public function index()
     {
+        $permiso = new Permiso();
+
+        if ($permiso->ViewHomePermission()) {
+
+            session(['currentUrl' => url()->current()]);
+
+            return view('temes.inspinia.home');
+
+        }else{
+            return redirect()->route('usuario.verificacion.perfil');
+        } 
         
-        return view('temes.inspinia.home');
     }
 
     public function cambiarCompania($idCompania)
@@ -47,6 +56,4 @@ class MenuController extends Controller
 
         return redirect()->back();
     }
-
-    
 }

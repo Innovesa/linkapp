@@ -153,6 +153,9 @@ class LoginController extends Controller
 
             session(['permisos' => $usuario->getPermisos($user,$compania)]);
 
+          /*  var_dump(session("permisos"));
+            die;*/
+
 
         }
 

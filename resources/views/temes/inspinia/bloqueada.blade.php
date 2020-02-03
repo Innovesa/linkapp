@@ -8,7 +8,7 @@
     <div class="middle-box text-center lockscreen animated fadeInDown">
         <div>
             <div class="m-b-md">
-            <img alt="image" class="img-circle circle-border img-blocked" src="{{ route('usuario.avatar',['filename' => \Auth::User()->persona->img ]) }}">
+            <img alt="image" class="img-circle circle-border img-blocked" src="{{ route('persona.image',['filename' => \Auth::User()->persona->img ]) }}">
             </div>
             <h3>{{\Auth::User()->persona->nombre}}</h3>
             <p>Su cuenta en estos momentos permanece bloqueada ya que no se tiene ningun perfil ligado a su cuenta.</p>
