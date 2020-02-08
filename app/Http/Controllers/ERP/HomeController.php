@@ -17,6 +17,12 @@ class HomeController extends Controller
 
     public function index()
     {
+
+        \TraerMenus::traerTodo();
+
+        var_dump();
+        die;
+        
         $permiso = new Permiso();
 
         if ($permiso->ViewHomePermission()) {
