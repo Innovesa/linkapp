@@ -124,7 +124,7 @@ class LoginController extends Controller
         $parametroAplicacion = ParametroUsuario::where('codigo','USUARIO_APLICACION_PREDETERMINADA')->where('idUsuario',$user->id)->first();
         $parametroCompania = ParametroUsuario::where('codigo','USUARIO_COMPANIA_PREDETERMINADA')->where('idUsuario',$user->id)->first();
 		
-		//\TraerMenus::traerTodo();
+		\TraerMenus::traerTodo();
 
         if($parametroAplicacion !== null || $parametroCompania !== null){
 

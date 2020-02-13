@@ -14,5 +14,7 @@ class Routes extends Model
         Route::get('/compania/{idCompania}','ERP\HomeController@cambiarCompania')->name('compania.cambiar');
         Route::get('/persona/image/{filename}', 'ERP\UsuarioController@getImage')->name('persona.image');
         Route::get('/usuario/verificacion/', 'ERP\UsuarioController@verificacionPerfil')->name('usuario.verificacion.perfil');
+
+        Route::post('/parametro/compania','ERP\HomeController@addCompania')->name('agregar.compania');
     }
 }

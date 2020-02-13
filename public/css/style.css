@@ -8706,3 +8706,17 @@ body.md-skin {
 .carretCambioCompanias{
   margin-top: 20px;
 }
+
+.check{
+  opacity:0.5;
+	color:#996;
+	
+}
+
+.img-check {
+  width: 200px;
+}
+
+.modal-dialog{
+  width: 1000px;
+}
