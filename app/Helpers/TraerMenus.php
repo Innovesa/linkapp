@@ -271,10 +271,12 @@ class TraerMenus{
            
             $array['MENU_COMPANIAS'] =  $array2['MENU_COMPANIAS'];
 
+            
+
         } 
 
         //echo json_encode($array);
-        //die;
+       // die;
         return $array;
     }  
     
