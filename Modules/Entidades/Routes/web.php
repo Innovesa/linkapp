@@ -29,6 +29,21 @@ Route::prefix('entidades')->group(function() {
 
     Route::post('/companias/create', 'CompaniaController@createUpdate')->name('entidades.companias.create');
 
+    //Personas
+    
+    Route::get('/personas', 'PersonaController@index')->name('entidades.personas');
+
+    Route::get('/personas/cuadros', 'PersonaController@verCuadros')->name('entidades.personas.cuadros');
+
+    Route::get('/personas/updatedata/{id}', 'PersonaController@getUpdateData')->name('entidades.personas.updateData');
+
+    Route::get('/personas/eliminar/{id}', 'PersonaController@eliminar')->name('entidades.personas.eliminar');
+
+    Route::get('/personas/activar/{id}', 'PersonaController@activar')->name('entidades.personas.activar');
+
+    Route::get('/personas/desactivar/{id}', 'PersonaController@desactivar')->name('entidades.personas.desactivar');
+
+    Route::post('/personas/create', 'PersonaController@createUpdate')->name('entidades.personas.create');
 
     //Sedes
     

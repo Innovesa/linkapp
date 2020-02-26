@@ -16,7 +16,7 @@ use LinkApp\Models\ERP\Parametro;
 use Illuminate\Support\Facades\Gate;
 use Validator;
 
-class CompaniaController extends Controller
+class PersonaController extends Controller
 {
     public function __construct()
     {
@@ -32,7 +32,7 @@ class CompaniaController extends Controller
 
             session(['currentUrl' => url()->current()]);
 
-            return view('entidades::companias.index');
+            return view('entidades::personas.index');
 
         } else{
             return redirect("/home");
@@ -48,25 +48,25 @@ class CompaniaController extends Controller
 
         if ($nombre == 'modify' && $permiso->ModifyPermission()) {
 
-            return '<a id="editar"  data-route="'.route('entidades.companias.updateData',['id' => $objeto->id]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>';
+            return '<a id="editar"  data-route="'.route('entidades.personas.updateData',['id' => $objeto->id]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>';
 
         }
 
         if ($nombre == 'activate' && $permiso->DeletePermission()) {
 
-            return '<button id="estado" data-route="'.route('entidades.companias.activar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
+            return '<button id="estado" data-route="'.route('entidades.personas.activar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
 
         }
         
         if ($nombre == 'deactivate' && $permiso->DeletePermission()) {
 
-            return '<button id="estado" data-route="'.route('entidades.companias.desactivar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
+            return '<button id="estado" data-route="'.route('entidades.personas.desactivar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
 
         }
 
         if ($nombre == 'delete' && $permiso->AdminPermission()) {
 
-            return '<button id="eliminar" data-route="'.route('entidades.companias.eliminar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>';
+            return '<button id="eliminar" data-route="'.route('entidades.personas.eliminar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>';
 
         }
 
@@ -108,13 +108,13 @@ class CompaniaController extends Controller
     
        $id = $resquest->input('id');
 
-       $compania = Persona::find($id);
+       $persona= Persona::find($id);
        
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
             'nombre' => ['required', 'string', 'max:200'],
             'cedula' => ['required', 'string', 'max:15','unique:persona,cedula,'.$id],
-            'alias' => ['required', 'string', 'max:200'],
+            'alias' =>  ['max:200'],
             'imagen' => ['image'],
         ]);
         
@@ -133,13 +133,11 @@ class CompaniaController extends Controller
 
 
         //Asignar nuevos valores al objeto del usuario
-        $compania->id = $id;
-        $compania->cedula = $cedula;
-        $compania->nombre = $nombre;
-        $compania->alias = $alias;
+        $persona->id = $id;
+        $persona->cedula = $cedula;
+        $persona->nombre = $nombre;
+        $persona->alias = $alias;
 
-        //$compania->idTipoPersona = 2;
-        $compania->idEstado = 1;
 
 
         //Subir fichero
@@ -150,9 +148,8 @@ class CompaniaController extends Controller
                                                             //extraer o copia la imagen de la carpeta temporal donde a guardado y consigue el fichero
                 
             //Setea el nombre de la imagen en el objeto
-            $compania->img = $id.'/imgPerfil.png'; 
+            $persona->img = $id.'/imgPerfil.png'; 
         }
-        
 
         //transaction start
         DB::beginTransaction();
@@ -161,7 +158,7 @@ class CompaniaController extends Controller
 
 
             //Ejecutar consulta y cambios en la bae de datos
-            $compania->update();
+            $persona->update();
 
 
         } catch (Exception $e) {
@@ -187,15 +184,15 @@ class CompaniaController extends Controller
     {
           //conseguir usuario identificado
         
-       $compania = new Persona();
+       $persona= new Persona();
 
        
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
             'nombre' => ['required', 'string', 'max:200'],
             'cedula' => ['required', 'string', 'max:15','unique:persona'],
-            'alias' => ['required', 'string', 'max:200'],
-            'imagen' => ['required','image'],
+            'alias' => ['max:200'],
+            'imagen' => ['image'],
         ]);
         
         if($validator->fails()){
@@ -212,14 +209,12 @@ class CompaniaController extends Controller
 
 
         //Asignar nuevos valores al objeto del usuario
-        $compania->cedula = $cedula;
-        $compania->nombre = $nombre;
-        $compania->alias = $alias;
-        $compania->img = 'default/logo.png';
-        $compania->idTipoPersona = 2;
-        $compania->idEstado = 1;
-
-
+        $persona->cedula = $cedula;
+        $persona->nombre = $nombre;
+        $persona->alias = $alias;
+        $persona->img = 'default/logo.png';
+        $persona->idTipoPersona = 2;
+        $persona->idEstado = 1;
 
         
         //transaction start
@@ -228,22 +223,21 @@ class CompaniaController extends Controller
        try {
 
             //Ejecutar consulta y cambios en la bae de datos
-            $compania->save();
-
+            $persona->save();
 
             //Subir fichero
             if ($imagen) {
             
                 //Guarda en la carpeta storage (storage/app/users)
-                Storage::disk('personas')->put($compania->id.'/imgPerfil.png',File::get($imagen)); //Nombre del archivo y despues el fichero
+                Storage::disk('personas')->put($persona->id.'/imgPerfil.png',File::get($imagen)); //Nombre del archivo y despues el fichero
                                                                 //extraer o copia la imagen de la carpeta temporal donde a guardado y consigue el fichero
                     
                 //Setea el nombre de la imagen en el objeto
-                $compania->img =  $compania->id.'/imgPerfil.png'; 
+                $persona->img =  $persona->id.'/imgPerfil.png'; 
 
             }
 
-            $compania->update();
+            $persona->update();
 
 
        } catch (Exception $e) {
@@ -252,26 +246,6 @@ class CompaniaController extends Controller
            return response()->json(['errors'=>$e->getMessage()]);
 
        }
-
-
-       $personaRol = new PersonaRol();
-        
-       $personaRol->idPersona = $compania->id;
-       $personaRol->idRol = 1;
-       $personaRol->idCompania = $compania->id;
-
-       try {
-
-            //Ejecutar consulta y cambios en la bae de datos
-            $personaRol->save();
-
-
-        } catch (Exception $e) {
-
-            DB::rollback();
-            return response()->json(['errors'=>$e->getMessage()]);
-
-        }
 
         DB::commit();
         //transaction end
@@ -287,9 +261,7 @@ class CompaniaController extends Controller
 
         if ($permiso->AdminPermission()) {
 
-            $compania = Persona::find($id);
-
-            $personaRol = PersonaRol::where('idPersona',$compania->id)->first();
+            $persona= Persona::find($id);
 
             //transaction start
             DB::beginTransaction();
@@ -297,9 +269,8 @@ class CompaniaController extends Controller
             try {
 
 
-                if($compania && $personaRol){
-                    $personaRol->delete();
-                    $compania->delete(); 
+                if($persona){
+                    $persona->delete(); 
                 }
 
 
@@ -326,16 +297,16 @@ class CompaniaController extends Controller
 
         if ($permiso->DeletePermission()) {
 
-            $compania = Persona::find($id);
-            $compania->idEstado = 2;
+            $persona= Persona::find($id);
+            $persona->idEstado = 2;
             //transaction start
             DB::beginTransaction();
 
             try {
 
 
-                if($compania){
-                    $compania->update();
+                if($persona){
+                    $persona->update();
                 }
 
 
@@ -362,16 +333,16 @@ class CompaniaController extends Controller
 
         if ($permiso->DeletePermission()) {
 
-            $compania = Persona::find($id);
-            $compania->idEstado = 1;
+            $persona= Persona::find($id);
+            $persona->idEstado = 1;
             //transaction start
             DB::beginTransaction();
 
             try {
 
 
-                if($compania){
-                    $compania->update();
+                if($persona){
+                    $persona->update();
                 }
 
 
@@ -391,7 +362,7 @@ class CompaniaController extends Controller
 
     }
     
-    /// traer datos de la compania mediante el id
+    /// traer datos de la personamediante el id
     public function getUpdateData($id)
     {
         $permiso = new Permiso();
@@ -413,13 +384,12 @@ class CompaniaController extends Controller
      */
     public function verCuadros(Request $request)
     {
-        $parametro = new Parametro();
-        $compania = new Persona();
+        $persona = new Persona();
 
         $buscar = $request->buscador;
 
-        //Funcion para traer las personas por el id del rol
-        $prueba = $compania->getPersonaPorRol($buscar,$parametro->getidRolCampania());
+        //Funcion para traer las personas por el id del rol o no
+        $prueba = $persona->getPersonaPorRol($buscar);
 
 
         $tipoDeDatos = $request->tipoDeDatos;
@@ -505,7 +475,7 @@ class CompaniaController extends Controller
                                             <h3><strong>'.$pruebas->nombre.'</strong>'.$estado.'</h3>
                                             <p class="font-bold">'.$pruebas->cedula.'</p>
                                             <p class="font-bold">'.$pruebas->alias.'</p>
-                                            <div>
+                                            <div class="align-bottom">
                                             '.$this->getButtons('modify',$pruebas).'
                                             '.$btnEstado.'
                                             '.$this->getButtons('delete',$pruebas).'
@@ -516,12 +486,25 @@ class CompaniaController extends Controller
                                         
                                     </div>
                                 </div>';
+
+                    /*$contenthj = '<div class="col-md-3 datos">
+                                <div class="ibox-content text-center">'.$estado.'
+                                    <h3 class="inlineText">
+                                        <img src="'.route('persona.image',['filename' => $pruebas->img ]).'" height="24px">
+                                    </h3>
+                                    <p class="font-bold">'.$pruebas->cedula.'</p>
+                                    <p class="font-bold">'.$pruebas->nombre.' | '.$pruebas->alias.'</p>
+                                    <div class="text-center">
+                                        '.$this->getButtons('modify',$pruebas).'
+                                        '.$btnEstado.'
+                                        '.$this->getButtons('delete',$pruebas).'
+                                    </div>
+                                </div>
+                            </div>';  */
             }
 
         }
 
         return $content;
     }
-
-
 }

@@ -22,7 +22,7 @@
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
                         <div class="dropdown profile-element">
-                                <img alt="image" class="img-circle" src="{{ route('persona.image',['filename' => \Auth::User()->persona->img ]) }}">
+                                <img alt="image" class="img-circle" src="{{ url('/').'/persona/image/'.Auth::User()->persona->img }}">
                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{\Auth::User()->persona->nombre}}</strong>
                                  </span> <span class="text-muted text-xs block">Perfil <b class="caret"></b></span> </span> </a>
@@ -111,24 +111,25 @@
                         <div class="btn-group cambioCompanias">
 
                             @if (session('estructura') !== null && session('compania') !== null && session('aplicacion') !== null)
-                                @if (isset(session('estructura')[session('compania')->id]['MENU_COMPANIAS']))
+                                @if (isset(session('estructura')['MENU_COMPANIAS']))
 
-                                    @for ($i = 0; $i < count(session('estructura')[session('compania')->id]['MENU_COMPANIAS']); $i++)
-                                        @if (session('estructura')[session('compania')->id]['MENU_COMPANIAS'][$i]['id'] == session('compania')->id)
+                                    @for ($i = 0; $i < count(session('estructura')['MENU_COMPANIAS']); $i++)
+                                        @if (session('estructura')['MENU_COMPANIAS'][$i]['id'] == session('compania')->id)
 
                                             <span data-toggle="dropdown" class="dropdown-toggle" aria-expanded="false">
-                                                <img src="{{ route('persona.image',['filename' => session('estructura')[session('compania')->id]['MENU_COMPANIAS'][$i]['imagen']])}}" class="navbar-form-custom">
+                                                <img src="{{ url('/').'/persona/image/'.session('estructura')['MENU_COMPANIAS'][$i]['imagen'] }}" class="navbar-form-custom">
                                                 <span class="caret carretCambioCompanias"></span>
                                             </span>
 
                                         @endif
 
                                         <ul class="dropdown-menu">
-                                            @if (session('estructura')[session('compania')->id]['MENU_COMPANIAS'][$i]['id'] != session('compania')->id)
+                                            @if (session('estructura')['MENU_COMPANIAS'][$i]['id'] != session('compania')->id)
 
                                                 <li>
-                                                    <div class="text-center block" onclick="window.location.href = '{{route('compania.cambiar',['idCompania'=>session('estructura')[session('compania')->id]['MENU_COMPANIAS'][$i]['id']])}}'">
-                                                        <img src="{{ route('persona.image',['filename' => session('estructura')[session('compania')->id]['MENU_COMPANIAS'][$i]['imagen']])}}" class="navbar-form-custom">
+                                                    <div class="text-center block" onclick="window.location.href = '{{route('compania.cambiar',['idCompania'=>session('estructura')['MENU_COMPANIAS'][$i]['id']])}}'">
+                                                        <img src="{{ url('/').'/persona/image/'.session('estructura')['MENU_COMPANIAS'][$i]['imagen'] }}" class="navbar-form-custom">
+                                                       
                                                     </div>
                                                 </li>
 
@@ -219,7 +220,7 @@
 
             
             <!-- Modal -->
-            @if (session('estructura') !== null && session('compania') !== null)
+            @if (session('estructura') !== null && session('compania') == null)
 
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">

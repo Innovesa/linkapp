@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTipoPersonaTable extends Migration
+class CreateTipoIdentificacionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateTipoPersonaTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_persona', function (Blueprint $table) {
+        Schema::create('tipo_identificacion', function (Blueprint $table) {
             $table->increments('id');
             $table->string('codigo',100);
             $table->string('nombre',45);
+            $table->string('codigo_tipo_persona',100);
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
@@ -33,6 +34,6 @@ class CreateTipoPersonaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_persona');
+        Schema::dropIfExists('tipo_identificacion');
     }
 }

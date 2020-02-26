@@ -43,22 +43,43 @@ class Persona extends Model
        
     }
 
-    //trae personas mediante el rol
-    public function getPersonaPorRol($buscar,$idRol){
+    //trae personas mediante el rol o no 
+    public function getPersonaPorRol($buscar,$idRol=null){
 
-        $result = DB::table($this->table)
-        ->distinct()
-        ->join('persona_rol', 'persona.id', '=', 'persona_rol.idPersona')
-        ->join('estado', 'persona.idEstado', '=', 'estado.id')
-        ->select('persona.*','estado.nombre as NombreEstado','estado.codigo')
-        ->where(function ($query) use ($buscar){ 
-            $query->where('persona.nombre','LIKE','%'.$buscar.'%')
-            ->orWhere('persona.alias','LIKE','%'.$buscar.'%')
-            ->orWhere('persona.cedula','LIKE','%'.$buscar.'%');
-        })
-        ->where('persona_rol.idRol', $idRol)
-        ->orderBy('persona.updated_at', 'DESC')
-        ->get();
+        if($idRol){
+
+            $result = DB::table($this->table)
+            ->distinct()
+            ->join('persona_rol', 'persona.id', '=', 'persona_rol.idPersona')
+            ->join('estado', 'persona.idEstado', '=', 'estado.id')
+            ->select('persona.*','estado.nombre as NombreEstado','estado.codigo')
+            ->where(function ($query) use ($buscar){ 
+                $query->where('persona.nombre','LIKE','%'.$buscar.'%')
+                ->orWhere('persona.alias','LIKE','%'.$buscar.'%')
+                ->orWhere('persona.cedula','LIKE','%'.$buscar.'%');
+            })
+            ->where('persona_rol.idRol', $idRol)
+            ->orderBy('persona.idEstado', 'asc')
+            ->orderBy('persona.nombre', 'asc')
+            ->get();
+            
+        }else{
+
+            $result = DB::table($this->table)
+            ->distinct()
+            ->join('estado', 'persona.idEstado', '=', 'estado.id')
+            ->select('persona.*','estado.nombre as NombreEstado','estado.codigo')
+            ->where(function ($query) use ($buscar){ 
+                $query->where('persona.nombre','LIKE','%'.$buscar.'%')
+                ->orWhere('persona.alias','LIKE','%'.$buscar.'%')
+                ->orWhere('persona.cedula','LIKE','%'.$buscar.'%');
+            })
+            ->orderBy('persona.idEstado', 'asc')
+            ->orderBy('persona.nombre', 'asc')
+            ->get();
+            
+        }
+
 
         return $result;
     }

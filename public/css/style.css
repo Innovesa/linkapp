@@ -8720,3 +8720,8 @@ body.md-skin {
 .modal-dialog{
   width: 1000px;
 }
+
+.contact-box {
+
+  min-height: 160px;
+}

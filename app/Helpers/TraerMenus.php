@@ -152,6 +152,8 @@ class TraerMenus{
 
             //Aplicaciones
 
+
+
             $pos = false;
 
             $aplicacion = array('id' => $estrutura->idAplicacion,'nombre' => $estrutura->nombreAplicacion,
@@ -271,8 +273,8 @@ class TraerMenus{
 
         } 
 
-       //= echo json_encode($array);
-       // die;
+        //echo json_encode($array);
+        //die;
         return $array;
     }  
     
