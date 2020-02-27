@@ -64,7 +64,6 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                             <h4 class="modal-title">{{@trans('entidades::entidades.mantenimiento.personas')}}</h4>
                             <small class="font-bold">{{@trans('entidades::entidades.mantenimiento.personas.agregar.editar')}}</small>
                         </div>
@@ -74,9 +73,24 @@
 
                                 <input type="hidden" id="id" name="id" value="">
 
-                                <div class="form-group col-sm-12" id="cedulaGroup">
-                                    <label>{{@trans('entidades::entidades.cedula')}}</label>
-                                    <input type="text" id="cedula" name="cedula" placeholder="{{@trans('entidades::entidades.cedula')}}" class="form-control">
+                                <div class="form-group col-sm-12">
+                                    <label>{{@trans('entidades::entidades.tipo.identificacion')}}</label>
+
+
+                                    <div class="form-row">
+                                        <div class="col-sm-3 no-padding-left">
+                                            <select class="form-control" name="tipoIdentificacion" id="tipoIdentificacion">
+                                                @foreach ($identificaciones as $identificacion)
+                                                    <option value="{{$identificacion->id}}">{{$identificacion->nombre}}</option>
+                                                 @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-9" id="identificacionGroup">
+                                            <input type="text" id="identificacion" name="identificacion" placeholder="{{@trans('entidades::entidades.identificacion')}}" class="form-control">
+                                   
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <div class="form-group col-sm-12" id="nombreGroup">

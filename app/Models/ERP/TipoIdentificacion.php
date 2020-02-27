@@ -4,13 +4,13 @@ namespace LinkApp\Models\ERP;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TipoPersona extends Model
+class TipoIdentificacion extends Model
 {
-    protected $table = 'tipo_persona';
+    protected $table = 'tipo_identificacion';
 
     //one to many
     public function persona(){
-        return $this->hasMany('LinkApp\Models\ERP\Persona','idTipoPersona');
+        return $this->hasMany('LinkApp\Models\ERP\Persona','idTipoIdentificacion');
     }
 
     //one to many

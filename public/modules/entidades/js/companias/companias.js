@@ -187,7 +187,9 @@ function setUpdateData(response){
     $("#frmMantenimientoCompanias #id").val(response.id);
     $("#frmMantenimientoCompanias #nombre").val(response.nombre);
     $("#frmMantenimientoCompanias #alias").val(response.alias);
-    $("#frmMantenimientoCompanias #cedula").val(response.cedula);
+    $("#frmMantenimientoCompanias #identificacion").val(response.identificacion);
+
+    $("#frmMantenimientoPersonas #tipoIdentificacion").val(response.idTipoIdentificacion).change();
 
 }
 
@@ -229,7 +231,8 @@ function frmMantenimientoCompanias(){
                 //console.log(response.errors);
             }else{
                 //console.log(response.success);
-                limpiarForm('todo');
+                // limpiarForm('todo');
+                location.reload();
                 getVerDatos();
                 alertSuccess(response.success);
             }
@@ -241,6 +244,7 @@ function frmMantenimientoCompanias(){
     $("#btnCerrar").click(function() {
         limpiarForm('todo');
     });
+
 
 };
 
@@ -263,11 +267,11 @@ function erroresForm(errors){
         limpiarForm('nombre');
     }
 
-    if(errors.cedula){
-        $("#frmMantenimientoCompanias #cedulaGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoCompanias #cedulaGroup").append(mensajeError(errors.cedula));
+    if(errors.identificacion){
+        $("#frmMantenimientoCompanias #identificacionGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoCompanias #identificacionGroup").append(mensajeError(errors.identificacion));
     }else{
-        limpiarForm('cedula');
+        limpiarForm('identificacion');
     }
 
     if(errors.alias){

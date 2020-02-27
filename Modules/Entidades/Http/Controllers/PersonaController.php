@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use LinkApp\Http\Controllers\Controller;
 use LinkApp\Models\ERP\Persona;
-use LinkApp\Models\ERP\PersonaRol;
+use LinkApp\Models\ERP\Estado;
 use LinkApp\Models\ERP\Permiso;
 use Illuminate\Support\Facades\Storage; //para los discos virtuales
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
-use LinkApp\Models\ERP\Parametro;
+use LinkApp\Models\ERP\TipoIdentificacion;
 use Illuminate\Support\Facades\Gate;
 use Validator;
 
@@ -30,9 +30,11 @@ class PersonaController extends Controller
 
         if ($permiso->ViewPermission()) {
 
+            $identificaciones = TipoIdentificacion::all();
+
             session(['currentUrl' => url()->current()]);
 
-            return view('entidades::personas.index');
+            return view('entidades::personas.index',['identificaciones'=>$identificaciones]);
 
         } else{
             return redirect("/home");
@@ -108,12 +110,12 @@ class PersonaController extends Controller
     
        $id = $resquest->input('id');
 
-       $persona= Persona::find($id);
+       $persona = Persona::find($id);
        
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
             'nombre' => ['required', 'string', 'max:200'],
-            'cedula' => ['required', 'string', 'max:15','unique:persona,cedula,'.$id],
+            'identificacion' => ['required', 'string', 'max:15','unique:persona,identificacion,'.$id],
             'alias' =>  ['max:200'],
             'imagen' => ['image'],
         ]);
@@ -127,16 +129,18 @@ class PersonaController extends Controller
         //recoger daots del formulario
 
         $nombre = $resquest->input('nombre');
-        $cedula = $resquest->input('cedula');
+        $identificacion = $resquest->input('identificacion');
         $alias = $resquest->input('alias');
         $imagen = $resquest->file('imagen');
+        $idTipoIdentificacion = $resquest->input('tipoIdentificacion');
 
 
         //Asignar nuevos valores al objeto del usuario
         $persona->id = $id;
-        $persona->cedula = $cedula;
+        $persona->identificacion = $identificacion;
         $persona->nombre = $nombre;
         $persona->alias = $alias;
+        $persona->idTipoIdentificacion = $idTipoIdentificacion;
 
 
 
@@ -172,7 +176,7 @@ class PersonaController extends Controller
         DB::commit();
         //transaction end
 
-        return response()->json(['success'=>@trans('entidades::entidades.compania.actualizada.exito')]);
+        return response()->json(['success'=>@trans('entidades::entidades.persona.actualizada.exito')]);
         
     }
 
@@ -186,11 +190,13 @@ class PersonaController extends Controller
         
        $persona= new Persona();
 
+       $estado = Estado::where('codigo','ESTADO_ACTIVO')->first();
+
        
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
             'nombre' => ['required', 'string', 'max:200'],
-            'cedula' => ['required', 'string', 'max:15','unique:persona'],
+            'identificacion' => ['required', 'string', 'max:15','unique:persona'],
             'alias' => ['max:200'],
             'imagen' => ['image'],
         ]);
@@ -203,18 +209,18 @@ class PersonaController extends Controller
 
         //recoger daots del formulario
         $nombre = $resquest->input('nombre');
-        $cedula = $resquest->input('cedula');
+        $identificacion = $resquest->input('identificacion');
         $alias = $resquest->input('alias');
         $imagen = $resquest->file('imagen');
-
+        $idTipoIdentificacion = $resquest->input('tipoIdentificacion');
 
         //Asignar nuevos valores al objeto del usuario
-        $persona->cedula = $cedula;
+        $persona->identificacion = $identificacion;
         $persona->nombre = $nombre;
         $persona->alias = $alias;
         $persona->img = 'default/logo.png';
-        $persona->idTipoPersona = 2;
-        $persona->idEstado = 1;
+        $persona->idTipoIdentificacion = $idTipoIdentificacion;
+        $persona->idEstado = $estado->id;
 
         
         //transaction start
@@ -250,7 +256,7 @@ class PersonaController extends Controller
         DB::commit();
         //transaction end
 
-        return response()->json(['success'=>@trans('entidades::entidades.compania.creada.exito')]);
+        return response()->json(['success'=>@trans('entidades::entidades.persona.creada.exito')]);
         
     }
 
@@ -279,13 +285,13 @@ class PersonaController extends Controller
                 DB::rollback();
 
                 //return response()->json(['errors'=>$e->getMessage()]);
-                return response()->json(['errors'=> @trans('entidades::entidades.compania.eliminar.error')]);
+                return response()->json(['errors'=> @trans('entidades::entidades.persona.eliminar.error')]);
             }
             
             DB::commit();
             //transaction end
         
-            return response()->json(['success'=> @trans('entidades::entidades.compania.eliminar.exito')]);
+            return response()->json(['success'=> @trans('entidades::entidades.persona.eliminar.exito')]);
         }
 
     }
@@ -295,10 +301,12 @@ class PersonaController extends Controller
     {
         $permiso = new Permiso();
 
+        $estado = Estado::where('codigo','ESTADO_DESACTIVADO')->first();
+
         if ($permiso->DeletePermission()) {
 
             $persona= Persona::find($id);
-            $persona->idEstado = 2;
+            $persona->idEstado = $estado->id;
             //transaction start
             DB::beginTransaction();
 
@@ -321,7 +329,7 @@ class PersonaController extends Controller
             DB::commit();
             //transaction end
         
-            return response()->json(['success'=>@trans('entidades::entidades.compania.activada.exito')]);
+            return response()->json(['success'=>@trans('entidades::entidades.persona.desactivada.exito')]);
         }
 
     }
@@ -330,11 +338,12 @@ class PersonaController extends Controller
     public function activar($id)
     {
         $permiso = new Permiso();
+        $estado = Estado::where('codigo','ESTADO_ACTIVO')->first();
 
         if ($permiso->DeletePermission()) {
 
             $persona= Persona::find($id);
-            $persona->idEstado = 1;
+            $persona->idEstado = $estado->id;
             //transaction start
             DB::beginTransaction();
 
@@ -357,7 +366,7 @@ class PersonaController extends Controller
             DB::commit();
             //transaction end
         
-            return response()->json(['success'=>@trans('entidades::entidades.compania.desactivada.exito')]);
+            return response()->json(['success'=>@trans('entidades::entidades.persona.activada.exito')]);
         }
 
     }
@@ -405,7 +414,7 @@ class PersonaController extends Controller
                         <table class="table table-striped table-bordered table-hover dataTables-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>'.@trans('entidades::entidades.cedula').'</th>
+                                            <th>'.@trans('entidades::entidades.identificacion').'</th>
                                             <th>'.@trans('entidades::entidades.nombre').'</th>
                                             <th>'.@trans('entidades::entidades.alias').'</th>
                                             <th>'.@trans('entidades::entidades.imagen').'</th>
@@ -427,7 +436,7 @@ class PersonaController extends Controller
 
 
                 $content .= '<tr>
-                                <td>'.$pruebas->cedula.'</td>
+                                <td>'.$pruebas->identificacion.'</td>
                                 <td>'.$pruebas->nombre.'</td>
                                 <td>'.$pruebas->alias.'</td>
                                 <td>
@@ -473,7 +482,7 @@ class PersonaController extends Controller
                                         </div>
                                         <div class="col-sm-8">
                                             <h3><strong>'.$pruebas->nombre.'</strong>'.$estado.'</h3>
-                                            <p class="font-bold">'.$pruebas->cedula.'</p>
+                                            <p class="font-bold">'.$pruebas->identificacion.'</p>
                                             <p class="font-bold">'.$pruebas->alias.'</p>
                                             <div class="align-bottom">
                                             '.$this->getButtons('modify',$pruebas).'
@@ -492,7 +501,7 @@ class PersonaController extends Controller
                                     <h3 class="inlineText">
                                         <img src="'.route('persona.image',['filename' => $pruebas->img ]).'" height="24px">
                                     </h3>
-                                    <p class="font-bold">'.$pruebas->cedula.'</p>
+                                    <p class="font-bold">'.$pruebas->identificacion.'</p>
                                     <p class="font-bold">'.$pruebas->nombre.' | '.$pruebas->alias.'</p>
                                     <div class="text-center">
                                         '.$this->getButtons('modify',$pruebas).'

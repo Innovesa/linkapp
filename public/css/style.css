@@ -8725,3 +8725,8 @@ body.md-skin {
 
   min-height: 160px;
 }
+
+.no-padding-left {
+
+  padding-left: 0px !important;
+}
