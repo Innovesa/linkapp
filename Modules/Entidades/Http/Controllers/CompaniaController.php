@@ -8,11 +8,13 @@ use Illuminate\Http\Response;
 use LinkApp\Http\Controllers\Controller;
 use LinkApp\Models\ERP\Persona;
 use LinkApp\Models\ERP\PersonaRol;
+use LinkApp\Models\ERP\Estado;
 use LinkApp\Models\ERP\Permiso;
 use Illuminate\Support\Facades\Storage; //para los discos virtuales
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use LinkApp\Models\ERP\Parametro;
+use LinkApp\Models\ERP\TipoIdentificacion;
 use Illuminate\Support\Facades\Gate;
 use Validator;
 
@@ -30,9 +32,12 @@ class CompaniaController extends Controller
 
         if ($permiso->ViewPermission()) {
 
+            $identificaciones = TipoIdentificacion::where('codigo_tipo_persona','PERSONA_JURIDICA')->get();
+
+
             session(['currentUrl' => url()->current()]);
 
-            return view('entidades::companias.index');
+            return view('entidades::companias.index',['identificaciones'=>$identificaciones]);
 
         } else{
             return redirect("/home");
@@ -113,7 +118,7 @@ class CompaniaController extends Controller
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
             'nombre' => ['required', 'string', 'max:200'],
-            'cedula' => ['required', 'string', 'max:15','unique:persona,cedula,'.$id],
+            'identificacion' => ['required', 'string', 'max:15','unique:persona,identificacion,'.$id],
             'alias' => ['required', 'string', 'max:200'],
             'imagen' => ['image'],
         ]);
@@ -127,19 +132,19 @@ class CompaniaController extends Controller
         //recoger daots del formulario
 
         $nombre = $resquest->input('nombre');
-        $cedula = $resquest->input('cedula');
+        $identificacion = $resquest->input('identificacion');
         $alias = $resquest->input('alias');
         $imagen = $resquest->file('imagen');
+        $idTipoIdentificacion = $resquest->input('tipoIdentificacion');
 
 
         //Asignar nuevos valores al objeto del usuario
         $compania->id = $id;
-        $compania->cedula = $cedula;
+        $compania->identificacion = $identificacion;
         $compania->nombre = $nombre;
         $compania->alias = $alias;
+        $compania->idTipoIdentificacion = $idTipoIdentificacion;
 
-        //$compania->idTipoPersona = 2;
-        $compania->idEstado = 1;
 
 
         //Subir fichero
@@ -188,14 +193,15 @@ class CompaniaController extends Controller
           //conseguir usuario identificado
         
        $compania = new Persona();
+       $estado = Estado::where('codigo','ESTADO_ACTIVO')->first();
 
        
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
             'nombre' => ['required', 'string', 'max:200'],
-            'cedula' => ['required', 'string', 'max:15','unique:persona'],
-            'alias' => ['required', 'string', 'max:200'],
-            'imagen' => ['required','image'],
+            'identificacion' => ['required', 'string', 'max:15','unique:persona'],
+            'alias' => ['max:200'],
+            'imagen' => ['image'],
         ]);
         
         if($validator->fails()){
@@ -206,18 +212,18 @@ class CompaniaController extends Controller
 
         //recoger daots del formulario
         $nombre = $resquest->input('nombre');
-        $cedula = $resquest->input('cedula');
+        $identificacion = $resquest->input('identificacion');
         $alias = $resquest->input('alias');
         $imagen = $resquest->file('imagen');
-
+        $idTipoIdentificacion = $resquest->input('tipoIdentificacion');
 
         //Asignar nuevos valores al objeto del usuario
-        $compania->cedula = $cedula;
+        $compania->identificacion = $identificacion;
         $compania->nombre = $nombre;
         $compania->alias = $alias;
         $compania->img = 'default/logo.png';
-        $compania->idTipoPersona = 2;
-        $compania->idEstado = 1;
+        $compania->idTipoIdentificacion = $idTipoIdentificacion;
+        $compania->idEstado = $estado->id;
 
 
 
@@ -323,47 +329,12 @@ class CompaniaController extends Controller
     public function desactivar($id)
     {
         $permiso = new Permiso();
+        $estado = Estado::where('codigo','ESTADO_DESACTIVADO')->first();
 
         if ($permiso->DeletePermission()) {
 
             $compania = Persona::find($id);
-            $compania->idEstado = 2;
-            //transaction start
-            DB::beginTransaction();
-
-            try {
-
-
-                if($compania){
-                    $compania->update();
-                }
-
-
-            } catch (Exception $e) {
-
-                DB::rollback();
-
-                return response()->json(['errors'=>$e->getMessage()]);
-            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
-            }
-            
-            DB::commit();
-            //transaction end
-        
-            return response()->json(['success'=>@trans('entidades::entidades.compania.activada.exito')]);
-        }
-
-    }
-
-        //Eliminar compañia
-    public function activar($id)
-    {
-        $permiso = new Permiso();
-
-        if ($permiso->DeletePermission()) {
-
-            $compania = Persona::find($id);
-            $compania->idEstado = 1;
+            $compania->idEstado = $estado->id;
             //transaction start
             DB::beginTransaction();
 
@@ -387,6 +358,43 @@ class CompaniaController extends Controller
             //transaction end
         
             return response()->json(['success'=>@trans('entidades::entidades.compania.desactivada.exito')]);
+        }
+
+    }
+
+        //Eliminar compañia
+    public function activar($id)
+    {
+        $permiso = new Permiso();
+        $estado = Estado::where('codigo','ESTADO_ACTIVO')->first();
+
+        if ($permiso->DeletePermission()) {
+
+            $compania = Persona::find($id);
+            $compania->idEstado = $estado->id;
+            //transaction start
+            DB::beginTransaction();
+
+            try {
+
+
+                if($compania){
+                    $compania->update();
+                }
+
+
+            } catch (Exception $e) {
+
+                DB::rollback();
+
+                return response()->json(['errors'=>$e->getMessage()]);
+            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
+            }
+            
+            DB::commit();
+            //transaction end
+        
+            return response()->json(['success'=>@trans('entidades::entidades.compania.activada.exito')]);
         }
 
     }
@@ -435,7 +443,7 @@ class CompaniaController extends Controller
                         <table class="table table-striped table-bordered table-hover dataTables-example dataTable">
                                     <thead>
                                         <tr>
-                                            <th>'.@trans('entidades::entidades.cedula').'</th>
+                                            <th>'.@trans('entidades::entidades.identificacion').'</th>
                                             <th>'.@trans('entidades::entidades.nombre').'</th>
                                             <th>'.@trans('entidades::entidades.alias').'</th>
                                             <th>'.@trans('entidades::entidades.imagen').'</th>
@@ -457,7 +465,7 @@ class CompaniaController extends Controller
 
 
                 $content .= '<tr>
-                                <td>'.$pruebas->cedula.'</td>
+                                <td>'.$pruebas->identificacion.'</td>
                                 <td>'.$pruebas->nombre.'</td>
                                 <td>'.$pruebas->alias.'</td>
                                 <td>
@@ -503,7 +511,7 @@ class CompaniaController extends Controller
                                         </div>
                                         <div class="col-sm-8">
                                             <h3><strong>'.$pruebas->nombre.'</strong>'.$estado.'</h3>
-                                            <p class="font-bold">'.$pruebas->cedula.'</p>
+                                            <p class="font-bold">'.$pruebas->identificacion.'</p>
                                             <p class="font-bold">'.$pruebas->alias.'</p>
                                             <div>
                                             '.$this->getButtons('modify',$pruebas).'

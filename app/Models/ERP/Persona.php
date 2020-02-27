@@ -28,8 +28,8 @@ class Persona extends Model
     }
     
     //many to one
-    public function tipoPersona(){
-        return $this->belongsTo('LinkApp\Models\ERP\TipoPersona','idTipoPersona');        
+    public function tipoIdentificacion(){
+        return $this->belongsTo('LinkApp\Models\ERP\TipoIdentificacion','idTipoIdentificacion');        
     }
 
     //one to many
@@ -56,7 +56,7 @@ class Persona extends Model
             ->where(function ($query) use ($buscar){ 
                 $query->where('persona.nombre','LIKE','%'.$buscar.'%')
                 ->orWhere('persona.alias','LIKE','%'.$buscar.'%')
-                ->orWhere('persona.cedula','LIKE','%'.$buscar.'%');
+                ->orWhere('persona.identificacion','LIKE','%'.$buscar.'%');
             })
             ->where('persona_rol.idRol', $idRol)
             ->orderBy('persona.idEstado', 'asc')
@@ -72,7 +72,7 @@ class Persona extends Model
             ->where(function ($query) use ($buscar){ 
                 $query->where('persona.nombre','LIKE','%'.$buscar.'%')
                 ->orWhere('persona.alias','LIKE','%'.$buscar.'%')
-                ->orWhere('persona.cedula','LIKE','%'.$buscar.'%');
+                ->orWhere('persona.identificacion','LIKE','%'.$buscar.'%');
             })
             ->orderBy('persona.idEstado', 'asc')
             ->orderBy('persona.nombre', 'asc')
