@@ -27,6 +27,8 @@ class CreatePaisTable extends Migration
             $table->foreign('idMoneda')->references('id')->on('moneda');
             $table->foreign('idIdioma')->references('id')->on('idioma');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 

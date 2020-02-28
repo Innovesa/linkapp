@@ -8692,3 +8692,41 @@ body.md-skin {
  width: 150px;
  height: 150px;
 }
+
+.cambioCompanias{
+  padding-top: 5px;
+  margin-left: 20px;
+}
+
+.cambioCompanias img{
+  margin-top: 10px;
+  width: 130px;
+  height: auto;
+}
+.carretCambioCompanias{
+  margin-top: 20px;
+}
+
+.check{
+  opacity:0.5;
+	color:#996;
+	
+}
+
+.img-check {
+  width: 200px;
+}
+
+.modal-dialog{
+  width: 1000px;
+}
+
+.contact-box {
+
+  min-height: 160px;
+}
+
+.no-padding-left {
+
+  padding-left: 0px !important;
+}

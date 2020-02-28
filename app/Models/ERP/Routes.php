@@ -9,10 +9,12 @@ class Routes extends Model
 {
     public static function ERP(){
         
-        Route::get('/home','ERP\MenuController@index')->middleware('verified')->name('home');
-        Route::get('/home/2','ERP\MenuController@indexCRM')->middleware('verified');
-        Route::get('/prueba','ERP\MenuController@prueba')->name('prueba');
-        Route::get('/usuario/avatar/{filename}', 'ERP\UsuarioController@getImage')->name('usuario.avatar');
+        Route::get('/home','ERP\HomeController@index')->middleware('verified')->name('home');
+        Route::get('/aplicacion/{idAplicacion}','ERP\HomeController@cambiarAplicacion')->name('aplicacion.cambiar');
+        Route::get('/compania/{idCompania}','ERP\HomeController@cambiarCompania')->name('compania.cambiar');
+        Route::get('/persona/image/{idPersona}/{filename}', 'ERP\UsuarioController@getImage')->name('persona.image');
         Route::get('/usuario/verificacion/', 'ERP\UsuarioController@verificacionPerfil')->name('usuario.verificacion.perfil');
+
+        Route::post('/parametro/compania','ERP\HomeController@addCompania')->name('agregar.compania');
     }
 }

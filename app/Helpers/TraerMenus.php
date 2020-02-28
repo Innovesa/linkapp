@@ -2,7 +2,9 @@
 
 namespace LinkApp\Helpers;
 
-use LinkApp\Models\ERP\Aplicacion;
+use Illuminate\Support\Facades\DB;
+USE Illuminate\Support\Collection;
+use LinkApp\Models\ERP\Opcion;
 use LinkApp\Models\ERP\PerfilUsuario;
 use LinkApp\Models\ERP\PerfilOpcion;
 use LinkApp\Models\ERP\UsuarioOpcion;
@@ -15,350 +17,270 @@ class TraerMenus{
     {
         $user = \Auth::User();
         $perfil = PerfilUsuario::where('idUsuario',$user->id)->get();
+        $userOpcion = UsuarioOpcion::where('idUsuario',$user->id)->get();
         
         $menus = new TraerMenus();
-        if($perfil){
+        
+        if($perfil || $userOpcion){
 
-            $_SESSION['Estructura'] = $menus->menuGeneral($perfil); 
-            
-            /*var_dump($_SESSION['Estructura']['menus']['contextual'][0]); 
-            die;*/
-            $_SESSION['aplicacion'] = 1;
+            session(['estructura' => $menus->menuGeneral($perfil,$user)]);
+        
         }
-
-
 
 
     }
 
 
 
-    public function menuGeneral($perfil){
+    public function menuGeneral($perfil,$user){
 
-        $aplicacion['menus'] = array();
+        $PerfilUser = array();
+
+        if ($perfil) {
+            foreach($perfil as $perfiles){
+                $PerfilUser[] = $perfiles->idPerfil;
+            }
+        }else{
+            $PerfilUser = [0];
+        }
 
 
-        //Trae las opciones del perfil que tiene asignado el usuario
+
+        $MENU = DB::table('menu')
+            ->distinct()
+            ->join('menu_opcion', 'menu.id', '=', 'menu_opcion.idMenu')
+            ->join('opcion', 'menu_opcion.idOpcion', '=', 'opcion.id')
+            ->join('opcion as modulo', 'opcion.superior', '=', 'modulo.id')
+            ->join('opcion as aplicacion', 'modulo.superior', '=', 'aplicacion.id')
+            ->join('perfil_opcion', 'opcion.id', '=', 'perfil_opcion.idOpcion')
+            ->join('perfil', 'perfil_opcion.idPerfil', '=', 'perfil.id')
+            ->join('perfil_usuario', 'perfil.id', '=', 'perfil_usuario.idPerfil')
+            ->join('persona', 'persona.id', '=', 'perfil_usuario.idCompania')
+            ->select(
+                'persona.nombre as nombreCompania','persona.img as imagenCompania','perfil_usuario.idCompania',
+                'opcion.id','menu.codigo','menu_opcion.orden','opcion.nombre',
+                'opcion.descripcion','opcion.icono','opcion.accion','opcion.superior as idModulo',
+                'modulo.descripcion as descripcionModulo','modulo.icono as iconoModulo','modulo.accion as accionModulo',
+                'modulo.nombre as nombreModulo','modulo.superior as idAplicacion','aplicacion.accion as accionAplicacion',
+                'aplicacion.descripcion as descripcionAplicacion','aplicacion.icono as iconoAplicacion','aplicacion.nombre as nombreAplicacion',
+                'perfil_opcion.rolModificar','perfil_opcion.rolEliminar','perfil_opcion.rolInsertar',
+                'perfil_opcion.rolAdmin','perfil_opcion.rolSuper'
+                )
+            ->whereIn('perfil_opcion.idPerfil', $PerfilUser)
+            //->orderBy('idCompania', 'ASC')
+            //->orderBy('codigo', 'ASC')
+            //->orderBy('orden', 'ASC')
+            //->orderBy('id', 'ASC')
+            ->get();;
+/*
+        $MENU2 = DB::table('opcion')
+            ->distinct()
+            ->leftJoin('perfil_opcion', 'opcion.id', '=', 'perfil_opcion.idOpcion')
+            ->leftJoin('menu_opcion', 'menu_opcion.idOpcion', '=', 'opcion.id')
+            ->leftJoin('menu', 'menu_opcion.idMenu', '=', 'menu.id')
+            ->leftJoin('perfil', 'perfil_opcion.idOpcion', '=', 'perfil.id')
+            ->leftJoin('perfil_usuario', 'perfil.id', '=', 'perfil_usuario.idPerfil')
+            ->leftJoin('persona', 'persona.id', '=', 'perfil_usuario.idCompania')
+            ->select(
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania','perfil_usuario.idCompania','menu.codigo','menu_opcion.orden','opcion.nombre',
+                'descripcion','icono','accion','superior','perfil_opcion.rolModificar',
+                'perfil_opcion.rolEliminar','perfil_opcion.rolInsertar',
+                'perfil_opcion.rolAdmin','perfil_opcion.rolSuper'
+                )
+            ->whereIn('opcion.superior', function($query){
+                $query->select('id')->from('opcion')->whereNull('superior');
+            });
+
+
+        $MENU4 = DB::table('menu')
+            ->distinct()
+            ->join('menu_opcion', 'menu.id', '=', 'menu_opcion.idMenu')
+            ->join('opcion', 'menu_opcion.idOpcion', '=', 'opcion.id')
+            ->join('usuario_opcion', 'opcion.id', '=', 'usuario_opcion.idOpcion')
+            ->join('persona', 'persona.id', '=', 'usuario_opcion.idCompania')
+            ->select(
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania', 'usuario_opcion.idCompania', 'menu.codigo','menu_opcion.orden','opcion.nombre',
+                'opcion.descripcion','opcion.icono','opcion.accion','opcion.superior',
+                'usuario_opcion.rolModificar','usuario_opcion.rolEliminar','usuario_opcion.rolInsertar',
+                'usuario_opcion.rolAdmin','usuario_opcion.rolSuper'
+                )
+            ->where('usuario_opcion.idUsuario', $user->id);
+
+
+        $MENU = DB::table('opcion')
+            ->distinct()
+            ->leftJoin('perfil_opcion', 'opcion.id', '=', 'perfil_opcion.idOpcion')
+            ->leftJoin('menu_opcion', 'menu_opcion.idOpcion', '=', 'opcion.id')
+            ->leftJoin('menu', 'menu_opcion.idMenu', '=', 'menu.id')
+            ->leftJoin('perfil', 'perfil_opcion.idOpcion', '=', 'perfil.id')
+            ->leftJoin('perfil_usuario', 'perfil.id', '=', 'perfil_usuario.idPerfil')
+            ->leftJoin('persona', 'persona.id', '=', 'perfil_usuario.idCompania')
+            ->select(
+                'opcion.id','persona.nombre as nombreCompania','persona.img as imagenCompania','perfil_usuario.idCompania','menu.codigo','menu_opcion.orden','opcion.nombre',
+                'descripcion','icono','accion','superior','perfil_opcion.rolModificar',
+                'perfil_opcion.rolEliminar','perfil_opcion.rolInsertar',
+                'perfil_opcion.rolAdmin','perfil_opcion.rolSuper'
+                )
+            ->whereIn('opcion.id', function($query){
+                $query->select('id')->from('opcion')->whereNull('superior');
+            })
+            ->union($MENU2)
+            ->union($MENU3)
+            ->union($MENU4)
+            ->orderBy('idCompania', 'ASC')
+            ->orderBy('codigo', 'ASC')
+            ->orderBy('orden', 'ASC')
+            ->orderBy('superior', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
+*/
+
+        return $this->menusUsuario($MENU);
         
-        foreach($perfil as $perfiles){
+    }
 
-            $estructura = PerfilOpcion::where('idPerfil',$perfiles->idPerfil)->get();
-            $l = 0;
-            if(isset($estructura)){
-                foreach ($estructura as $menus) {
 
-                
-                    foreach ($menus->opcion->menuOpcion as $prueba) {
+    function menusUsuario($menu) {
+
+        $array = [];
+        $array2 = [];
         
-                            if ($prueba->idOpcion == $menus->opcion->id) {
-                                $items0 = array();
-                                $items0['id'] = $menus->opcion->estructura->estructura->id;
-                                $items0['nombre'] = $menus->opcion->estructura->estructura->nombre;
-                                $items0['accion'] = $menus->opcion->estructura->estructura->accion;
-                                $items0['icono'] = $menus->opcion->estructura->estructura->icono;
-                                $items0['descripcion'] = $menus->opcion->estructura->estructura->descripcion;
-                                //$items['items'] = array();
-                                $aplicacion['menus']['aplicaciones'][] = $items0;
+        //$pos2 = false;
+       // $pos = false;
 
-                            if(isset( $aplicacion['menus'])){
-                                
-                                    if(!isset( $aplicacion['menus'][$prueba->menu->nombre])){
-                                        $items = array();
-                                        $items['id'] = $menus->opcion->estructura->estructura->id;
-                                        $items['nombre'] = $menus->opcion->estructura->estructura->nombre;
-                                        $items['accion'] = $menus->opcion->estructura->estructura->accion;
-                                        $items['icono'] = $menus->opcion->estructura->estructura->icono;
-                                        $items['descripcion'] = $menus->opcion->estructura->estructura->descripcion;
-                                        //$items['items'] = array();
-                                        $aplicacion['menus'][$prueba->menu->nombre][] = $items;
-                                        
-                                    }else{
-                                        $h = count($aplicacion['menus'][$prueba->menu->nombre])-1;
-                                        $valor = true;
-                                        for ($i=0; $i<=$h ; $i++) { 
-                                            if($aplicacion['menus'][$prueba->menu->nombre][$i]['id'] == $menus->opcion->estructura->estructura->id){
-                                                $valor = false;
-                                            }
-                                        }
+        foreach ($menu as $estrutura) {
 
-                                        if($valor == true){
-                                            $items2 = array();
-                                            $items2['id'] = $menus->opcion->estructura->estructura->id;
-                                            $items2['nombre'] = $menus->opcion->estructura->estructura->nombre;
-                                            $items2['accion'] = $menus->opcion->estructura->estructura->accion;
-                                            $items2['icono'] = $menus->opcion->estructura->estructura->icono;
-                                            $items2['descripcion'] = $menus->opcion->estructura->estructura->descripcion;
-                                            //$items2['items'] = array();
-                                            $aplicacion['menus'][$prueba->menu->nombre][] = $items2;
-                                        }
-                                    }
-                                    
+            //Aplicaciones
 
 
-                                    if(isset( $aplicacion['menus'][$prueba->menu->nombre])){
-                                        $h = count($aplicacion['menus'][$prueba->menu->nombre])-1;
-                                        
 
-                                        for ($i=0; $i <= $h ; $i++) { 
-    
-                                            if (isset($aplicacion['menus'][$prueba->menu->nombre][$i]['items'])) {
-                                            
-                                            
-                                                $j = count($aplicacion['menus'][$prueba->menu->nombre][$i]['items'])-1;
-                                                $valor2 = false;
-                                                for ($p=0; $p <= $j; $p++) { 
-                                                    
-                                                    if ($aplicacion['menus'][$prueba->menu->nombre][$i]['id'] == $menus->opcion->estructura->superior) {
+            $pos = false;
 
-                                                        if($aplicacion['menus'][$prueba->menu->nombre][$i]['items'][$p]['id'] != $menus->opcion->estructura->id){
-                                                            $valor2 = true;
-                                                        }else{
-                                                            $valor2 = false;
-                                                        }
-        
-                                                    }
+            $aplicacion = array('id' => $estrutura->idAplicacion,'nombre' => $estrutura->nombreAplicacion,
+                                'descripcion' => $estrutura->descripcionAplicacion,'icono' => $estrutura->iconoAplicacion,'opciones' => []);
 
+            if(!isset( $array[$estrutura->idCompania][$estrutura->codigo])){
+                 $array[$estrutura->idCompania][$estrutura->codigo][] = $aplicacion;
+            }
 
-                                                }
+            for ($i=0; $i < count( $array[$estrutura->idCompania][$estrutura->codigo]); $i++) { 
 
-                                                if ($valor2) {
-                                                    $items3 = array();
-                                                    $items3['id'] = $menus->opcion->estructura->id;
-                                                    $items3['nombre'] = $menus->opcion->estructura->nombre;
-                                                    $items3['accion'] = $menus->opcion->estructura->accion;
-                                                    $items3['icono'] = $menus->opcion->estructura->icono;
-                                                    $items3['descripcion'] = $menus->opcion->estructura->descripcion;
-                                                    $items3['superior'] = $menus->opcion->estructura->superior;
-                                                // $items3['items'] = array();
-                                                    $aplicacion['menus'][$prueba->menu->nombre][$i]['items'][] = $items3;
-                                                }
+                if (isset( $array[$estrutura->idCompania][$estrutura->codigo][$i]['id'])) {
 
-                                                
+                    $pos = in_array($aplicacion['id'], $array[$estrutura->idCompania][$estrutura->codigo][$i]);
 
-
-                                            }else{
-                                                
-                                                $items3 = array();
-                                                $items3['id'] = $menus->opcion->estructura->id;
-                                                $items3['nombre'] = $menus->opcion->estructura->nombre;
-                                                $items3['accion'] = $menus->opcion->estructura->accion;
-                                                $items3['icono'] = $menus->opcion->estructura->icono;
-                                                $items3['descripcion'] = $menus->opcion->estructura->descripcion;
-                                                $items3['superior'] = $menus->opcion->estructura->superior;
-                                                //$items3['items'] = array();
-                                                $aplicacion['menus'][$prueba->menu->nombre][$i]['items'][] = $items3; 
-                                            }
-                                        }
-
-
-                                    }
-
-                                    if(isset( $aplicacion['menus'][$prueba->menu->nombre])){
-                                        $h = count($aplicacion['menus'][$prueba->menu->nombre])-1;
-
-                                        for ($i=0; $i <= $h ; $i++) { 
-
-                                            $j = count($aplicacion['menus'][$prueba->menu->nombre][$i]['items'])-1;
-
-                                            for ($p=0; $p <= $j; $p++) { 
-
-                                                if($aplicacion['menus'][$prueba->menu->nombre][$i]['items'][$p]['id'] == $menus->opcion->superior){
-        
-                                                    $items4 = array();
-                                                    $items4['id'] = $menus->opcion->id;
-                                                    $items4['nombre'] = $menus->opcion->nombre;
-                                                    $items4['accion'] = $menus->opcion->accion;
-                                                    $items4['icono'] = $menus->opcion->icono;
-                                                    $items4['descripcion'] = $menus->opcion->descripcion;
-                                                    $items4['superior'] = $menus->opcion->superior;
-                                                    $items4['items'] = array();
-                                                    $aplicacion['menus'][$prueba->menu->nombre][$i]['items'][$p]['items'][] = $items4;
-                
-                                                }
-
-                                            }
-                                        }
-                                    }   
-                                }
-                                
-                            }
-            
+                    if ($pos) {
+                        break;
                     }
                 }
 
             }
-        }
+           
 
-        //Trae las opciones individales del usuario
+            if (!$pos) {
+                 $array[$estrutura->idCompania][$estrutura->codigo][] = $aplicacion;
+           }
 
-        $estructuraUsuario = UsuarioOpcion::where('idUsuario',\Auth::User()->id)->get();
 
-        if(isset($estructuraUsuario)){
-            foreach ($estructuraUsuario as $menus) {
+           //modulos 
+
+           for ($i=0; $i < count( $array[$estrutura->idCompania][$estrutura->codigo]) ; $i++) { 
+
+                $modulo = array('id'=>$estrutura->idModulo,'nombre'=>$estrutura->nombreModulo,'descripcion' => $estrutura->descripcionModulo,
+                                'icono' => $estrutura->iconoModulo,'accion' => $estrutura->accionModulo, 'opciones' => []);
+
+                $pos2 = false;
+                
+                for ($j=0; $j < count( $array[$estrutura->idCompania][$estrutura->codigo][$i]); $j++) { 
+
+                    if (isset( $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones'][$j]['id'])) {
+    
+                        $pos2 = in_array($modulo['id'], $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones'][$j]);
+    
+                        if ($pos2) {
+                            break;
+                        }
+                    }
+    
+                }
+
+                if (!$pos2 &&  $array[$estrutura->idCompania][$estrutura->codigo][$i]['id'] == $estrutura->idAplicacion) {
+                     $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones'][] = $modulo;
+
+                }
+
 
             
-                foreach ($menus->opcion->menuOpcion as $prueba) {
+            }
+
+            //opciones
+
+            for ($i=0; $i < count( $array[$estrutura->idCompania][$estrutura->codigo]); $i++) { 
+
+                $pos3 = false;
+
+                for ($j=0; $j < count( $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones']); $j++) { 
+
+                    $opcion = array('id'=>$estrutura->id,'nombre'=>$estrutura->nombre,'descripcion' => $estrutura->descripcion,
+                                    'icono' => $estrutura->icono,'accion' => $estrutura->accion);
+
+                    $pos3 = in_array($opcion, $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones'][$j]['opciones']);
     
-                        if ($prueba->idOpcion == $menus->opcion->id) {
-
-                           if(isset( $aplicacion['menus'])){
-
-                                    $items0 = array();
-                                    $items0['id'] = $menus->opcion->estructura->estructura->id;
-                                    $items0['nombre'] = $menus->opcion->estructura->estructura->nombre;
-                                    $items0['accion'] = $menus->opcion->estructura->estructura->accion;
-                                    $items0['icono'] = $menus->opcion->estructura->estructura->icono;
-                                    $items0['descripcion'] = $menus->opcion->estructura->estructura->descripcion;
-                                    //$items['items'] = array();
-                                    $aplicacion['menus']['aplicaciones'][] = $items0;
-                          
-                                if(!isset( $aplicacion['menus'][$prueba->menu->nombre])){
-                                    $items = array();
-                                    $items['id'] = $menus->opcion->estructura->estructura->id;
-                                    $items['nombre'] = $menus->opcion->estructura->estructura->nombre;
-                                    $items['accion'] = $menus->opcion->estructura->estructura->accion;
-                                    $items['icono'] = $menus->opcion->estructura->estructura->icono;
-                                    $items['descripcion'] = $menus->opcion->estructura->estructura->descripcion;
-                                    //$items['items'] = array();
-                                    $aplicacion['menus'][$prueba->menu->nombre][] = $items;
-                                    
-                                }else{
-                                    $h = count($aplicacion['menus'][$prueba->menu->nombre])-1;
-                                    $valor = true;
-                                    for ($i=0; $i<=$h ; $i++) { 
-                                        if($aplicacion['menus'][$prueba->menu->nombre][$i]['id'] == $menus->opcion->estructura->estructura->id){
-                                            $valor = false;
-                                        }
-                                    }
-
-                                    if($valor == true){
-                                        $items2 = array();
-                                        $items2['id'] = $menus->opcion->estructura->estructura->id;
-                                        $items2['nombre'] = $menus->opcion->estructura->estructura->nombre;
-                                        $items2['accion'] = $menus->opcion->estructura->estructura->accion;
-                                        $items2['icono'] = $menus->opcion->estructura->estructura->icono;
-                                        $items2['descripcion'] = $menus->opcion->estructura->estructura->descripcion;
-                                        //$items2['items'] = array();
-                                        $aplicacion['menus'][$prueba->menu->nombre][] = $items2;
-                                    }
-                                }
-                                   
-
-
-                                if(isset( $aplicacion['menus'][$prueba->menu->nombre])){
-                                    $h = count($aplicacion['menus'][$prueba->menu->nombre])-1;
-                                    
-
-                                    for ($i=0; $i <= $h ; $i++) { 
- 
-                                        if (isset($aplicacion['menus'][$prueba->menu->nombre][$i]['items'])) {
-                                           
-                                           
-                                            $j = count($aplicacion['menus'][$prueba->menu->nombre][$i]['items'])-1;
-                                            $valor2 = false;
-                                            for ($p=0; $p <= $j; $p++) { 
-                                                
-                                                if ($aplicacion['menus'][$prueba->menu->nombre][$i]['id'] == $menus->opcion->estructura->superior) {
-
-                                                    if($aplicacion['menus'][$prueba->menu->nombre][$i]['items'][$p]['id'] != $menus->opcion->estructura->id){
-                                                        $valor2 = true;
-                                                    }else{
-                                                        $valor2 = false;
-                                                    }
-       
-                                                }
-
-
-                                            }
-
-                                            if ($valor2) {
-                                                $items3 = array();
-                                                $items3['id'] = $menus->opcion->estructura->id;
-                                                $items3['nombre'] = $menus->opcion->estructura->nombre;
-                                                $items3['accion'] = $menus->opcion->estructura->accion;
-                                                $items3['icono'] = $menus->opcion->estructura->icono;
-                                                $items3['descripcion'] = $menus->opcion->estructura->descripcion;
-                                                $items3['superior'] = $menus->opcion->estructura->superior;
-                                               // $items3['items'] = array();
-                                                $aplicacion['menus'][$prueba->menu->nombre][$i]['items'][] = $items3;
-                                            }
-
-                                            
-
-
-                                        }else{
-                                            
-                                            $items3 = array();
-                                            $items3['id'] = $menus->opcion->estructura->id;
-                                            $items3['nombre'] = $menus->opcion->estructura->nombre;
-                                            $items3['accion'] = $menus->opcion->estructura->accion;
-                                            $items3['icono'] = $menus->opcion->estructura->icono;
-                                            $items3['descripcion'] = $menus->opcion->estructura->descripcion;
-                                            $items3['superior'] = $menus->opcion->estructura->superior;
-                                            //$items3['items'] = array();
-                                            $aplicacion['menus'][$prueba->menu->nombre][$i]['items'][] = $items3; 
-                                        }
-                                    }
-
-
-                                }
-
-                                if(isset( $aplicacion['menus'][$prueba->menu->nombre])){
-                                    $h = count($aplicacion['menus'][$prueba->menu->nombre])-1;
-
-                                    for ($i=0; $i <= $h ; $i++) { 
-
-                                        $j = count($aplicacion['menus'][$prueba->menu->nombre][$i]['items'])-1;
-
-                                        for ($p=0; $p <= $j; $p++) { 
-
-                                            if($aplicacion['menus'][$prueba->menu->nombre][$i]['items'][$p]['id'] == $menus->opcion->superior){
-     
-                                                $items4 = array();
-                                                $items4['id'] = $menus->opcion->id;
-                                                $items4['nombre'] = $menus->opcion->nombre;
-                                                $items4['accion'] = $menus->opcion->accion;
-                                                $items4['icono'] = $menus->opcion->icono;
-                                                $items4['descripcion'] = $menus->opcion->descripcion;
-                                                $items4['superior'] = $menus->opcion->superior;
-                                                $items4['items'] = array();
-                                                $aplicacion['menus'][$prueba->menu->nombre][$i]['items'][$p]['items'][] = $items4;
-               
-                                            }
-
-                                        }
-                                    }
-                                }   
-                            }
-                            
-                        }
-        
+                    if ( $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones'][$j]['id'] == $estrutura->idModulo && !$pos3) {
+    
+                         $array[$estrutura->idCompania][$estrutura->codigo][$i]['opciones'][$j]['opciones'][] = $opcion;
+                        
+                    }
+                    
                 }
+                
             }
-        }
 
-        $aplicacion['menus']['aplicaciones'] = $this->unique_multidim_array($aplicacion['menus']['aplicaciones'],'id');
+            //Menu aplicaciones 
 
-        echo json_encode($aplicacion);
-        die;
-        //return $aplicacion;
-    }
+            $MENU_APLICACIONES = array('id' => $estrutura->idAplicacion,'nombre' => $estrutura->nombreAplicacion,
+            'descripcion' => $estrutura->descripcionAplicacion,'icono' => $estrutura->iconoAplicacion,'accion'=>$estrutura->accionAplicacion);
 
 
-    function unique_multidim_array($array, $key) {
-        $temp_array = array();
-        $i = 0;
-        $key_array = array();
-       
-        foreach($array as $val) {
-            if (!in_array($val[$key], $key_array)) {
-                $key_array[$i] = $val[$key];
-                $temp_array[$i] = $val;
+            if(!isset( $array[$estrutura->idCompania]['MENU_APLICACIONES'])){
+                $array[$estrutura->idCompania]['MENU_APLICACIONES'][] = $MENU_APLICACIONES;
             }
-            $i++;
-        }
-        return $temp_array;
-    }
+
+            $pos4 = in_array($MENU_APLICACIONES,$array[$estrutura->idCompania]['MENU_APLICACIONES']);
+            
+            if (!$pos4) {
+                $array[$estrutura->idCompania]['MENU_APLICACIONES'][] = $MENU_APLICACIONES;
+            }
+
+            
+            //Menu companias
+
+            $MENU_COMPANIAS = array('id' => $estrutura->idCompania,'nombre' => $estrutura->nombreCompania,
+            'imagen' => $estrutura->imagenCompania);
+
+
+            if(!isset( $array2['MENU_COMPANIAS'])){
+                $array2['MENU_COMPANIAS'][] = $MENU_COMPANIAS;
+            }
+
+            $pos4 = in_array($MENU_COMPANIAS,$array2['MENU_COMPANIAS']);
+            
+            if (!$pos4) {
+                $array2['MENU_COMPANIAS'][] = $MENU_COMPANIAS;
+            }
+           
+            $array['MENU_COMPANIAS'] =  $array2['MENU_COMPANIAS'];
+
+            
+
+        } 
+
+        //echo json_encode($array);
+       // die;
+        return $array;
+    }  
+    
+
 
 
 }

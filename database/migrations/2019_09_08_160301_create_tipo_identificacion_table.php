@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCorreoTable extends Migration
+class CreateTipoIdentificacionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreateCorreoTable extends Migration
      */
     public function up()
     {
-        Schema::create('correo', function (Blueprint $table) {
+        Schema::create('tipo_identificacion', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('descripcion',200);
-            $table->string('numero',200);
-            $table->integer('idPersona')->unsigned();
+            $table->string('codigo',100);
+            $table->string('nombre',45);
+            $table->string('codigo_tipo_persona',100);
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
-            $table->foreign('idPersona')->references('id')->on('persona');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 
@@ -33,6 +34,6 @@ class CreateCorreoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('correo');
+        Schema::dropIfExists('tipo_identificacion');
     }
 }

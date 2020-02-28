@@ -23,6 +23,8 @@ class CreatePersonaRolTable extends Migration
             $table->foreign('idPersona')->references('id')->on('persona');
             $table->foreign('idRol')->references('id')->on('rol');
             $table->foreign('idCompania')->references('id')->on('persona');
+
+            $table->engine = 'InnoDB';
         });
     }
 

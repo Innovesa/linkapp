@@ -24,6 +24,7 @@ class CreateParametroUsuarioTable extends Migration
             $table->timestamps();
 
             $table->unique(['codigo', 'dominio','idUsuario']);
+            $table->engine = 'InnoDB';
         });
     }
 

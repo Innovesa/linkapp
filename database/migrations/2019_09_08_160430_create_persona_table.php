@@ -15,16 +15,18 @@ class CreatePersonaTable extends Migration
     {
         Schema::create('persona', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('cedula',15)->unique();
+            $table->string('identificacion',15)->unique();
             $table->string('nombre',200);
-            $table->string('alias',200);
+            $table->string('alias',200)->nullable();
             $table->string('img',250);
-            $table->integer('idTipoPersona')->unsigned();
+            $table->integer('idTipoIdenticacion')->unsigned();
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
             
-            $table->foreign('idTipoPersona')->references('id')->on('tipo_persona');
+            $table->foreign('idTipoIdenticacion')->references('id')->on('tipo_Identicacion');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 

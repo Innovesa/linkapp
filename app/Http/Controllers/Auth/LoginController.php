@@ -5,10 +5,12 @@ namespace LinkApp\Http\Controllers\Auth;
 use LinkApp\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use LinkApp\Models\ERP\Estructura;
 use LinkApp\Models\ERP\PerfilUsuario;
 use LinkApp\Models\ERP\PerfilOpcion;
-use LinkApp\Models\ERP\Menu;
+use LinkApp\Models\ERP\ParametroUsuario;
+use LinkApp\Models\ERP\Opcion;
+use LinkApp\Models\ERP\Persona;
+use LinkApp\Models\ERP\Usuario;
 
 
 class LoginController extends Controller
@@ -111,7 +113,59 @@ class LoginController extends Controller
     	if ( method_exists($this, 'redirectTo') ) {
     		return $this->redirectTo();
     	} else {
-    		return property_exists($this, 'redirectTo') ? $this->redirectTo : '/asdasdasdasd';
+    		return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
     	}
+    }
+
+
+
+    protected function authenticated(Request $request, $user)
+    {
+        $parametroAplicacion = ParametroUsuario::where('codigo','USUARIO_APLICACION_PREDETERMINADA')->where('idUsuario',$user->id)->first();
+        $parametroCompania = ParametroUsuario::where('codigo','USUARIO_COMPANIA_PREDETERMINADA')->where('idUsuario',$user->id)->first();
+		
+		\TraerMenus::traerTodo();
+
+        if($parametroAplicacion !== null || $parametroCompania !== null){
+
+            $aplicacion = Opcion::Where('id',$parametroAplicacion->valor)->first();
+            $compania = Persona::Where('id',$parametroCompania->valor)->first();
+
+            if ($aplicacion) {
+
+                session(['aplicacion' => $aplicacion]);
+    
+            }else{
+                session(['aplicacion' => null]);
+            }
+    
+    
+            if ($compania) {
+    
+                session(['compania' => $compania]);
+    
+            }else{
+                session(['compania' => null]);
+            }
+
+
+            $usuario = new Usuario();
+
+            session(['permisos' => $usuario->getPermisos($user,$compania)]);
+
+          /*  var_dump(session("permisos"));
+            die;*/
+
+
+        }
+
+        
+
+
+    }
+
+    protected function loggedOut(Request $request)
+    {
+        \Session::flush();
     }
 }

@@ -22,6 +22,8 @@ class CreateMenuOpcionTable extends Migration
 
             $table->foreign('idMenu')->references('id')->on('menu');
             $table->foreign('idOpcion')->references('id')->on('opcion');
+
+            $table->engine = 'InnoDB';
         });
     }
 

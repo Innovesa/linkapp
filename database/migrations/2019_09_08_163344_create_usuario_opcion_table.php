@@ -17,6 +17,7 @@ class CreateUsuarioOpcionTable extends Migration
             $table->increments('id');
             $table->integer('idUsuario')->unsigned();
             $table->integer('idOpcion')->unsigned();
+            $table->integer('idCompania')->unsigned();
             $table->integer('rolModificar');
             $table->integer('rolEliminar');
             $table->integer('rolInsertar');
@@ -25,7 +26,10 @@ class CreateUsuarioOpcionTable extends Migration
             $table->timestamps();
 
             $table->foreign('idUsuario')->references('id')->on('usuario');
+            $table->foreign('idCompania')->references('id')->on('persona');
             $table->foreign('idOpcion')->references('id')->on('opcion');
+
+            $table->engine = 'InnoDB';
         });
     }
 

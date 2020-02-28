@@ -16,10 +16,14 @@ class CreatePerfilTable extends Migration
         Schema::create('perfil', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre',45);
-            $table->integer('idEstado')->unsigned();;
+            $table->integer('idEstado')->unsigned();
+            $table->integer('idCompania')->unsigned();
             $table->timestamps();
             
+            $table->foreign('idCompania')->references('id')->on('persona');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
 
         });
     }

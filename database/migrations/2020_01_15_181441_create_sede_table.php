@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTelefonoTable extends Migration
+class CreateSedeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,19 @@ class CreateTelefonoTable extends Migration
      */
     public function up()
     {
-        Schema::create('telefono', function (Blueprint $table) {
+        Schema::create('sede', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('descripcion',200);
-            $table->string('numero',200);
-            $table->integer('idPersona')->unsigned();
+            $table->string('nombre',100);
+            $table->integer('idUbicacion')->unsigned();
+            $table->integer('idCompania')->unsigned();
             $table->integer('idEstado')->unsigned();
             $table->timestamps();
 
-            $table->foreign('idPersona')->references('id')->on('persona');
+            $table->foreign('idUbicacion')->references('id')->on('pais');
+            $table->foreign('idCompania')->references('id')->on('persona');
             $table->foreign('idEstado')->references('id')->on('estado');
+
+            $table->engine = 'InnoDB';
         });
     }
 
@@ -33,6 +36,6 @@ class CreateTelefonoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('telefono');
+        Schema::dropIfExists('sede');
     }
 }
