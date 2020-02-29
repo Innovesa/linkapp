@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/seguridad",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Seguridad\\Providers\\SeguridadServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Seguridad\\": ""
+        }
+    }
+}

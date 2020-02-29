@@ -60,7 +60,7 @@
 <!--Modal -->
 @canany(['insert','modify','admin'],[session("permisos"),session("currentUrl")])
 
-    <div class="modal inmodal fade" id="modalMantenimiento" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal inmodal fade" id="modalMantenimiento" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">

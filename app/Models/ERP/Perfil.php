@@ -23,9 +23,17 @@ class Perfil extends Model
         return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado');        
     }
 
-    /*many to many 
-    public function opcion(){
-        return $this->belongsToMany('LinkApp\Models\ERP\Opcion', 'erp_perfil_opcion','idOpcion', 'idPerfil');        
-    }*/
+    public function getPerfil($Compania,$isSuper=null)
+    {
+        if($Compania && !$isSuper){
+            $whereCompania = $Compania->id;
+        }else{
+            $whereCompania = null;
+        }
+
+        $result = Perfil::where('idCompania','LIKE','%'.$whereCompania.'%')->get();
+            
+        return $result;
+    }
     
 }

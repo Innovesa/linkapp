@@ -49,7 +49,7 @@ return [
     'mantenimiento.personas' => 'Mantenimiento personas',
     'mantenimiento.personas.agregar.editar'=> 'Agregar o editar personas',
 
-    'persona.actualizada.exito' => 'Personaactualizada con éxito!',
+    'persona.actualizada.exito' => 'Persona actualizada con éxito!',
     'persona.creada.exito' => 'Persona creada con éxito!',
     'persona.eliminar.error' => 'Persona no se puede eliminar porque esta ligada a algun perfil, usuario o permiso',
     'persona.eliminar.exito' => 'Persona eliminada!',

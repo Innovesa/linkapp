@@ -8730,3 +8730,7 @@ body.md-skin {
 
   padding-left: 0px !important;
 }
+
+input[type="text"]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}

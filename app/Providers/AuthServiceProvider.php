@@ -28,6 +28,31 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->registerPolicies();
 
+        Gate::define('access', function ($user,$permisosUsuario,$url) {
+
+            $accion = "";
+
+            $permisos = $permisosUsuario;
+
+            if (isset($permisos) && !$permisos->isEmpty()) {
+
+                foreach($permisos as $permiso){
+
+                    $accion = url('/').$permiso->accion;
+    
+                   if ($accion === $url) {
+    
+                        return true;
+    
+                    }
+                }
+            }
+
+           return false;
+
+        });
+
+
         Gate::define('view', function ($user,$permisosUsuario,$url) {
 
             $accion = "";

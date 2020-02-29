@@ -50,10 +50,15 @@ class Usuario extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo('LinkApp\Models\ERP\Persona','idPersona'); 
     }
 
-        //many to one
+    //many to one
     public function estado(){
          return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado'); 
            
+    }
+
+     //one to many
+    public function perfilUsuario(){
+        return $this->hasMany('LinkApp\Models\ERP\PerfilUsuario','idUsuario');
     }
  /////////////////////////////////////////////////////
 
@@ -85,6 +90,36 @@ class Usuario extends Authenticatable implements MustVerifyEmail
 
     return $permisos;
       
+}
+
+//trae personas mediante el rol o no 
+public function getUsuario($buscar,$Compania,$isSuper=null){
+
+    if($Compania && !$isSuper){
+        $whereCompania = $Compania->id;
+    }else{
+        $whereCompania = null;
+    }
+
+
+    $result = DB::table($this->table)
+    ->join('persona', 'persona.id', '=', 'usuario.idPersona')
+    ->join('compania_persona', 'persona.id', '=', 'compania_persona.idPersona')
+    ->join('estado', 'usuario.idEstado', '=', 'estado.id')
+    ->select('persona.*','estado.nombre as NombreEstado','estado.codigo','usuario.email','usuario.username','usuario.id as idUsuario')
+    ->where(function ($query) use ($buscar){ 
+        $query->where('persona.nombre','LIKE','%'.$buscar.'%')
+        ->orWhere('usuario.username','LIKE','%'.$buscar.'%')
+        ->orWhere('usuario.email','LIKE','%'.$buscar.'%');
+    })
+    ->where('compania_persona.idCompania','LIKE','%'.$whereCompania.'%')
+    ->orderBy('usuario.idEstado', 'asc')
+    ->orderBy('usuario.username', 'asc')
+    ->get();
+        
+
+
+    return $result;
 }
 
 }

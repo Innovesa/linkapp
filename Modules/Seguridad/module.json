@@ -1,0 +1,13 @@
+{
+    "name": "Seguridad",
+    "alias": "seguridad",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Seguridad\\Providers\\SeguridadServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

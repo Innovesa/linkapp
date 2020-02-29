@@ -10,6 +10,6 @@ class Parametro extends Model
 
     function getidRolCampania(){
         $idcompania = Parametro::where('codigo','ROL_COMPANIA')->first();
-        return $idcompania->id;
+        return $idcompania->valor;
     }
 }

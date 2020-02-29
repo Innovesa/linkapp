@@ -8,8 +8,9 @@ document.addEventListener("DOMContentLoaded", function() {
     frmMantenimientoPersonas();
     cargarDatos();
 
-
 });
+
+
 
 function buttonExports(){
     $('.dataTables-example').DataTable({
@@ -230,10 +231,10 @@ function frmMantenimientoPersonas(){
                 //console.log(response.errors);
             }else{
                 //console.log(response.success);
-               // limpiarForm('todo');
-                location.reload();
+                limpiarForm('todo');
                 getVerDatos();
                 alertSuccess(response.success);
+                //location.reload();
             }
 
         });

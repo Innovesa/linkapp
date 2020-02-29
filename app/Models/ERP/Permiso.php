@@ -7,14 +7,19 @@ use Illuminate\Support\Facades\Gate;
 
 class Permiso extends Model
 {
-    public function ViewPermission()
+    public function AccessPermission()
     {
-        return Gate::allows('view',[session("permisos"),url()->current()]);
+        return Gate::allows('access',[session("permisos"),url()->current()]);
     }
 
     public function ViewHomePermission()
     {
         return Gate::allows('view-home',[session("permisos")]);
+    }
+
+    public function ViewPermission()
+    {
+        return Gate::allows('view',[session("permisos"),session("currentUrl")]);
     }
 
     public function AdminPermission()

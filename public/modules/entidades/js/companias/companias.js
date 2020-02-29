@@ -8,8 +8,9 @@ document.addEventListener("DOMContentLoaded", function() {
     frmMantenimientoCompanias();
     cargarDatos();
 
-
 });
+
+
 
 function buttonExports(){
     $('.dataTables-example').DataTable({
@@ -231,8 +232,8 @@ function frmMantenimientoCompanias(){
                 //console.log(response.errors);
             }else{
                 //console.log(response.success);
-                // limpiarForm('todo');
-                location.reload();
+                limpiarForm('todo');
+               //location.reload();
                 getVerDatos();
                 alertSuccess(response.success);
             }

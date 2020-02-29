@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage; //para los discos virtuales
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use LinkApp\Models\ERP\TipoIdentificacion;
+use LinkApp\Models\ERP\CompaniaPersona;
 use Illuminate\Support\Facades\Gate;
 use Validator;
 
@@ -28,7 +29,7 @@ class PersonaController extends Controller
     
         $permiso = new Permiso();
 
-        if ($permiso->ViewPermission()) {
+        if ($permiso->AccessPermission()) {
 
             $identificaciones = TipoIdentificacion::all();
 
@@ -190,7 +191,7 @@ class PersonaController extends Controller
         
        $persona= new Persona();
 
-       $estado = Estado::where('codigo','ESTADO_ACTIVO')->first();
+       $estado = new Estado();
 
        
        //validate del formulario
@@ -220,7 +221,7 @@ class PersonaController extends Controller
         $persona->alias = $alias;
         $persona->img = 'default/logo.png';
         $persona->idTipoIdentificacion = $idTipoIdentificacion;
-        $persona->idEstado = $estado->id;
+        $persona->idEstado = $estado->getidEstadoActivo();
 
         
         //transaction start
@@ -253,6 +254,24 @@ class PersonaController extends Controller
 
        }
 
+        $companiaPersona = new CompaniaPersona();
+        
+        $companiaPersona->idPersona = $persona->id;
+        $companiaPersona->idCompania = session("compania")->id;
+ 
+        try {
+ 
+             //Ejecutar consulta y cambios en la bae de datos
+             $companiaPersona->save();
+ 
+ 
+         } catch (Exception $e) {
+ 
+             DB::rollback();
+             return response()->json(['errors'=>$e->getMessage()]);
+ 
+         }
+
         DB::commit();
         //transaction end
 
@@ -269,13 +288,16 @@ class PersonaController extends Controller
 
             $persona= Persona::find($id);
 
+            $companiaPersona = CompaniaPersona::where('idPersona',$persona->id)->first();
+
             //transaction start
             DB::beginTransaction();
 
             try {
 
 
-                if($persona){
+                if($persona && $companiaPersona){
+                    $companiaPersona->delete();
                     $persona->delete(); 
                 }
 
@@ -301,12 +323,12 @@ class PersonaController extends Controller
     {
         $permiso = new Permiso();
 
-        $estado = Estado::where('codigo','ESTADO_DESACTIVADO')->first();
+        $estado = new Estado();
 
         if ($permiso->DeletePermission()) {
 
             $persona= Persona::find($id);
-            $persona->idEstado = $estado->id;
+            $persona->idEstado = $estado->getidEstadoDesactivado();
             //transaction start
             DB::beginTransaction();
 
@@ -338,12 +360,12 @@ class PersonaController extends Controller
     public function activar($id)
     {
         $permiso = new Permiso();
-        $estado = Estado::where('codigo','ESTADO_ACTIVO')->first();
+        $estado = new Estado();
 
         if ($permiso->DeletePermission()) {
 
             $persona= Persona::find($id);
-            $persona->idEstado = $estado->id;
+            $persona->idEstado = $estado->getidEstadoActivo();
             //transaction start
             DB::beginTransaction();
 
@@ -395,125 +417,133 @@ class PersonaController extends Controller
     {
         $persona = new Persona();
 
-        $buscar = $request->buscador;
+        $permiso = new Permiso();
 
-        //Funcion para traer las personas por el id del rol o no
-        $prueba = $persona->getPersonaPorRol($buscar);
+        if ($permiso->ViewPermission()) {
 
+            $buscar = $request->buscador;
 
-        $tipoDeDatos = $request->tipoDeDatos;
-
-        $content = '';
-
-        if ($tipoDeDatos == 'table') {
-
-            $content .= '
-            <div class="ibox-content">
-                 <div class="table-responsive">
-                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                        <table class="table table-striped table-bordered table-hover dataTables-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>'.@trans('entidades::entidades.identificacion').'</th>
-                                            <th>'.@trans('entidades::entidades.nombre').'</th>
-                                            <th>'.@trans('entidades::entidades.alias').'</th>
-                                            <th>'.@trans('entidades::entidades.imagen').'</th>
-                                            <th>'.@trans('entidades::entidades.estado').'</th>
-                                            <th>'.@trans('entidades::entidades.accion').'</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>';
-                                    
-            foreach($prueba as $pruebas){
-
-                if ($pruebas->codigo == 'ESTADO_ACTIVO') {
-                    $estado = '<span class="badge badge-success pull-center">'.$pruebas->NombreEstado.'</span>';
-                    $btnEstado = $this->getButtons('deactivate',$pruebas);
-                }else{
-                    $estado = '<span class="badge badge-danger pull-center">'.$pruebas->NombreEstado.'</span>';
-                    $btnEstado = $this->getButtons('activate',$pruebas);
-                }
+            //Funcion para traer las personas por el id del rol o no
+            $prueba = $persona->getPersonaPorRol($buscar,session("compania"),$permiso->SuperPermission(),null);
 
 
-                $content .= '<tr>
-                                <td>'.$pruebas->identificacion.'</td>
-                                <td>'.$pruebas->nombre.'</td>
-                                <td>'.$pruebas->alias.'</td>
-                                <td>
-                                    <h3 class="inlineText">
-                                        <img src="'.url('/').'/persona/image/'.$pruebas->img.'" height="24px">
-                                    </h3>
-                                </td>
-                                <td>'.$estado.'</td>
-                                <td>
-                                    '.$this->getButtons('modify',$pruebas).'
-                                    '.$btnEstado.'
-                                    '.$this->getButtons('delete',$pruebas).'
-                                </td>
-                            </tr>';  
-            }
+            $tipoDeDatos = $request->tipoDeDatos;
 
-            $content .= '</tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>';
+            $content = '';
 
-        }else{
-            
-        
-            foreach($prueba as $pruebas){
+            if ($tipoDeDatos == 'table') {
 
-                    if ($pruebas->codigo == 'ESTADO_ACTIVO') {
-                        $estado = '<span class="badge badge-success pull-right">'.$pruebas->NombreEstado.'</span>';
-                        $btnEstado = $this->getButtons('deactivate',$pruebas);;
-                    }else{
-                        $estado = '<span class="badge badge-danger pull-right">'.$pruebas->NombreEstado.'</span>';
-                        $btnEstado = $this->getButtons('activate',$pruebas);
-                    }
+                    $content .= '
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                                <table class="table table-striped table-bordered table-hover dataTables-example dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>'.@trans('entidades::entidades.identificacion').'</th>
+                                                    <th>'.@trans('entidades::entidades.nombre').'</th>
+                                                    <th>'.@trans('entidades::entidades.alias').'</th>
+                                                    <th>'.@trans('entidades::entidades.imagen').'</th>
+                                                    <th>'.@trans('entidades::entidades.estado').'</th>
+                                                    <th>'.@trans('entidades::entidades.accion').'</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>';
+                                            
+                    foreach($prueba as $pruebas){
 
-                    $content .='<div class="col-lg-4">
-                                    <div class="contact-box">
-                                
-                                        <div class="col-sm-4">
-                                            <div class="text-center">
-                                                <img alt="image" class="m-t-xs img-responsive" src="'.url('/').'/persona/image/'.$pruebas->img.'" style="max-height: 90px;">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-8">
-                                            <h3><strong>'.$pruebas->nombre.'</strong>'.$estado.'</h3>
-                                            <p class="font-bold">'.$pruebas->identificacion.'</p>
-                                            <p class="font-bold">'.$pruebas->alias.'</p>
-                                            <div class="align-bottom">
+                        if ($pruebas->codigo == 'ESTADO_ACTIVO') {
+                            $estado = '<span class="badge badge-success pull-center">'.$pruebas->NombreEstado.'</span>';
+                            $btnEstado = $this->getButtons('deactivate',$pruebas);
+                        }else{
+                            $estado = '<span class="badge badge-danger pull-center">'.$pruebas->NombreEstado.'</span>';
+                            $btnEstado = $this->getButtons('activate',$pruebas);
+                        }
+
+
+                        $content .= '<tr>
+                                        <td>'.$pruebas->identificacion.'</td>
+                                        <td>'.$pruebas->nombre.'</td>
+                                        <td>'.$pruebas->alias.'</td>
+                                        <td>
+                                            <h3 class="inlineText">
+                                                <img src="'.url('/').'/persona/image/'.$pruebas->img.'" height="24px">
+                                            </h3>
+                                        </td>
+                                        <td>'.$estado.'</td>
+                                        <td>
                                             '.$this->getButtons('modify',$pruebas).'
                                             '.$btnEstado.'
                                             '.$this->getButtons('delete',$pruebas).'
-                                            </div>
+                                        </td>
+                                    </tr>';  
+                    }
 
-                                        </div>
-                                        <div class="clearfix"></div>
+                    $content .= '</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>';
+
+                }else{
+                    
+                
+                    foreach($prueba as $pruebas){
+
+                            if ($pruebas->codigo == 'ESTADO_ACTIVO') {
+                                $estado = '<span class="badge badge-success pull-right">'.$pruebas->NombreEstado.'</span>';
+                                $btnEstado = $this->getButtons('deactivate',$pruebas);;
+                            }else{
+                                $estado = '<span class="badge badge-danger pull-right">'.$pruebas->NombreEstado.'</span>';
+                                $btnEstado = $this->getButtons('activate',$pruebas);
+                            }
+
+                            $content .='<div class="col-lg-4">
+                                            <div class="contact-box">
                                         
-                                    </div>
-                                </div>';
+                                                <div class="col-sm-4">
+                                                    <div class="text-center">
+                                                        <img alt="image" class="m-t-xs img-responsive" src="'.url('/').'/persona/image/'.$pruebas->img.'" style="max-height: 90px;">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <h3><strong>'.$pruebas->nombre.'</strong>'.$estado.'</h3>
+                                                    <p class="font-bold">'.$pruebas->identificacion.'</p>
+                                                    <p class="font-bold">'.$pruebas->alias.'</p>
+                                                    <div class="align-bottom">
+                                                    '.$this->getButtons('modify',$pruebas).'
+                                                    '.$btnEstado.'
+                                                    '.$this->getButtons('delete',$pruebas).'
+                                                    </div>
 
-                    /*$contenthj = '<div class="col-md-3 datos">
-                                <div class="ibox-content text-center">'.$estado.'
-                                    <h3 class="inlineText">
-                                        <img src="'.route('persona.image',['filename' => $pruebas->img ]).'" height="24px">
-                                    </h3>
-                                    <p class="font-bold">'.$pruebas->identificacion.'</p>
-                                    <p class="font-bold">'.$pruebas->nombre.' | '.$pruebas->alias.'</p>
-                                    <div class="text-center">
-                                        '.$this->getButtons('modify',$pruebas).'
-                                        '.$btnEstado.'
-                                        '.$this->getButtons('delete',$pruebas).'
-                                    </div>
-                                </div>
-                            </div>';  */
-            }
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                
+                                            </div>
+                                        </div>';
 
+                            /*$contenthj = '<div class="col-md-3 datos">
+                                        <div class="ibox-content text-center">'.$estado.'
+                                            <h3 class="inlineText">
+                                                <img src="'.route('persona.image',['filename' => $pruebas->img ]).'" height="24px">
+                                            </h3>
+                                            <p class="font-bold">'.$pruebas->identificacion.'</p>
+                                            <p class="font-bold">'.$pruebas->nombre.' | '.$pruebas->alias.'</p>
+                                            <div class="text-center">
+                                                '.$this->getButtons('modify',$pruebas).'
+                                                '.$btnEstado.'
+                                                '.$this->getButtons('delete',$pruebas).'
+                                            </div>
+                                        </div>
+                                    </div>';  */
+                    }
+
+                }
+
+            return $content;
         }
-
-        return $content;
     }
+    
 }
+
+
