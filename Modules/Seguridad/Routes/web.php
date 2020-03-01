@@ -24,6 +24,8 @@ Route::prefix('seguridad')->group(function() {
         Route::get('/usuarios/updatedata/{id}', 'UsuarioController@getUpdateData')->name('seguridad.usuarios.updateData');
 
         Route::get('/usuarios/createdata', 'UsuarioController@getCreateData')->name('seguridad.usuarios.createData');
+
+        Route::post('/usuarios/updatePassword', 'UsuarioController@updatePassword')->name('seguridad.usuarios.update.password');
     
         Route::get('/usuarios/eliminar/{id}', 'UsuarioController@eliminar')->name('seguridad.usuarios.eliminar');
     
@@ -32,6 +34,29 @@ Route::prefix('seguridad')->group(function() {
         Route::get('/usuarios/desactivar/{id}', 'UsuarioController@desactivar')->name('seguridad.usuarios.desactivar');
     
         Route::post('/usuarios/create', 'UsuarioController@createUpdate')->name('seguridad.usuarios.create');
+
+        
+        //perfiles
+    
+        Route::get('/perfiles', 'PerfilController@index')->name('seguridad.perfiles');
+
+        Route::get('/perfiles/cuadros', 'PerfilController@verCuadros')->name('seguridad.perfiles.cuadros');
+
+        Route::get('/perfiles/result/personas', 'PerfilController@resultPersonas')->name('seguridad.perfiles.result.personas');
+    
+        Route::get('/perfiles/updatedata/{id}', 'PerfilController@getUpdateData')->name('seguridad.perfiles.updateData');
+
+        Route::get('/perfiles/createdata', 'PerfilController@getCreateData')->name('seguridad.perfiles.createData');
+
+        Route::post('/perfiles/updatePassword', 'PerfilController@updatePassword')->name('seguridad.perfiles.update.password');
+    
+        Route::get('/perfiles/eliminar/{id}', 'PerfilController@eliminar')->name('seguridad.perfiles.eliminar');
+    
+        Route::get('/perfiles/activar/{id}', 'PerfilController@activar')->name('seguridad.perfiles.activar');
+    
+        Route::get('/perfiles/desactivar/{id}', 'PerfilController@desactivar')->name('seguridad.perfiles.desactivar');
+    
+        Route::post('/perfiles/create', 'PerfilController@createUpdate')->name('seguridad.perfiles.create');
 
     
 });

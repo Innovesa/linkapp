@@ -533,6 +533,47 @@ class UsuarioController extends Controller
         }
 
     }
+    public function updatePassword(Request $resquest){
+        
+        //conseguir usuario identificado
+       $id = $resquest->input('id');
+       $usuario = usuario::find($id);
+
+               //validate del formulario
+       $validator = Validator::make($resquest->all(),[
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                    'errors' => $validator->getMessageBag()->toArray()
+                ]);
+        }
+
+
+       $password = $resquest->input('password');
+
+        DB::beginTransaction();
+
+        try {
+            //Ejecutar consulta y cambios en la bae de datos
+            $usuario->update([
+                'password' => Hash::make($password)
+            ]);
+
+        }catch (Exception $e) {
+
+            DB::rollback();
+
+            return response()->json(['errors'=>$e->getMessage()]);
+            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
+        }
+
+        DB::commit();
+        //transaction end
+       
+        return response()->json(['success'=>@trans('seguridad::seguridad.usuario.creada.exito')]);
+    }
 
     public function verCuadros(Request $request)
     {

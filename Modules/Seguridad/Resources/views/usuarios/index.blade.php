@@ -119,7 +119,7 @@
 
 
                                                 <div id="cambiarContrasenaGroup">
-                                                    <button type="button" id="cambiarContrasena" class="btn btn-primary">Cambiar contraseña</button>
+                                                    <button type="button" id="cambiarContrasena" data-toggle="modal" data-target="#cambiarContrasena" class="btn btn-primary">Cambiar contraseña</button>
                                                 </div>
             
                                             
@@ -182,6 +182,46 @@
     
 @endcanany
 
+@canany(['modify','admin'],[session("permisos"),session("currentUrl")])
+<div class="modal inmodal fade" id="modalCambiarContrasena" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Cambiar contraseña</h4>
+            
+        </div>
+        <form method="POST" name="frmCambiarContrasena" id="frmCambiarContrasena" action="{{ route('seguridad.usuarios.update.password') }}">
+         @csrf
+        <div class="modal-body">
+
+            <input type="hidden" name="id" id="idChangePassword" value="">
+
+                <div class="form-group row">
+                    <label for="password" class="col-sm-3 col-form-label">Nueva Contraseña</label>
+
+                    <div class="col-md-9">
+                        <input id="password" type="password" class="form-control" name="password" required autocomplete="new-password" minlength="8" autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="password-confirm" class="col-sm-3 col-form-label">Confirmacion Contraseña</label>
+
+                    <div class="col-md-9">
+                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" minlength="8" required autocomplete="new-password">
+                    </div>
+                </div>
+                <hr>
+           
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" id="btnCerrarPasswordModal">{{@trans('seguridad::seguridad.cerrar')}}</button>
+                    <button type="submit" class="btn btn-primary" >{{@trans('seguridad::seguridad.guardar.cambios')}}</button>
+                </div>
+    </form>
+      </div>
+    </div>
+  </div>
+@endcanany
 
 
 <script src="{{ Module::asset('Seguridad:js/usuarios/usuarios.js') }}"></script>

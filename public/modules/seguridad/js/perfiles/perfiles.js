@@ -7,63 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
     Buscador();
     cambiarVista();
     agregarRemoverPerfiles();
-    frmMantenimientoUsuarios();
-    //frmCambiarContrasena();
-    buscadorPersona();
+    frmMantenimientoPerfiles();
     cargarDatos();
-    cambiarContrasenaModal();
+
 
 });
 
-function buscarPersonaSelect() {
-    $("#selectPersona").click(function(){
-    
-        $.each($("#selectPersona option:selected"), function(){  
-
-            $("#idPersona").val($(this).val());
-            $("#persona").val($(this).html());
-            $("#persona").prop( "disabled", true );
-            $("#selectPersona").remove();
-            
-        });
-    });
-
-    if($("#persona").val() === ""){
-        $("#selectPersonaDiv #selectPersona").remove();
-    }
-}
-
-function buscadorPersona(){
-
-        $("#persona").keyup(function(event){
-
-            resultPersonas();
-
-        });    
-
-};
-
-function resultPersonas(){
-    event.preventDefault(); //prevent default action 
-
-    buscar = $("#persona").val();
-
-
-  $.ajax({
-        url : "../seguridad/usuarios/result/personas",
-        type: "get",
-        datatype:"html",
-        data : {
-            buscador:buscar
-        }
-
-    }).done(function(response){ 
-       //existingUsers
-       $("#selectPersonaDiv").html(response);
-       buscarPersonaSelect();
-       console.log(response);
-    });
-}
 
 function agregarRemoverPerfiles() {
 
@@ -125,9 +74,9 @@ function cargarDatos() {
     $("#btn-" + view).addClass("btn-primary");
 
     if(view == 'table'){
-        $("#divUsuarios").css("margin",'1px');
+        $("#divPerfiles").css("margin",'1px');
     }else{
-        $("#divUsuarios").css("margin",'');
+        $("#divPerfiles").css("margin",'');
     }
 
 }
@@ -156,7 +105,7 @@ function getVerDatos(){
     diseno = tipoDeDatos;
 
   $.ajax({
-        url : "../seguridad/usuarios/cuadros",
+        url : "../seguridad/perfiles/cuadros",
         type: "get",
         datatype:"html",
         data : {
@@ -166,7 +115,7 @@ function getVerDatos(){
 
     }).done(function(response){ 
        //existingUsers
-       $("#divUsuarios").html(response);
+       $("#divPerfiles").html(response);
        getUpdateData();
        getCreateData();
        buttonExports();
@@ -302,11 +251,11 @@ function addCambiarContrasena() {
 
 function setUpdateData(response){
 
-    $("#frmMantenimientoUsuarios #id").val(response.usuario.id);
-    $("#frmMantenimientoUsuarios #idPersona").val(response.usuario.idPersona);
-    $("#frmMantenimientoUsuarios #persona").val(response.persona.identificacion+" | "+response.persona.nombre).prop( "disabled", true );
-    $("#frmMantenimientoUsuarios #email").val(response.usuario.email);
-    $("#frmMantenimientoUsuarios #username").val(response.usuario.username);
+    $("#frmMantenimientoPerfiles #id").val(response.usuario.id);
+    $("#frmMantenimientoPerfiles #idPersona").val(response.usuario.idPersona);
+    $("#frmMantenimientoPerfiles #persona").val(response.persona.identificacion+" | "+response.persona.nombre).prop( "disabled", true );
+    $("#frmMantenimientoPerfiles #email").val(response.usuario.email);
+    $("#frmMantenimientoPerfiles #username").val(response.usuario.username);
 
     $("#modalCambiarContrasena #idChangePassword").val(response.usuario.id);
     $("#selectPerfilesUsuario option").remove();
@@ -374,8 +323,8 @@ function Buscador(){
 
         ////////////////////////
 
-function frmMantenimientoUsuarios(){
- $("#frmMantenimientoUsuarios").submit(function(event){
+function frmMantenimientoPerfiles(){
+ $("#frmMantenimientoPerfiles").submit(function(event){
         event.preventDefault(); //prevent default action 
 
         var post_url = $(this).attr("action"); //get form action url
@@ -488,36 +437,36 @@ function mensajeError(mensaje){
 function erroresForm(errors){
 
     if(errors.username){
-        $("#frmMantenimientoUsuarios #usernameGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoUsuarios #usernameGroup").append(mensajeError(errors.username));
+        $("#frmMantenimientoPerfiles #usernameGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoPerfiles #usernameGroup").append(mensajeError(errors.username));
     }else{
         limpiarForm('username');
     }
 
     if(errors.password){
-        $("#frmMantenimientoUsuarios #passwordGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoUsuarios #passwordGroup").append(mensajeError(errors.password));
+        $("#frmMantenimientoPerfiles #passwordGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoPerfiles #passwordGroup").append(mensajeError(errors.password));
     }else{
         limpiarForm('password');
     }
 
     if(errors.password-confirm){
-        $("#frmMantenimientoUsuarios #password-confirmGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoUsuarios #password-confirmGroup").append(mensajeError(errors.password-confirm));
+        $("#frmMantenimientoPerfiles #password-confirmGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoPerfiles #password-confirmGroup").append(mensajeError(errors.password-confirm));
     }else{
         limpiarForm('password-confirm');
     }
 
     if(errors.email){
-        $("#frmMantenimientoUsuarios #emailGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoUsuarios #emailGroup").append(mensajeError(errors.email));
+        $("#frmMantenimientoPerfiles #emailGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoPerfiles #emailGroup").append(mensajeError(errors.email));
     }else{
         limpiarForm('email');
     }
 
     if(errors.persona){
-        $("#frmMantenimientoUsuarios #personaGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoUsuarios #personaGroup").append(mensajeError(errors.persona));
+        $("#frmMantenimientoPerfiles #personaGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoPerfiles #personaGroup").append(mensajeError(errors.persona));
     }else{
         limpiarForm('persona');
     }
@@ -527,15 +476,15 @@ function erroresForm(errors){
 function limpiarForm(indicador){
 
     if(indicador == "todo"){
-        $("#frmMantenimientoUsuarios").find('input:text,input:file,input:password,#id').val('');
-        $("#frmMantenimientoUsuarios").find('input:text,input:file,input:password,#id').removeClass("form-control is-invalid").addClass("form-control").prop( "disabled", false);
-        $("#frmMantenimientoUsuarios").find('.invalid-feedback').remove();
+        $("#frmMantenimientoPerfiles").find('input:text,input:file,input:password,#id').val('');
+        $("#frmMantenimientoPerfiles").find('input:text,input:file,input:password,#id').removeClass("form-control is-invalid").addClass("form-control").prop( "disabled", false);
+        $("#frmMantenimientoPerfiles").find('.invalid-feedback').remove();
         $('#modalMantenimiento').modal('hide');  
         $('#modalCambiarContrasena').modal('hide'); 
     }else{
         grupo = "#"+indicador+"Group";
-        $("#frmMantenimientoUsuarios "+grupo).find('input:text,input:file,input:password,#id').removeClass("form-control is-invalid").addClass("form-control");
-        $("#frmMantenimientoUsuarios "+grupo).find('.invalid-feedback').remove();
+        $("#frmMantenimientoPerfiles "+grupo).find('input:text,input:file,input:password,#id').removeClass("form-control is-invalid").addClass("form-control");
+        $("#frmMantenimientoPerfiles "+grupo).find('.invalid-feedback').remove();
     }
 
 }

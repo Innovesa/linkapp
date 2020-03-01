@@ -23,7 +23,13 @@ class Perfil extends Model
         return $this->belongsTo('LinkApp\Models\ERP\Estado','idEstado');        
     }
 
-    public function getPerfil($Compania,$isSuper=null)
+    //many to one
+    public function compania(){
+        return $this->belongsTo('LinkApp\Models\ERP\Persona','idCompania');        
+    }
+
+
+    public function getPerfil($Compania,$isSuper=null,$buscar=null)
     {
         if($Compania && !$isSuper){
             $whereCompania = $Compania->id;
@@ -31,7 +37,7 @@ class Perfil extends Model
             $whereCompania = null;
         }
 
-        $result = Perfil::where('idCompania','LIKE','%'.$whereCompania.'%')->get();
+        $result = Perfil::where('nombre','LIKE','%'.$buscar.'%')->where('idCompania','LIKE','%'.$whereCompania.'%')->get();
             
         return $result;
     }
