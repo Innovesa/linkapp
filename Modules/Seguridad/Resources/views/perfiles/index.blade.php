@@ -80,6 +80,16 @@
                                     <div class="tab-content">
                                         <div id="tab-1" class="tab-pane active">
                                             <div class="panel-body">
+
+                                                <input type="hidden" name="id" value="">
+
+                                                <div class="form-group col-sm-12" id="nombreGroup">
+                                                    <label>{{@trans('entidades::entidades.nombre')}}</label>
+                                                    <input type="text" id="nombre" name="nombre" placeholder="{{@trans('entidades::entidades.nombre')}}" class="form-control">
+                                                </div>
+
+                                                <p>&nbsp;</p>
+
                                                 <div class="col-md-12">
                                                     <div class="col-md-5">
                 
@@ -87,7 +97,7 @@
                                                             <li class="list-group-item list-group-item-dark">Opciones asosiadas al perfil</li>
                                                         </ul>
                 
-                                                        <select class="list-group" id="selectPerfilesUsuario" style="width:100%; height: 350px; " multiple>
+                                                        <select class="list-group" id="selectOpcionesPerfil" style="width:100%; height: 350px; " multiple>
                                                         </select>
                                                         
                                                     </div>
@@ -103,7 +113,7 @@
                                                             <li class="list-group-item list-group-item-dark">Opciones disponibles</li>
                                                         </ul>
                 
-                                                        <select class="list-group" id="selectPerfiles" style="width:100%; height: 350px; " multiple>
+                                                        <select class="list-group" id="selectOpciones" style="width:100%; height: 350px; " multiple>
 
                                                         </select>
                                                     
@@ -116,7 +126,40 @@
                                             </div>
                                         </div>
                                         <div id="tab-2" class="tab-pane">
-                                            
+                                            <div class="panel-body">
+
+                                                <div class="col-md-12">
+                                                    <div class="col-md-12">
+                
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item list-group-item-dark">Opciones asosiadas al perfil</li>
+                                                        </ul>
+                
+                                                        <table class="table" id="opcionesRolesTable">
+                                                            <thead>
+                                                              <tr>
+                                                                <th scope="col">Nombre</th>
+                                                                <th scope="col">Modificar</th>
+                                                                <th scope="col">Eliminar</th>
+                                                                <th scope="col">Insertar</th>
+                                                                <th scope="col">Admin</th>
+                                                                <th scope="col">Super</th>
+                                                                
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+
+                                                            </tbody>
+                                                        </table>
+                                                        
+                                                    </div>
+                                                    
+                                                    
+                                                </div>
+                
+                                                
+                                                <p>&nbsp;</p>
+                                            </div>
                                         </div>
                                     </div>
             

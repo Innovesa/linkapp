@@ -10,12 +10,12 @@ class Perfil extends Model
     
     //one to many
     public function perfilUsuario(){
-        return $this->hasMany('LinkApp\Models\ERP\PerfilUsuario');
+        return $this->hasMany('LinkApp\Models\ERP\PerfilUsuario','idPerfil');
     }
 
     //one to many
     public function perfilOpcion(){
-        return $this->hasMany('LinkApp\Models\ERP\PerfilOpcion');
+        return $this->hasMany('LinkApp\Models\ERP\PerfilOpcion','idPerfil');
     }
 
      //many to one
@@ -37,7 +37,11 @@ class Perfil extends Model
             $whereCompania = null;
         }
 
-        $result = Perfil::where('nombre','LIKE','%'.$buscar.'%')->where('idCompania','LIKE','%'.$whereCompania.'%')->get();
+        $result = Perfil::where('nombre','LIKE','%'.$buscar.'%')
+        ->where('idCompania','LIKE','%'.$whereCompania.'%')
+        ->orderBy('idEstado', 'asc')
+        ->orderBy('nombre', 'asc')
+        ->get();
             
         return $result;
     }

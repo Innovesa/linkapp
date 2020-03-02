@@ -3,21 +3,17 @@
 namespace Modules\Seguridad\Http\Controllers;
 
 use Exception;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use LinkApp\Http\Controllers\Controller;
-use LinkApp\Models\ERP\Persona;
 use LinkApp\Models\ERP\Estado;
 use LinkApp\Models\ERP\Permiso;
-use Illuminate\Support\Facades\Storage; //para los discos virtuales
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use LinkApp\Models\ERP\Perfil;
-use LinkApp\Models\ERP\CompaniaPersona;
 use Illuminate\Support\Facades\Hash;
-use LinkApp\Models\ERP\PerfilUsuario;
-use LinkApp\Models\ERP\Usuario;
+use LinkApp\Models\ERP\Opcion;
+use LinkApp\Models\ERP\Perfilperfil;
+use LinkApp\Models\ERP\PerfilOpcion;
 use Validator;
 
 class PerfilController extends Controller
@@ -53,25 +49,25 @@ class PerfilController extends Controller
 
         if ($nombre == 'modify' && $permiso->ModifyPermission()) {
 
-            return '<a id="editar"  data-route="'.route('seguridad.usuarios.updateData',['id' => $objeto->idUsuario]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>';
+            return '<a id="editar"  data-route="'.route('seguridad.perfiles.updateData',['id' => $objeto->id]).'" data-toggle="modal" href="#modalMantenimiento" class="btn-primary btn btn-xs"><i class="fa fa-pencil"></i>'.@trans('entidades::entidades.editar').'</a>';
 
         }
 
         if ($nombre == 'activate' && $permiso->DeletePermission()) {
 
-            return '<button id="estado" data-route="'.route('seguridad.usuarios.activar',['id' =>$objeto->idUsuario]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
+            return '<button id="estado" data-route="'.route('seguridad.perfiles.activar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.activar').'</button>';
 
         }
         
         if ($nombre == 'deactivate' && $permiso->DeletePermission()) {
 
-            return '<button id="estado" data-route="'.route('seguridad.usuarios.desactivar',['id' =>$objeto->idUsuario]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
+            return '<button id="estado" data-route="'.route('seguridad.perfiles.desactivar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.desactivar').'</button>';
 
         }
 
         if ($nombre == 'delete' && $permiso->AdminPermission()) {
 
-            return '<button id="eliminar" data-route="'.route('seguridad.usuarios.eliminar',['id' =>$objeto->idUsuario]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>';
+            return '<button id="eliminar" data-route="'.route('seguridad.perfiles.eliminar',['id' =>$objeto->id]).'" class="btn-primary btn btn-xs"> <i class="fa fa-times"></i>'.@trans('entidades::entidades.eliminar').'</button>';
 
         }
 
@@ -108,19 +104,17 @@ class PerfilController extends Controller
      */
     public function update(Request $resquest)
     {
-          //conseguir usuario identificado
+          //conseguir perfil identificado
 
     
        $id = $resquest->input('id');
 
-       $usuario = Usuario::find($id);
+       $perfil = Perfil::find($id);
        
        //validate del formulario
       
        $validator = Validator::make($resquest->all(),[
-            'idPersona' => ['required'],
-            'username' => ['required', 'string', 'max:30', 'unique:usuario,username,'.$id],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuario,email,'.$id],
+            'nombre' => ['required', 'string', 'max:45', 'unique:perfil,username,'.$id],
         ]);
         
         if($validator->fails()){
@@ -135,11 +129,11 @@ class PerfilController extends Controller
         $email = $resquest->input('email');
         $idPersona = $resquest->input('idPersona');
 
-        //Asignar nuevos valores al objeto del usuario
-        $usuario->id = $id;
-        $usuario->username = $username;
-        $usuario->email = $email;
-        $usuario->idPersona = $idPersona;
+        //Asignar nuevos valores al objeto del perfil
+        $perfil->id = $id;
+        $perfil->username = $username;
+        $perfil->email = $email;
+        $perfil->idPersona = $idPersona;
 
         
 
@@ -149,7 +143,7 @@ class PerfilController extends Controller
         try {
 
             //Ejecutar consulta y cambios en la bae de datos
-            $usuario->update();
+            $perfil->update();
 
         } catch (Exception $e) {
 
@@ -167,31 +161,31 @@ class PerfilController extends Controller
  
 
 
-            if($resquest->input('usuarioPerfiles')){
+            if($resquest->input('perfilPerfiles')){
 
 
-                $perfiles = explode(",",$resquest->input('usuarioPerfiles'));
+                $perfiles = explode(",",$resquest->input('perfilPerfiles'));
 
                 for ($i=0; $i < count($perfiles); $i++) { 
                     
     
-                    $validationPerfil = PerfilUsuario::where('idPerfil',$perfiles[$i])->where('idUsuario',$id)->first();
+                    $validationPerfil = PerfilPerfil::where('idPerfil',$perfiles[$i])->where('idPerfil',$id)->first();
     
                     if (!$validationPerfil) {
 
-                        $perfilUsuario = new PerfilUsuario();
+                        $perfilOpcion = new Perfilperfil();
     
-                        $perfilUsuario->idUsuario = $id;
-                        $perfilUsuario->idPerfil = $perfiles[$i];
-                        $perfilUsuario->idCompania = session("compania")->id;
+                        $perfilOpcion->idPerfil = $id;
+                        $perfilOpcion->idPerfil = $perfiles[$i];
+                        $perfilOpcion->idCompania = session("compania")->id;
     
-                        $perfilUsuario->save();
+                        $perfilOpcion->save();
                     }
     
                 }
 
                 
-                $perfileEliminar = PerfilUsuario::whereNotIn('idPerfil',$perfiles)->where('idUsuario',$id)->get();
+                $perfileEliminar = PerfilPerfil::whereNotIn('idPerfil',$perfiles)->where('idPerfil',$id)->get();
                 if ($perfileEliminar) {
                     foreach ($perfileEliminar as $perfil) {
                         $perfil->delete();
@@ -202,7 +196,7 @@ class PerfilController extends Controller
 
                 if ($permiso->SuperPermission()) {
 
-                    $perfiles = PerfilUsuario::where('idUsuario',$id)->delete();
+                    $perfiles = PerfilPerfil::where('idPerfil',$id)->delete();
                     if ($perfiles) {
                         foreach ($perfiles as $perfil) {
                             $perfil->delete();
@@ -211,7 +205,7 @@ class PerfilController extends Controller
 
                 }else{
 
-                    $perfiles = PerfilUsuario::where('idCompania',session('compania')->id)->where('idUsuario',$id)->get();
+                    $perfiles = PerfilPerfil::where('idCompania',session('compania')->id)->where('idPerfil',$id)->get();
                     if ($perfiles) {
                         foreach ($perfiles as $perfil) {
                             $perfil->delete();
@@ -233,7 +227,7 @@ class PerfilController extends Controller
         DB::commit();
         //transaction end
 
-        return response()->json(['success'=>@trans('seguridad::seguridad.usuario.actualizada.exito')]);
+        return response()->json(['success'=>@trans('seguridad::seguridad.perfil.actualizada.exito')]);
         
     }
 
@@ -243,19 +237,18 @@ class PerfilController extends Controller
 
     public function create(Request $resquest)
     {
-        //conseguir usuario identificado
+        //conseguir perfil identificado
 
         
-       $usuario = new Usuario();
+       $perfil = new perfil();
 
        $estado = new Estado();
 
+
+
        //validate del formulario
        $validator = Validator::make($resquest->all(),[
-            'idPersona' => ['required'],
-            'username' => ['required', 'string', 'max:30', 'unique:usuario'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuario'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'nombre' => ['required', 'string', 'max:45', 'unique:perfil'],
         ]);
         
         if($validator->fails()){
@@ -265,17 +258,12 @@ class PerfilController extends Controller
         }
 
         //recoger daots del formulario
-        $username = $resquest->input('username');
-        $email = $resquest->input('email');
-        $password = Hash::make($resquest->input('password'));
-        $idPersona = $resquest->input('idPersona');
+        $nombre = $resquest->input('nombre');
 
-        //Asignar nuevos valores al objeto del usuario
-        $usuario->username = $username;
-        $usuario->email = $email;
-        $usuario->password = $password;
-        $usuario->idPersona = $idPersona;
-        $usuario->idEstado = $estado->getidEstadoActivo();
+        //Asignar nuevos valores al objeto del perfil
+        $perfil->nombre = $nombre;
+        $perfil->idCompania = session("compania")->id;
+        $perfil->idEstado = $estado->getidEstadoActivo();
 
         
         //transaction start
@@ -284,7 +272,7 @@ class PerfilController extends Controller
        try {
 
             //Ejecutar consulta y cambios en la bae de datos
-            $usuario->save();
+            $perfil->save();
 
 
        } catch (Exception $e) {
@@ -294,30 +282,25 @@ class PerfilController extends Controller
 
        }
 
-
-        $perfiles = explode(",",$resquest->input('usuarioPerfiles'));
-    
- 
+       $opciones = $resquest->input('rolesOpciones');
+       
         try {
  
-            if(is_array($perfiles)){
+            if(is_array($opciones)){
 
-                for ($i=0; $i < count($perfiles); $i++) { 
+                for ($i=0; $i < count($opciones); $i++) { 
                     
+                        $perfilOpcion = new PerfilOpcion();
     
-                    $validationPerfil = PerfilUsuario::where('idPerfil',$perfiles[$i])->where('idUsuario',$usuario->id)->first();
+                        $perfilOpcion->idPerfil = $perfil->id;
+                        $perfilOpcion->idOpcion = $opciones[$i]['idOpcion'];
+                        $perfilOpcion->rolModificar = $opciones[$i]['rolModificar'];
+                        $perfilOpcion->rolEliminar = $opciones[$i]['rolEliminar'];
+                        $perfilOpcion->rolInsertar = $opciones[$i]['rolInsertar'];
+                        $perfilOpcion->rolAdmin= $opciones[$i]['rolAdmin'];
+                        $perfilOpcion->rolSuper = $opciones[$i]['rolSuper'];
     
-                    if (!$validationPerfil) {
-
-                        $perfilUsuario = new PerfilUsuario();
-    
-                        $perfilUsuario->idUsuario = $usuario->id;
-                        $perfilUsuario->idPerfil = $perfiles[$i];
-                        $perfilUsuario->idCompania = session("compania")->id;
-    
-                        $perfilUsuario->save();
-                    }
-    
+                        $perfilOpcion->save();
                 }
             }
  
@@ -332,7 +315,7 @@ class PerfilController extends Controller
         DB::commit();
         //transaction end
 
-        return response()->json(['success'=>@trans('seguridad::seguridad.usuario.creada.exito')]);
+        return response()->json(['success'=>@trans('seguridad::seguridad.perfil.creada.exito')]);
         
     }
 
@@ -343,9 +326,9 @@ class PerfilController extends Controller
 
         if ($permiso->AdminPermission()) {
 
-            $usuario = Usuario::find($id);
+            $perfil = Perfil::find($id);
 
-            $perfilUsuario = PerfilUsuario::where('idUsuario',$usuario->id)->get();
+            $perfilOpcion = PerfilOpcion::where('idPerfil',$perfil->id)->get();
 
             //transaction start
             DB::beginTransaction();
@@ -353,12 +336,12 @@ class PerfilController extends Controller
             try {
 
 
-                if($usuario &&  $perfilUsuario){
-                    foreach ($perfilUsuario as $perfil) {
-                        $perfil->delete();
+                if($perfil &&  $perfilOpcion){
+                    foreach ($perfilOpcion as $perfiles) {
+                        $perfiles->delete();
                     }
                    
-                    $usuario->delete(); 
+                    $perfil->delete(); 
                 }
 
 
@@ -367,13 +350,13 @@ class PerfilController extends Controller
                 DB::rollback();
 
                 //return response()->json(['errors'=>$e->getMessage()]);
-                return response()->json(['errors'=> @trans('seguridad::seguridad.usuario.eliminar.error')]);
+                return response()->json(['errors'=> @trans('seguridad::seguridad.perfil.eliminar.error')]);
             }
             
             DB::commit();
             //transaction end
         
-            return response()->json(['success'=> @trans('seguridad::seguridad.usuario.eliminar.exito')]);
+            return response()->json(['success'=> @trans('seguridad::seguridad.perfil.eliminar.exito')]);
         }
 
     }
@@ -387,16 +370,16 @@ class PerfilController extends Controller
 
         if ($permiso->DeletePermission()) {
 
-            $usuario = Usuario::find($id);
-            $usuario->idEstado = $estado->getidEstadoDesactivado();
+            $perfil = Perfil::find($id);
+            $perfil->idEstado = $estado->getidEstadoDesactivado();
             //transaction start
             DB::beginTransaction();
 
             try {
 
 
-                if($usuario){
-                    $usuario->update();
+                if($perfil){
+                    $perfil->update();
                 }
 
 
@@ -405,13 +388,13 @@ class PerfilController extends Controller
                 DB::rollback();
 
                 return response()->json(['errors'=>$e->getMessage()]);
-            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
+            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o perfil."]);
             }
             
             DB::commit();
             //transaction end
         
-            return response()->json(['success'=>@trans('seguridad::seguridad.usuario.desactivada.exito')]);
+            return response()->json(['success'=>@trans('seguridad::seguridad.perfil.desactivada.exito')]);
         }
 
     }
@@ -424,16 +407,16 @@ class PerfilController extends Controller
 
         if ($permiso->DeletePermission()) {
 
-            $usuario = Usuario::find($id);
-            $usuario->idEstado = $estado->getidEstadoActivo();
+            $perfil = Perfil::find($id);
+            $perfil->idEstado = $estado->getidEstadoActivo();
             //transaction start
             DB::beginTransaction();
 
             try {
 
 
-                if($usuario){
-                    $usuario->update();
+                if($perfil){
+                    $perfil->update();
                 }
 
 
@@ -442,13 +425,13 @@ class PerfilController extends Controller
                 DB::rollback();
 
                 return response()->json(['errors'=>$e->getMessage()]);
-            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
+            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o perfil."]);
             }
             
             DB::commit();
             //transaction end
         
-            return response()->json(['success'=>@trans('seguridad::seguridad.usuario.activada.exito')]);
+            return response()->json(['success'=>@trans('seguridad::seguridad.perfil.activada.exito')]);
         }
 
     }
@@ -462,9 +445,9 @@ class PerfilController extends Controller
         
         if ($permiso->InsertPermission()) {
 
-            $perfil = new Perfil();
+            $opcion = new Opcion();
 
-            return ['perfilesDisponibles'=>$perfil->getPerfil(session("compania"),$permiso->SuperPermission())];
+            return ['opcionesDisponibles'=>$opcion->getOpcion()];
 
         }
     }
@@ -473,109 +456,34 @@ class PerfilController extends Controller
     public function getUpdateData($id)
     {
         $permiso = new Permiso();
-        
+        $opcion = new Opcion();
+
         if ($permiso->ModifyPermission()) {
 
-            if(!$permiso->SuperPermission()){
-                $whereCompania = session("compania")->id;
-            }else{
-                $whereCompania = null;
-            }
 
-            $usuario = Usuario::where('id',$id)->first();
+            $perfil = Perfil::find($id);
 
-            $persona = $usuario->persona()->first();
-
-            $perfilesUsuario = $usuario->perfilUsuario()->where('idCompania','LIKE','%'.$whereCompania.'%')->get();
+            $opcionePerfil = $perfil->perfilOpcion()->get();
 
             $notInPerfil = [];
-            $perfilesUsuarioCompleto = [];
+            $opcionesPerfil = [];
 
-            foreach ($perfilesUsuario as $perfiles) {
-                $perfilesUsuarioCompleto[] = $perfiles->perfil()->get();
-                $notInPerfil[] =  $perfiles->idPerfil;
+            foreach ($opcionePerfil as $opciones) {
+                $opcionesPerfil['roles'][] =  $opciones;
+                $opcionesPerfil['opcion'][] =  $opciones->opcion;
+                $notInPerfil[] =   $opciones->idOpcion;
             }
            
-            $perfilesDisponibles = Perfil::where('idCompania','LIKE','%'.$whereCompania.'%')->whereNotIn('id',$notInPerfil)->get();
+            $opcionesDisponibles = $opcion->getOpcion($notInPerfil);
 
-            return ['persona'=>$persona,'usuario'=>$usuario,
-                    'perfilesUsuario'=>$perfilesUsuarioCompleto,
-                    'perfilesDisponibles'=>$perfilesDisponibles];
+            return ['perfil'=>$perfil,
+                    'opcionesPerfil'=>$opcionesPerfil,
+                    'opcionesDisponibles'=>$opcionesDisponibles];
 
         }
     }
 
 
-    //resultado para la lista desplegable para elegir persona
-    public function resultPersonas(Request $request)
-    {
-        $persona = new Persona();
-
-        $permiso = new Permiso();
-
-        $content = "";
-
-        if ($permiso->ViewPermission()) {
-
-            $buscar = $request->buscador;
-
-            //Funcion para traer las personas por el id del rol o no
-            $result = $persona->getPersonaPorRol($buscar,session("compania"),$permiso->SuperPermission(),null);
-
-            $content .= '<select class="list-group" id="selectPersona" style="width:100%; height: auto;" multiple>';
-
-            foreach ($result as $personas) {
-                $content .= '<option class="list-group-item list-group-item-action" value="'.$personas->id.'">'.$personas->identificacion.' | '.$personas->nombre.'</option>';
-            }
-
-            $content .= '</select>';
-
-            return $content;
-
-        }
-
-    }
-    public function updatePassword(Request $resquest){
-        
-        //conseguir usuario identificado
-       $id = $resquest->input('id');
-       $usuario = usuario::find($id);
-
-               //validate del formulario
-       $validator = Validator::make($resquest->all(),[
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                    'errors' => $validator->getMessageBag()->toArray()
-                ]);
-        }
-
-
-       $password = $resquest->input('password');
-
-        DB::beginTransaction();
-
-        try {
-            //Ejecutar consulta y cambios en la bae de datos
-            $usuario->update([
-                'password' => Hash::make($password)
-            ]);
-
-        }catch (Exception $e) {
-
-            DB::rollback();
-
-            return response()->json(['errors'=>$e->getMessage()]);
-            // return response()->json(['errors'=>"Compañia no es posible de eliminar porque esta ligada algun permisos de perfil o usuario."]);
-        }
-
-        DB::commit();
-        //transaction end
-       
-        return response()->json(['success'=>@trans('seguridad::seguridad.usuario.creada.exito')]);
-    }
 
     public function verCuadros(Request $request)
     {

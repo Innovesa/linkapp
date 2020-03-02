@@ -18,10 +18,22 @@ function agregarRemoverPerfiles() {
 
     $("#addPerfil").click(function(){
       
-        $.each($("#selectPerfiles option:selected"), function(){  
+        $.each($("#selectOpciones option:selected"), function(){  
 
             opcion = '<option class="list-group-item list-group-item-action" value="'+$(this).val()+'">'+$(this).html()+'</option>';
-            $("#selectPerfilesUsuario").append(opcion);
+            $("#selectOpcionesPerfil").append(opcion);
+
+            var tr = '<tr>\
+            <input type="hidden" name="idOpcion" value="'+$(this).val()+'">\
+            <td>'+$(this).html()+'</td>\
+            <td><input type="checkbox" name="modificar" value="1"/></td>\
+            <td><input type="checkbox" name="eliminar" value="1"/></td>\
+            <td><input type="checkbox" name="insertar" value="1"/></td>\
+            <td><input type="checkbox" name="admin" value="1"></td>\
+            <td><input type="checkbox" name="super" value="1"/></td>\
+            </tr>';
+
+            $("#opcionesRolesTable tbody").append(tr);
             $(this).remove();
 
         });
@@ -29,15 +41,71 @@ function agregarRemoverPerfiles() {
 
     $("#removePerfil").click(function(){
    
-        $.each($("#selectPerfilesUsuario option:selected"), function(){  
+        $.each($("#selectOpcionesPerfil option:selected"), function(){  
 
             opcion = '<option class="list-group-item list-group-item-action" value="'+$(this).val()+'">'+$(this).html()+'</option>';
-            $("#selectPerfiles").append(opcion);
+            $("#selectOpciones").append(opcion);
+
+            $("#opcionesRolesTable tbody tr input[name=idOpcion]").find('input[name=idOpcion]').val();
+
+            var idOpcion = $(this).val();
+
+            $.each($("#opcionesRolesTable tbody tr"), function(){  
+                if ($(this).find('input[name=idOpcion]').val() == idOpcion ) {
+
+                    $(this).remove();
+                }
+            });
+
             $(this).remove();
             
         });
     });
 
+
+    $("#pruebaBtn").click(function(){
+
+        prueba = [];
+   
+        $.each($("#opcionesRolesTable tbody tr"), function(){  
+
+            var rolModificar = getRolValue($(this),'modificar');
+            var rolEliminar = getRolValue($(this),'eliminar');
+            var rolInsertar = getRolValue($(this),'insertar');
+            var rolAdmin = getRolValue($(this),'admin');
+            var rolSuper = getRolValue($(this),'super');
+
+            prueba.push({
+                idOpcion:$(this).find('input[name=idOpcion]').val(),
+                rolModificar:rolModificar,
+                rolEliminar:rolEliminar,
+                rolInsertar:rolInsertar,
+                rolAdmin :rolAdmin ,
+                rolSuper:rolSuper
+            });
+            
+        });
+
+    });
+
+}
+
+function getRolValue(buscar,rol) {
+
+    if ($(buscar).find('input[name='+rol+']:checked').val()) {
+        return parseInt($(buscar).find('input[name='+rol+']:checked').val());
+    }else{
+        return 0;
+    }
+}
+
+function setRolChecked(rol) {
+
+    if (rol == 1) {
+        return "checked";
+    }else{
+        return "";
+    }
 }
 
 function buttonExports(){
@@ -125,6 +193,7 @@ function getVerDatos(){
     });
 }
 
+
 function getCreateData(){
 
     //click para traer datos para el update
@@ -133,7 +202,6 @@ function getCreateData(){
 
         var route = $(this).attr("data-route"); //get data info
         
-        console.log(route );
 
      $.ajax({
             url : route,
@@ -141,7 +209,7 @@ function getCreateData(){
             dataType:'JSON',
         }).done(function(response){ 
 
-            console.log(response);
+            
             setCreateData(response);
 
         });
@@ -158,7 +226,7 @@ function getUpdateData(){
 
         var route = $(this).attr("data-route"); //get data info
         
-        console.log(route );
+
 
      $.ajax({
             url : route,
@@ -166,7 +234,7 @@ function getUpdateData(){
             dataType:'JSON',
         }).done(function(response){ 
 
-            console.log(response);
+           
             setUpdateData(response);
 
         });
@@ -183,7 +251,7 @@ function eliminar(){
 
         var route = $(this).attr("data-route"); //get data info
         
-        console.log(route);
+  
 
      $.ajax({
             url : route,
@@ -194,7 +262,7 @@ function eliminar(){
             if(response.errors){
 
                 alertDanger(response.errors);
-                console.log(response);
+                
             }else{
                 getVerDatos();
                 alertSuccess(response.success);
@@ -212,8 +280,7 @@ function estado(){
         event.preventDefault(); //prevent default action 
 
         var route = $(this).attr("data-route"); //get data info
-        
-        console.log(route);
+    
 
      $.ajax({
             url : route,
@@ -224,7 +291,7 @@ function estado(){
             if(response.errors){
 
                 alertDanger(response.errors);
-                console.log(response);
+               
             }else{
                 getVerDatos();
                 alertSuccess(response.success);
@@ -235,46 +302,42 @@ function estado(){
     });
 }
 
-function addPasswordBlock() {
-    $('#cambiarContrasena').hide();
-    $('#passwordBlock').show();
-    
-}
-
-function addCambiarContrasena() {
-
-    $('#cambiarContrasena').show();
-    $('#passwordBlock').hide();
-    
-}
 
 
 function setUpdateData(response){
 
-    $("#frmMantenimientoPerfiles #id").val(response.usuario.id);
-    $("#frmMantenimientoPerfiles #idPersona").val(response.usuario.idPersona);
-    $("#frmMantenimientoPerfiles #persona").val(response.persona.identificacion+" | "+response.persona.nombre).prop( "disabled", true );
-    $("#frmMantenimientoPerfiles #email").val(response.usuario.email);
-    $("#frmMantenimientoPerfiles #username").val(response.usuario.username);
+    $("#frmMantenimientoPerfiles #id").val(response.perfil.id);
+    $("#frmMantenimientoPerfiles #nombre").val(response.perfil.nombre);
 
-    $("#modalCambiarContrasena #idChangePassword").val(response.usuario.id);
-    $("#selectPerfilesUsuario option").remove();
-    $("#selectPerfiles option").remove();
+    $("#opcionesRolesTable tbody tr").remove();
+    $("#selectOpcionesPerfil option").remove();
+    $("#selectOpciones option").remove();
 
-    frmCambiarContrasena();
-    addCambiarContrasena();
 
-    for (let i = 0; i < response.perfilesUsuario.length; i++) {
+    for (let i = 0; i < response.opcionesPerfil.opcion.length; i++) {
+
         
-        opcion = '<option class="list-group-item list-group-item-action" value="'+response.perfilesUsuario[i][0].id+'">'+response.perfilesUsuario[i][0].nombre+'</option>';
-        $("#selectPerfilesUsuario").append(opcion);
+        opcion = '<option class="list-group-item list-group-item-action" value="'+response.opcionesPerfil.opcion[i].id+'">'+response.opcionesPerfil.opcion[i].nombre+'</option>';
+        $("#selectOpcionesPerfil").append(opcion);
+
+        var tr = '<tr>\
+        <input type="hidden" name="idOpcion" value="'+response.opcionesPerfil.opcion[i].id+'">\
+        <td>'+response.opcionesPerfil.opcion[i].nombre+'</td>\
+        <td><input type="checkbox" name="modificar" value="1" '+setRolChecked(response.opcionesPerfil.roles[i].rolModificar)+'/></td>\
+        <td><input type="checkbox" name="eliminar" value="1" '+setRolChecked(response.opcionesPerfil.roles[i].rolEliminar)+'/></td>\
+        <td><input type="checkbox" name="insertar" value="1" '+setRolChecked(response.opcionesPerfil.roles[i].rolInsertar)+'/></td>\
+        <td><input type="checkbox" name="admin" value="1" '+setRolChecked(response.opcionesPerfil.roles[i].rolAdmin)+'/></td>\
+        <td><input type="checkbox" name="super" value="1" '+setRolChecked(response.opcionesPerfil.roles[i].rolSuper)+'/></td>\
+        </tr>';
+
+        $("#opcionesRolesTable tbody").append(tr);
         
     }
 
-    for (let i = 0; i < response.perfilesDisponibles.length; i++) {
+    for (let i = 0; i < response.opcionesDisponibles.length; i++) {
         
-        opcion = '<option class="list-group-item list-group-item-action" value="'+response.perfilesDisponibles[i].id+'">'+response.perfilesDisponibles[i].nombre+'</option>';
-        $("#selectPerfiles").append(opcion);
+        opcion = '<option class="list-group-item list-group-item-action" value="'+response.opcionesDisponibles[i].id+'">'+response.opcionesDisponibles[i].nombre+'</option>';
+        $("#selectOpciones").append(opcion);
         
     }
 
@@ -283,31 +346,19 @@ function setUpdateData(response){
 
 function setCreateData(response){
 
-    $("#selectPerfilesUsuario option").remove();
-    $("#selectPerfiles option").remove();
+    $("#opcionesRolesTable tbody tr").remove();
+    $("#selectOpcionesPerfil option").remove();
+    $("#selectOpciones option").remove();
 
-    addPasswordBlock();
-
-
-    for (let i = 0; i < response.perfilesDisponibles.length; i++) {
+    for (let i = 0; i < response.opcionesDisponibles.length; i++) {
         
-        opcion = '<option class="list-group-item list-group-item-action" value="'+response.perfilesDisponibles[i].id+'">'+response.perfilesDisponibles[i].nombre+'</option>';
-        $("#selectPerfiles").append(opcion);
+        opcion = '<option class="list-group-item list-group-item-action" value="'+response.opcionesDisponibles[i].id+'">'+response.opcionesDisponibles[i].nombre+'</option>';
+        $("#selectOpciones").append(opcion);
         
     }
 
 }
 
-function cambiarContrasenaModal() {
-
-    $("#cambiarContrasena").click(function() {
-        $('#modalMantenimiento').modal('toggle');
-        $('#modalCambiarContrasena').modal('show');
-    });
-
-    
-    
-}
 
 function Buscador(){
     $(document).ready(function() {
@@ -332,14 +383,36 @@ function frmMantenimientoPerfiles(){
 
         var perfiles = [];
         
-        $.each($("#selectPerfilesUsuario option"), function(){  
+        $.each($("#selectOpcionesPerfil option"), function(){  
 
             perfiles.push($(this).val());
            
         });
 
+        roles = [];
+   
+        $.each($("#opcionesRolesTable tbody tr"), function(){  
 
-        form_data = $(this).serialize() + '&usuarioPerfiles=' + perfiles; //Encode form elements for submission
+            var rolModificar = getRolValue($(this),'modificar');
+            var rolEliminar = getRolValue($(this),'eliminar');
+            var rolInsertar = getRolValue($(this),'insertar');
+            var rolAdmin = getRolValue($(this),'admin');
+            var rolSuper = getRolValue($(this),'super');
+
+            roles.push({
+                idOpcion:$(this).find('input[name=idOpcion]').val(),
+                rolModificar:rolModificar,
+                rolEliminar:rolEliminar,
+                rolInsertar:rolInsertar,
+                rolAdmin :rolAdmin ,
+                rolSuper:rolSuper
+            });
+            
+        });
+
+        console.log(roles);
+
+        form_data = $(this).serialize() + '&'+$.param({rolesOpciones:roles}); //Encode form elements for submission
 
 
         $.ajax({
@@ -353,12 +426,12 @@ function frmMantenimientoPerfiles(){
 
         }).done(function(response){ //
 
-            console.log(response);
+           
 
             if(response.errors){
 
                 erroresForm(response.errors)
-                //console.log(response.errors);
+                console.log(response.errors);
             }else{
                 //console.log(response.success);
                 limpiarForm('todo');
@@ -377,52 +450,6 @@ function frmMantenimientoPerfiles(){
 
 };
 
-function frmCambiarContrasena(){
-    $("#frmCambiarContrasena").submit(function(event){
-           event.preventDefault(); //prevent default action 
-   
-           var post_url = $(this).attr("action"); //get form action url
-           var request_method = $(this).attr("method"); //get form GET/POST method
-
-   
-           form_data = $(this).serialize(); //Encode form elements for submission
-   
-   
-           $.ajax({
-   
-               url : post_url,
-               type: request_method,
-               data : form_data,
-               dataType:'JSON',
-               processData: false,
-               //contentType: false,
-   
-           }).done(function(response){ //
-   
-               console.log(response);
-   
-               if(response.errors){
-   
-                   erroresForm(response.errors)
-                   
-               }else{
-                   
-                   limpiarForm('todo');
-                   getVerDatos();
-                   alertSuccess(response.success);
-                   
-               }
-   
-           });
-       });
-   
-       //limpiar al cerrar
-       $("#btnCerrarPasswordModal").click(function() {
-           limpiarForm('todo');
-       });
-   
-   };
-
 
 
 function mensajeError(mensaje){
@@ -436,39 +463,11 @@ function mensajeError(mensaje){
 
 function erroresForm(errors){
 
-    if(errors.username){
-        $("#frmMantenimientoPerfiles #usernameGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoPerfiles #usernameGroup").append(mensajeError(errors.username));
+    if(errors.nombre){
+        $("#frmMantenimientoPerfiles #nombreGroup input").removeClass("form-control").addClass("form-control is-invalid");
+        $("#frmMantenimientoPerfiles #nombreGroup").append(mensajeError(errors.nombre));
     }else{
-        limpiarForm('username');
-    }
-
-    if(errors.password){
-        $("#frmMantenimientoPerfiles #passwordGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoPerfiles #passwordGroup").append(mensajeError(errors.password));
-    }else{
-        limpiarForm('password');
-    }
-
-    if(errors.password-confirm){
-        $("#frmMantenimientoPerfiles #password-confirmGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoPerfiles #password-confirmGroup").append(mensajeError(errors.password-confirm));
-    }else{
-        limpiarForm('password-confirm');
-    }
-
-    if(errors.email){
-        $("#frmMantenimientoPerfiles #emailGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoPerfiles #emailGroup").append(mensajeError(errors.email));
-    }else{
-        limpiarForm('email');
-    }
-
-    if(errors.persona){
-        $("#frmMantenimientoPerfiles #personaGroup input").removeClass("form-control").addClass("form-control is-invalid");
-        $("#frmMantenimientoPerfiles #personaGroup").append(mensajeError(errors.persona));
-    }else{
-        limpiarForm('persona');
+        limpiarForm('nombre');
     }
 
 }
@@ -480,7 +479,6 @@ function limpiarForm(indicador){
         $("#frmMantenimientoPerfiles").find('input:text,input:file,input:password,#id').removeClass("form-control is-invalid").addClass("form-control").prop( "disabled", false);
         $("#frmMantenimientoPerfiles").find('.invalid-feedback').remove();
         $('#modalMantenimiento').modal('hide');  
-        $('#modalCambiarContrasena').modal('hide'); 
     }else{
         grupo = "#"+indicador+"Group";
         $("#frmMantenimientoPerfiles "+grupo).find('input:text,input:file,input:password,#id').removeClass("form-control is-invalid").addClass("form-control");

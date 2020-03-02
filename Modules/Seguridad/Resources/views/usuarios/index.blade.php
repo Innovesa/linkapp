@@ -194,7 +194,7 @@
          @csrf
         <div class="modal-body">
 
-            <input type="hidden" name="id" id="idChangePassword" value="">
+                <input type="hidden" name="id" id="idChangePassword" value="">
 
                 <div class="form-group row">
                     <label for="password" class="col-sm-3 col-form-label">Nueva Contraseña</label>

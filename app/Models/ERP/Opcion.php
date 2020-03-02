@@ -39,4 +39,24 @@ class Opcion extends Model
            
     }
 
+    public function getOpcion(Array $notIn = null)
+    {
+        if (!is_array($notIn)) {
+            $notIn = [];
+        }
+
+        $idInSuperior = Opcion::whereNotNull('superior')
+        ->distinct()
+        ->select('superior')
+        ->get();
+
+        $result = Opcion::whereNotIn('id',$idInSuperior)
+        ->whereNotIn('id',$notIn)
+        ->orderBy('idEstado', 'asc')
+        ->orderBy('nombre', 'asc')
+        ->get();
+            
+        return $result;
+    }
+
 }

@@ -48,8 +48,6 @@ Route::prefix('seguridad')->group(function() {
 
         Route::get('/perfiles/createdata', 'PerfilController@getCreateData')->name('seguridad.perfiles.createData');
 
-        Route::post('/perfiles/updatePassword', 'PerfilController@updatePassword')->name('seguridad.perfiles.update.password');
-    
         Route::get('/perfiles/eliminar/{id}', 'PerfilController@eliminar')->name('seguridad.perfiles.eliminar');
     
         Route::get('/perfiles/activar/{id}', 'PerfilController@activar')->name('seguridad.perfiles.activar');
