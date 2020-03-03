@@ -81,7 +81,7 @@
                                         <div id="tab-1" class="tab-pane active">
                                             <div class="panel-body">
 
-                                                <input type="hidden" name="id" value="">
+                                                <input type="hidden" name="id" id="id" value="">
 
                                                 <div class="form-group col-sm-12" id="nombreGroup">
                                                     <label>{{@trans('entidades::entidades.nombre')}}</label>

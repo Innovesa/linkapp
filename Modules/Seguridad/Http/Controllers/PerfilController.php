@@ -110,122 +110,111 @@ class PerfilController extends Controller
        $id = $resquest->input('id');
 
        $perfil = Perfil::find($id);
-       
-       //validate del formulario
-      
-       $validator = Validator::make($resquest->all(),[
-            'nombre' => ['required', 'string', 'max:45', 'unique:perfil,username,'.$id],
-        ]);
-        
-        if($validator->fails()){
-            return response()->json([
-                    'errors' => $validator->getMessageBag()->toArray()
-                ]);
-        }
 
+ 
+        //validate del formulario
+        $validator = Validator::make($resquest->all(),[
+             'nombre' => ['required', 'string', 'max:45'],
+         ]);
 
-        //recoger daots del formulario
-        $username = $resquest->input('username');
-        $email = $resquest->input('email');
-        $idPersona = $resquest->input('idPersona');
-
-        //Asignar nuevos valores al objeto del perfil
-        $perfil->id = $id;
-        $perfil->username = $username;
-        $perfil->email = $email;
-        $perfil->idPersona = $idPersona;
-
-        
-
-        //transaction start
-        DB::beginTransaction();
-
+         
+         if($validator->fails()){
+             return response()->json([
+                     'errors' => $validator->getMessageBag()->toArray()
+                 ]);
+         }
+ 
+         //recoger daots del formulario
+         $nombre = $resquest->input('nombre');
+ 
+         //Asignar nuevos valores al objeto del perfil
+         $perfil->nombre = $nombre;
+         
+         //transaction start
+         DB::beginTransaction();
+ 
         try {
-
-            //Ejecutar consulta y cambios en la bae de datos
-            $perfil->update();
-
+ 
+             //Ejecutar consulta y cambios en la bae de datos
+             $perfil->update();
+ 
+ 
         } catch (Exception $e) {
-
+ 
             DB::rollback();
-
             return response()->json(['errors'=>$e->getMessage()]);
-
+ 
         }
-
-        //registro de perfiles 
 
         $permiso = new Permiso();
 
-        try {
+        $opciones = $resquest->input('rolesOpciones');
+        
+         try {
+  
+             if(is_array($opciones)){
  
-
-
-            if($resquest->input('perfilPerfiles')){
-
-
-                $perfiles = explode(",",$resquest->input('perfilPerfiles'));
-
-                for ($i=0; $i < count($perfiles); $i++) { 
+                 for ($i=0; $i < count($opciones); $i++) { 
+                     
+                    $perfilOpcion  = PerfilOpcion::where('idPerfil',$perfil->id)->where('idOpcion',$opciones[$i]['idOpcion'])->first();
+    
+                    if ($perfilOpcion) {
+     
+                         $perfilOpcion->idPerfil = $perfil->id;
+                         $perfilOpcion->idOpcion = $opciones[$i]['idOpcion'];
+                         $perfilOpcion->rolModificar = $opciones[$i]['rolModificar'];
+                         $perfilOpcion->rolEliminar = $opciones[$i]['rolEliminar'];
+                         $perfilOpcion->rolInsertar = $opciones[$i]['rolInsertar'];
+                         $perfilOpcion->rolAdmin= $opciones[$i]['rolAdmin'];
+                         $perfilOpcion->rolSuper = $opciones[$i]['rolSuper'];
+     
+                         $perfilOpcion->update();
                     
-    
-                    $validationPerfil = PerfilPerfil::where('idPerfil',$perfiles[$i])->where('idPerfil',$id)->first();
-    
-                    if (!$validationPerfil) {
+                 }else{
+                    $perfilOpcion = new PerfilOpcion();
+     
+                    $perfilOpcion->idPerfil = $perfil->id;
+                    $perfilOpcion->idOpcion = $opciones[$i]['idOpcion'];
+                    $perfilOpcion->rolModificar = $opciones[$i]['rolModificar'];
+                    $perfilOpcion->rolEliminar = $opciones[$i]['rolEliminar'];
+                    $perfilOpcion->rolInsertar = $opciones[$i]['rolInsertar'];
+                    $perfilOpcion->rolAdmin= $opciones[$i]['rolAdmin'];
+                    $perfilOpcion->rolSuper = $opciones[$i]['rolSuper'];
 
-                        $perfilOpcion = new Perfilperfil();
-    
-                        $perfilOpcion->idPerfil = $id;
-                        $perfilOpcion->idPerfil = $perfiles[$i];
-                        $perfilOpcion->idCompania = session("compania")->id;
-    
-                        $perfilOpcion->save();
-                    }
-    
-                }
+                    $perfilOpcion->save();
+                 }
 
-                
-                $perfileEliminar = PerfilPerfil::whereNotIn('idPerfil',$perfiles)->where('idPerfil',$id)->get();
-                if ($perfileEliminar) {
-                    foreach ($perfileEliminar as $perfil) {
-                        $perfil->delete();
-                    }
-                }
+                 $opcionesEnPerfil[] = $opciones[$i]['idOpcion'];
+             }
 
+             $opcionEliminar = PerfilOpcion::whereNotIn('idOpcion',$opcionesEnPerfil)->where('idPerfil',$perfil->id)->get();
+             if ($opcionEliminar) {
+                 foreach ($opcionEliminar as $opcion) {
+                    $opcion->delete();
+                 }
+             }
+  
             }else{
 
-                if ($permiso->SuperPermission()) {
-
-                    $perfiles = PerfilPerfil::where('idPerfil',$id)->delete();
-                    if ($perfiles) {
-                        foreach ($perfiles as $perfil) {
-                            $perfil->delete();
-                        }
-                    }
-
-                }else{
-
-                    $perfiles = PerfilPerfil::where('idCompania',session('compania')->id)->where('idPerfil',$id)->get();
-                    if ($perfiles) {
-                        foreach ($perfiles as $perfil) {
-                            $perfil->delete();
-                        }
-                        
+                $opciones = PerfilOpcion::where('idPerfil',$perfil->id)->get();
+                
+                if ($opciones) {
+                    foreach ($opciones as  $opcion) {
+                        $opcion->delete();
                     }
                 }
 
             }
+
+        } catch (Exception $e) {
+  
+              DB::rollback();
+              return response()->json(['errors'=>$e->getMessage()]);
+  
+          }
  
- 
-         } catch (Exception $e) {
- 
-             DB::rollback();
-             return response()->json(['errors'=>$e->getMessage()]);
- 
-         }
-        
-        DB::commit();
-        //transaction end
+         DB::commit();
+         //transaction end
 
         return response()->json(['success'=>@trans('seguridad::seguridad.perfil.actualizada.exito')]);
         

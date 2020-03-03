@@ -306,6 +306,7 @@ function estado(){
 
 function setUpdateData(response){
 
+    console.log(response);
     $("#frmMantenimientoPerfiles #id").val(response.perfil.id);
     $("#frmMantenimientoPerfiles #nombre").val(response.perfil.nombre);
 
